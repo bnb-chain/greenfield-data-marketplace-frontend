@@ -1,0 +1,14 @@
+export const L1_RPC_URL = 'https://data-seed-prebsc-1-s1.binance.org:8545';
+export const L2_RPC_URL = 'https://test-rpc.combonetwork.io';
+export const L1_CHAIN_ID = 97;
+export const L2_CHAIN_ID = 91715;
+export const AddressManager = '0x0000000000000000000000000000000000000000';
+export const L1CrossDomainMessenger = '0xe0c7eb390c05cAF0E0C13C36776dC70c31378194';
+export const L1StandardBridge = '0xC3de3F6B4C56FeF3917646952d5C10f5B504e118';
+export const StateCommitmentChain = '0x0000000000000000000000000000000000000000';
+export const CanonicalTransactionChain = '0x0000000000000000000000000000000000000000';
+export const BondManager = '0x0000000000000000000000000000000000000000';
+export const OptimismPortal = '0x5AcC8D0Fe99D124F7D095A9bb73F46D8a6Ee8312';
+export const L2OutputOracle = '0xf5305eF18d8c35FE9E119311622DD27167B4c2E1';
+export const BACKEND_DOMAIN = process.env.NEXT_PUBLIC_BACKEND_DOMAINl;
+export const TOKEN_SYMBOL = 'BNB';
