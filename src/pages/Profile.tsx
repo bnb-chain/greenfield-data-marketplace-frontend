@@ -3,15 +3,10 @@ import { Copy } from '../components/Copy';
 import { useAccount } from 'wagmi';
 import { Flex } from '@totejs/uikit';
 import ProfileList from '../components/ProfileList';
-import { useEffect } from 'react';
-import { getBucketList } from '../utils/gfSDK';
 
 const Profile = () => {
   const { address } = useAccount();
 
-  useEffect(() => {
-    getBucketList(address as string);
-  }, [address]);
   return (
     <Container>
       <PersonInfo gap={12}>

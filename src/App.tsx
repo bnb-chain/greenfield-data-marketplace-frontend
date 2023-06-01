@@ -10,12 +10,13 @@ import { ConnectKitProvider } from 'connectkit';
 import Layout from './components/layout';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import Collection from './pages/Collection';
 import { theme } from './theme';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 
 import * as env from './env';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Home></Home>,
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/profile',
     element: <Profile></Profile>,
+  },
+  {
+    path: '/collection',
+    element: <Collection></Collection>,
   },
 ]);
 

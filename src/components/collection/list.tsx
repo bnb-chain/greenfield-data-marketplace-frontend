@@ -1,25 +1,10 @@
 import styled from '@emotion/styled';
-import { NavBar } from './NavBar';
+import { NavBar } from '../NavBar';
 import { useCallback, useEffect, useState } from 'react';
 import { Box, Button, Table } from '@totejs/uikit';
-import { usePagination } from '../hooks/usePagination';
+import { usePagination } from '../../hooks/usePagination';
 import { useAccount } from 'wagmi';
-import { getBucketList } from '../utils/gfSDK';
-
-enum Type {
-  Collections = 'Collections',
-  Purchase = 'All',
-}
-const navItems = [
-  {
-    name: 'My Collections',
-    key: Type.Collections,
-  },
-  {
-    name: 'My Purchase',
-    key: Type.Purchase,
-  },
-];
+import { getBucketFileList } from '../../utils/gfSDK';
 
 const ProfileList = () => {
   const { handlePageChange, page } = usePagination();
@@ -27,25 +12,20 @@ const ProfileList = () => {
   const { address } = useAccount();
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
-  const currentTab = Type.Collections;
-  const handleTabChange = useCallback((tab: any) => {
-    console.log(tab);
-  }, []);
 
   useEffect(() => {
-    getBucketList(address as string).then((result: any) => {
+    getBucketFileList({ bucketName: 'dude' }).then((result: any) => {
       setLoading(false);
       const { statusCode, body } = result;
       if (statusCode == 200 && Array.isArray(body)) {
         setList(body as any);
       }
-      console.log(result);
     });
   }, [address]);
 
   const columns = [
     {
-      header: 'Data Collection',
+      header: 'Data',
       cell: (data: any) => {
         const {
           bucket_info: { bucket_name },
@@ -54,7 +34,7 @@ const ProfileList = () => {
       },
     },
     {
-      header: 'Data Created',
+      header: 'Type',
       width: 160,
       cell: (data: any) => {
         const {
@@ -64,17 +44,43 @@ const ProfileList = () => {
       },
     },
     {
-      header: 'Price',
+      header: 'Size',
       width: 160,
       cell: (data: any) => {
         return <div>-</div>;
       },
     },
     {
-      header: 'Total Vol',
+      header: 'Data Created',
       width: 120,
       cell: (data: any) => {
         return <div>-</div>;
+      },
+    },
+    {
+      header: 'Price',
+      cell: (data: any) => {
+        return (
+          <div>
+            <Button size={'sm'}>List</Button>
+            <Button size={'sm'} style={{ marginLeft: '6px' }}>
+              View detail
+            </Button>
+          </div>
+        );
+      },
+    },
+    {
+      header: 'Total Vol',
+      cell: (data: any) => {
+        return (
+          <div>
+            <Button size={'sm'}>List</Button>
+            <Button size={'sm'} style={{ marginLeft: '6px' }}>
+              View detail
+            </Button>
+          </div>
+        );
       },
     },
     {
@@ -93,7 +99,6 @@ const ProfileList = () => {
   ];
   return (
     <Container>
-      <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
       <Box h={20} />
       <Table
         headerContent={`Latest ${Math.min(

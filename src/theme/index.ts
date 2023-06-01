@@ -6,7 +6,7 @@ export const theme: Theme = {
   config: {
     useSystemColorMode: false,
     initialColorMode: 'dark',
-    storageKey: 'combo-color-mode',
+    storageKey: 'marketplace-color-mode',
   },
 
   ...colors,

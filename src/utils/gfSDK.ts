@@ -29,21 +29,26 @@ export const selectSp = async () => {
   return selectSpInfo;
 };
 
-export const getBucketList = async (address: string) => {
+const getRandomSp = async () => {
   const sps = await client.sp.getStorageProviders();
   const finalSps = (sps ?? []).filter(
     (v: any) => v?.description?.moniker !== 'QATest',
   );
-  console.log(finalSps);
+  return finalSps[Math.floor(Math.random() * finalSps.length)].endpoint;
+};
+
+export const getBucketList = async (address: string) => {
+  const endpoint = await getRandomSp();
   const bucketList = client.bucket.getUserBuckets({
     address,
-    endpoint: finalSps[0].endpoint,
+    endpoint,
   });
 
   return bucketList;
 };
 
-export const getBucketFileList = async ({ bucketName, endpoint }: any) => {
+export const getBucketFileList = async ({ bucketName }: any) => {
+  const endpoint = await getRandomSp();
   const fileList = await client.object.listObjects({
     bucketName,
     endpoint,
