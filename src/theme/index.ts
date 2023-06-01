@@ -5,7 +5,7 @@ import { colors } from './colors';
 export const theme: Theme = {
   config: {
     useSystemColorMode: false,
-    initialColorMode: 'light',
+    initialColorMode: 'dark',
     storageKey: 'combo-color-mode',
   },
 

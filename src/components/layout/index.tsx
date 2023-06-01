@@ -17,6 +17,8 @@ const Main = styled.main`
   display: flex;
   flex: 1 1 0%;
   justify-content: center;
+
+  background-color: #000000;
 `;
 
 const Container = styled.div`

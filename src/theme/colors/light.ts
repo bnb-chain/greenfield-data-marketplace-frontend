@@ -15,7 +15,7 @@ export const light = {
 
     bg: {
       bottom: '#F5F5F5',
-      middle: '#FFFFFF',
+      middle: '#000000',
       codebox: '#F0FEFE',
       top: {
         normal: '#F5F5F5',
@@ -25,7 +25,7 @@ export const light = {
 
     scene: {
       primary: {
-        normal: '#49ACAF',
+        normal: '#F0B90B',
         active: '#58CED2',
         opacity: rgba('#58CED2', 0.1),
       },
