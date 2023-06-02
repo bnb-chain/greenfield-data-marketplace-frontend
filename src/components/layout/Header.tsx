@@ -2,8 +2,7 @@ import { Button, Flex } from '@totejs/uikit';
 import styled from '@emotion/styled';
 import { ConnectKitButton } from 'connectkit';
 import { useCallback, useState } from 'react';
-import { disconnect } from '@wagmi/core';
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 import { Copy } from '../Copy';
 import { trimLongStr } from '../../utils';
 import ProfileImage from '../svgIcon/ProfileImage';
@@ -14,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 const Header = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const { address, isConnected, isConnecting } = useAccount();
-
+  const { disconnect } = useDisconnect();
   const onMouseEnter = useCallback(() => {
     setDropDownOpen(true);
   }, []);
