@@ -77,7 +77,7 @@ const CollectionList = () => {
       header: 'Action',
       cell: (data: any) => {
         const {
-          bucket_info: { bucket_name, id },
+          bucket_info: { id },
         } = data;
         return (
           <div>
@@ -92,9 +92,7 @@ const CollectionList = () => {
             </Button>
             <Button
               onClick={() => {
-                sessionStorage.setItem('collection_name', bucket_name);
-                sessionStorage.setItem('resource_type', '0');
-                navigator(`/resource?tab=overview`);
+                navigator(`/resource?type=collection&tab=overview&id=${id}`);
               }}
               size={'sm'}
               style={{ marginLeft: '6px' }}
