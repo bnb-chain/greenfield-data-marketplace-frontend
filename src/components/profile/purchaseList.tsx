@@ -1,36 +1,21 @@
 import styled from '@emotion/styled';
-import { NavBar } from './NavBar';
-import { useCallback, useEffect, useState } from 'react';
-import { Box, Button, Table } from '@totejs/uikit';
-import { usePagination } from '../hooks/usePagination';
-import { useAccount } from 'wagmi';
-import { getBucketList } from '../utils/gfSDK';
+import { Button, Table } from '@totejs/uikit';
+import { usePagination } from '../../hooks/usePagination';
+import { useAccount, useSwitchNetwork } from 'wagmi';
+import { getBucketList } from '../../utils/gfSDK';
+import { GF_CHAIN_ID } from '../../env';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { formatDateUTC } from '../../utils/';
 
-enum Type {
-  Collections = 'Collections',
-  Purchase = 'All',
-}
-const navItems = [
-  {
-    name: 'My Collections',
-    key: Type.Collections,
-  },
-  {
-    name: 'My Purchase',
-    key: Type.Purchase,
-  },
-];
-
-const ProfileList = () => {
+const PurchaseList = () => {
   const { handlePageChange, page } = usePagination();
 
   const { address } = useAccount();
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
-  const currentTab = Type.Collections;
-  const handleTabChange = useCallback((tab: any) => {
-    console.log(tab);
-  }, []);
+  const { switchNetwork } = useSwitchNetwork();
+  const navigator = useNavigate();
 
   useEffect(() => {
     getBucketList(address as string).then((result: any) => {
@@ -60,7 +45,7 @@ const ProfileList = () => {
         const {
           bucket_info: { create_at },
         } = data;
-        return <div>{create_at}</div>;
+        return <div>{formatDateUTC(create_at * 1000)}</div>;
       },
     },
     {
@@ -82,8 +67,21 @@ const ProfileList = () => {
       cell: (data: any) => {
         return (
           <div>
-            <Button size={'sm'}>List</Button>
-            <Button size={'sm'} style={{ marginLeft: '6px' }}>
+            <Button
+              size={'sm'}
+              onClick={() => {
+                switchNetwork?.(GF_CHAIN_ID);
+              }}
+            >
+              List
+            </Button>
+            <Button
+              onClick={() => {
+                navigator(`/collection?tab=overview`);
+              }}
+              size={'sm'}
+              style={{ marginLeft: '6px' }}
+            >
               View detail
             </Button>
           </div>
@@ -93,8 +91,6 @@ const ProfileList = () => {
   ];
   return (
     <Container>
-      <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
-      <Box h={20} />
       <Table
         headerContent={`Latest ${Math.min(
           20,
@@ -115,11 +111,9 @@ const ProfileList = () => {
   );
 };
 
-export default ProfileList;
+export default PurchaseList;
 
 const Container = styled.div`
-  margin-top: 30px;
-
   width: 1123px;
   height: 664px;
 `;

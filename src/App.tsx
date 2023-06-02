@@ -10,13 +10,13 @@ import { ConnectKitProvider } from 'connectkit';
 import Layout from './components/layout';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
-import Collection from './pages/Collection';
+import Resource from './pages/Resource';
 import { theme } from './theme';
-import { createHashRouter, RouterProvider } from 'react-router-dom';
+import { Route, Routes, HashRouter } from 'react-router-dom';
 
 import * as env from './env';
 
-const router = createHashRouter([
+const routes = [
   {
     path: '/',
     element: <Home></Home>,
@@ -26,13 +26,13 @@ const router = createHashRouter([
     element: <Profile></Profile>,
   },
   {
-    path: '/collection',
-    element: <Collection></Collection>,
+    path: '/resource',
+    element: <Resource></Resource>,
   },
-]);
+];
 
 const gfChain: Chain = {
-  id: 9000,
+  id: env.GF_CHAIN_ID,
   network: 'greenfield',
   rpcUrls: {
     default: {
@@ -91,16 +91,45 @@ function App() {
     <WagmiConfig client={client}>
       <ThemeProvider theme={theme}>
         <ConnectKitProvider
+          theme="soft"
           customTheme={{
             '--ck-connectbutton-background': colors.scene.primary.normal,
             '--ck-connectbutton-font-size': '12px',
             '--ck-connectbutton-hover-background': colors.scene.primary.active,
             '--ck-connectbutton-border-radius': '8px',
+            '--ck-primary-button-background': colors.scene.primary.opacity,
+            '--ck-primary-button-box-shadow': 'none',
+            '--ck-primary-button-hover-background':
+              colors.scene.primary.semiOpacity,
+            '--ck-primary-button-hover-box-shadow': 'none',
+            '--ck-primary-button-font-weight': '600',
+            '--ck-primary-button-border-radius': '8px',
+            '--ck-secondary-button-background': colors.scene.primary.normal,
+            '--ck-secondary-button-hover-background':
+              colors.scene.primary.active,
+            '--ck-secondary-button-color': colors.readable.white,
+            '--ck-secondary-button-border-radius': '8px',
+            '--ck-font-family': 'Inter',
+            '--ck-border-radius': '8px',
+            '--ck-overlay-backdrop-filter': 'blur(15px)',
+            '--ck-overlay-background': 'rgba(0,0,0,0.5)',
+            '--ck-focus-color': 'transparent',
+            '--ck-dropdown-pending-color': 'transparent',
+          }}
+          options={{
+            hideBalance: true,
+            initialChainId: env.GF_CHAIN_ID,
           }}
         >
-          <Layout>
-            <RouterProvider router={router} />
-          </Layout>
+          <HashRouter>
+            <Layout>
+              <Routes>
+                {routes.map((item: any) => {
+                  return <Route path={item.path} element={item.element} />;
+                })}
+              </Routes>
+            </Layout>
+          </HashRouter>
         </ConnectKitProvider>
       </ThemeProvider>
     </WagmiConfig>

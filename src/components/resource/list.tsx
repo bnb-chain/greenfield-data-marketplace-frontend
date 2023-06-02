@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { NavBar } from '../NavBar';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useAccount } from 'wagmi';
 import { getBucketFileList } from '../../utils/gfSDK';
+import { formatDateUTC } from '../../utils/';
 
 const ProfileList = () => {
   const { handlePageChange, page } = usePagination();
@@ -13,10 +13,13 @@ const ProfileList = () => {
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
 
+  const bucketName = sessionStorage.getItem('collection_name');
+
   useEffect(() => {
-    getBucketFileList({ bucketName: 'dude' }).then((result: any) => {
+    getBucketFileList({ bucketName }).then((result: any) => {
       setLoading(false);
       const { statusCode, body } = result;
+      console.log(body);
       if (statusCode == 200 && Array.isArray(body)) {
         setList(body as any);
       }
@@ -28,9 +31,9 @@ const ProfileList = () => {
       header: 'Data',
       cell: (data: any) => {
         const {
-          bucket_info: { bucket_name },
+          object_info: { object_name },
         } = data;
-        return <div>{bucket_name}</div>;
+        return <div>{object_name}</div>;
       },
     },
     {
@@ -38,49 +41,41 @@ const ProfileList = () => {
       width: 160,
       cell: (data: any) => {
         const {
-          bucket_info: { create_at },
+          object_info: { content_type },
         } = data;
-        return <div>{create_at}</div>;
+        return <div>{content_type.split('/')[1].toLocaleUpperCase()}</div>;
       },
     },
     {
       header: 'Size',
       width: 160,
       cell: (data: any) => {
-        return <div>-</div>;
+        const {
+          object_info: { payload_size },
+        } = data;
+        return <div>{(payload_size / 1024).toFixed(2) + 'kb'}</div>;
       },
     },
     {
       header: 'Data Created',
       width: 120,
       cell: (data: any) => {
-        return <div>-</div>;
+        const {
+          object_info: { create_at },
+        } = data;
+        return <div>{formatDateUTC(create_at * 1000)}</div>;
       },
     },
     {
       header: 'Price',
       cell: (data: any) => {
-        return (
-          <div>
-            <Button size={'sm'}>List</Button>
-            <Button size={'sm'} style={{ marginLeft: '6px' }}>
-              View detail
-            </Button>
-          </div>
-        );
+        return <div>-</div>;
       },
     },
     {
       header: 'Total Vol',
       cell: (data: any) => {
-        return (
-          <div>
-            <Button size={'sm'}>List</Button>
-            <Button size={'sm'} style={{ marginLeft: '6px' }}>
-              View detail
-            </Button>
-          </div>
-        );
+        return <div>-</div>;
       },
     },
     {
@@ -99,12 +94,11 @@ const ProfileList = () => {
   ];
   return (
     <Container>
-      <Box h={20} />
+      <Box h={10} />
       <Table
-        headerContent={`Latest ${Math.min(
-          20,
-          list.length,
-        )}  Collections (Total of ${list.length})`}
+        headerContent={`Latest ${Math.min(20, list.length)}  Data (Total of ${
+          list.length
+        })`}
         containerStyle={{ padding: 20 }}
         pagination={{
           current: page,
@@ -123,8 +117,6 @@ const ProfileList = () => {
 export default ProfileList;
 
 const Container = styled.div`
-  margin-top: 30px;
-
-  width: 1123px;
+  width: 996px;
   height: 664px;
 `;

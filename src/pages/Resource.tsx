@@ -2,8 +2,9 @@ import styled from '@emotion/styled';
 import { Flex, Button, Box } from '@totejs/uikit';
 import { NavBar } from '../components/NavBar';
 import { useCallback, useState } from 'react';
-import Overview from '../components/collection/overview';
-import List from '../components/collection/list';
+import Overview from '../components/resource/overview';
+import List from '../components/resource/list';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 enum Type {
   Overview = 'Overview',
@@ -20,17 +21,22 @@ const navItems = [
   },
 ];
 
-const Collection = () => {
-  const tab = Type.Overview;
-  const [currentTab, setCurrentTab] = useState(tab);
+const Resource = () => {
+  const navigator = useNavigate();
+  const [p] = useSearchParams();
+  const tab = p.getAll('tab')[0];
+
+  const currentTab = tab ? tab : Type.Overview;
+
   const handleTabChange = useCallback((tab: any) => {
-    console.log(tab);
-    setCurrentTab(tab);
+    navigator(`/resource?tab=${tab}`);
   }, []);
 
+  const bucketName = sessionStorage.getItem('collection_name');
+  const resourceType = sessionStorage.getItem('resource_type');
   return (
     <Container>
-      <CollectionInfo gap={20}>
+      <ResourceInfo gap={20}>
         <ImgCon>
           <img src="" alt="" />
         </ImgCon>
@@ -40,10 +46,12 @@ const Collection = () => {
           justifyContent={'space-around'}
         >
           <NameCon gap={4} alignItems={'center'} justifyContent={'flex-start'}>
-            <Name>duduu</Name>
-            <Tag alignItems={'center'} justifyContent={'center'}>
-              Data Collection
-            </Tag>
+            <Name>{bucketName}</Name>
+            {resourceType == '0' ? (
+              <Tag alignItems={'center'} justifyContent={'center'}>
+                Data Collection
+              </Tag>
+            ) : null}
           </NameCon>
           <ItemNum>123</ItemNum>
           <OwnCon>
@@ -56,7 +64,7 @@ const Collection = () => {
             <BoughtNum>98,765 Bought</BoughtNum>
           </ActionGroup>
         </Info>
-      </CollectionInfo>
+      </ResourceInfo>
       <Box h={30}></Box>
       <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
       <Box h={10} w={996}></Box>
@@ -65,12 +73,12 @@ const Collection = () => {
   );
 };
 
-export default Collection;
+export default Resource;
 
 const Container = styled.div`
   margin-top: 60px;
 `;
-const CollectionInfo = styled(Flex)``;
+const ResourceInfo = styled(Flex)``;
 
 const ImgCon = styled.div`
   width: 246px;
