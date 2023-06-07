@@ -1,11 +1,8 @@
 import styled from '@emotion/styled';
 import Search from '../components/Search';
-import HomeList from '../components/HomeList';
-import { useWeb3 } from '../hooks/useWeb3';
-import { useTrendingList } from '..//hooks/useTrendingList';
+import HomeList from '../components/home';
 
 const Home = () => {
-  useTrendingList();
   return (
     <Container>
       <Title>

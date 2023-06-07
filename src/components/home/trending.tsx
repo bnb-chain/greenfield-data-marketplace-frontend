@@ -1,21 +1,17 @@
 import styled from '@emotion/styled';
 import { Button, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
-import { useAccount, useSwitchNetwork } from 'wagmi';
-import { getBucketList } from '../../utils/gfSDK';
-import { GF_CHAIN_ID } from '../../env';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { formatDateUTC } from '../../utils/';
-import { useUserPurchased } from '../../hooks/useUserPurchased';
+import { formatDateUTC } from '../../utils';
 
-const PurchaseList = () => {
+import { useTrendingList } from '../../hooks/useTrendingList';
+
+const TrendingList = () => {
   const { handlePageChange, page } = usePagination();
 
-  const { switchNetwork } = useSwitchNetwork();
   const navigator = useNavigate();
 
-  const { list, loading } = useUserPurchased();
+  const { list, loading } = useTrendingList();
 
   const columns = [
     {
@@ -54,19 +50,23 @@ const PurchaseList = () => {
     {
       header: 'Action',
       cell: (data: any) => {
+        const { bucket_info } = data;
+        const { bucket_name, id } = bucket_info;
         return (
           <div>
             <Button
               size={'sm'}
-              onClick={() => {
-                switchNetwork?.(GF_CHAIN_ID);
+              onClick={async () => {
+                sessionStorage.setItem('resource_type', '0');
               }}
             >
               List
             </Button>
             <Button
               onClick={() => {
-                navigator(`/collection?tab=overview`);
+                sessionStorage.setItem('collection_name', bucket_name);
+                sessionStorage.setItem('resource_type', '0');
+                navigator(`/resource?id=${id}&type=collection&tab=overview`);
               }}
               size={'sm'}
               style={{ marginLeft: '6px' }}
@@ -80,7 +80,7 @@ const PurchaseList = () => {
   ];
   return (
     <Container>
-      {/* <Table
+      <Table
         headerContent={`Latest ${Math.min(
           20,
           list.length,
@@ -95,12 +95,12 @@ const PurchaseList = () => {
         columns={columns}
         data={list}
         loading={loading}
-      /> */}
+      />
     </Container>
   );
 };
 
-export default PurchaseList;
+export default TrendingList;
 
 const Container = styled.div`
   width: 1123px;

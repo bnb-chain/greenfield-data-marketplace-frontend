@@ -5,6 +5,9 @@ import { useCallback, useState } from 'react';
 import Overview from '../components/resource/overview';
 import List from '../components/resource/list';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ListModal } from '../components/modal/listModal';
+import { GF_CHAIN_ID } from '../env';
+import { useSwitchNetwork } from 'wagmi';
 
 enum Type {
   Overview = 'Overview',
@@ -25,8 +28,10 @@ const Resource = () => {
   const navigator = useNavigate();
   const [p] = useSearchParams();
   const tab = p.getAll('tab')[0];
-
+  const { switchNetwork } = useSwitchNetwork();
   const currentTab = tab ? tab : Type.Overview;
+  const [open, setOpen] = useState(false);
+  const [detail, setDetail] = useState({});
 
   const handleTabChange = useCallback((tab: any) => {
     navigator(`/resource?tab=${tab}`);
@@ -59,7 +64,15 @@ const Resource = () => {
           </OwnCon>
           <MarketInfo>12312</MarketInfo>
           <ActionGroup gap={10}>
-            <Button size={'sm'}>List</Button>
+            <Button
+              size={'sm'}
+              onClick={async () => {
+                await switchNetwork?.(GF_CHAIN_ID);
+                setOpen(true);
+              }}
+            >
+              List
+            </Button>
             <Button size={'sm'}>View in Dcellar</Button>
             <BoughtNum>98,765 Bought</BoughtNum>
           </ActionGroup>
@@ -69,6 +82,13 @@ const Resource = () => {
       <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
       <Box h={10} w={996}></Box>
       {currentTab === Type.Overview ? <Overview></Overview> : <List></List>}
+      <ListModal
+        isOpen={open}
+        handleOpen={() => {
+          setOpen(false);
+        }}
+        detail={detail}
+      ></ListModal>
     </Container>
   );
 };

@@ -5,8 +5,8 @@ dependencies:
     specifier: ^7.16.0
     version: 7.22.1
   '@bnb-chain/greenfield-chain-sdk':
-    specifier: ^0.2.0
-    version: 0.2.0
+    specifier: 0.2.1-alpha.9
+    version: 0.2.1-alpha.9
   '@emotion/react':
     specifier: ^11.11.0
     version: 11.11.0(@types/react@18.2.7)(react@18.2.0)
@@ -67,6 +67,9 @@ dependencies:
   bfj:
     specifier: ^7.0.2
     version: 7.0.2
+  bn.js:
+    specifier: ^5.2.1
+    version: 5.2.1
   browserslist:
     specifier: ^4.18.1
     version: 4.21.7
@@ -213,6 +216,9 @@ dependencies:
     version: 6.6.0(webpack@5.84.1)
 
 devDependencies:
+  '@types/bn.js':
+    specifier: ^5.1.1
+    version: 5.1.1
   eslint-config-prettier:
     specifier: ^8.8.0
     version: 8.8.0(eslint@8.41.0)
@@ -1741,19 +1747,22 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: false
 
-  /@bnb-chain/greenfield-chain-sdk@0.2.0:
-    resolution: {integrity: sha512-2k6IrPng3fRmgV8pCoTiuz5gsDAi5GiSiaIE504dW0v8nKw7qWNP6esxnMv1XX0EBzhr898LV+3wVqhwecNfAA==}
+  /@bnb-chain/greenfield-chain-sdk@0.2.1-alpha.9:
+    resolution: {integrity: sha512-uM1TzQg3xKXsAT38VKMh9ULzLMuXu8884D95JiRd2lim/V0kMNmHzSx6jOnAtOH+EQBZdwLNe83JAPJratjCEw==}
     engines: {npm: please use pnpm, yarn: please use pnpm}
     dependencies:
-      '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.9
+      '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.10
       '@bnb-chain/greenfiled-file-handle': 0.2.0
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
       '@cosmjs/tendermint-rpc': 0.30.1
       '@ethereumjs/util': 8.0.6
+      '@ethersproject/bytes': 5.7.0
       '@ethersproject/signing-key': 5.7.0
+      '@ethersproject/strings': 5.7.0
       '@ethersproject/units': 5.7.0
       '@metamask/eth-sig-util': 5.1.0
+      dayjs: 1.11.8
       ethereum-cryptography: 2.0.0
       long: 5.2.3
       reflect-metadata: 0.1.13
@@ -1764,8 +1773,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@bnb-chain/greenfield-cosmos-types@0.4.0-alpha.9:
-    resolution: {integrity: sha512-SHkCoA/71pmEiwo4hw5z3GK0SOLYFPilcYCv/QpGFY0nhM4E0F9Qih+kIAZRmk4zPe50+6zF+NE9V46UjsS4WQ==}
+  /@bnb-chain/greenfield-cosmos-types@0.4.0-alpha.10:
+    resolution: {integrity: sha512-JTZjKAQfo2e9d0PUXy9umqNNnpEOv2rvUsfAyJFijG8rnHAR1SUJchh0su344b6u0t+bhvUu/fixA3VVqaNvQw==}
     dependencies:
       long: 4.0.0
       protobufjs: 6.11.3
@@ -3823,7 +3832,6 @@ packages:
     resolution: {integrity: sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g==}
     dependencies:
       '@types/node': 16.18.34
-    dev: false
 
   /@types/body-parser@1.19.2:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
@@ -6437,6 +6445,10 @@ packages:
     engines: {node: '>=0.11'}
     dependencies:
       '@babel/runtime': 7.22.3
+    dev: false
+
+  /dayjs@1.11.8:
+    resolution: {integrity: sha512-LcgxzFoWMEPO7ggRv1Y2N31hUf2R0Vj7fuy/m+Bg1K8rr+KAs1AEy4y9jd5DXe8pbHgX+srkHNS7TH6Q6ZhYeQ==}
     dev: false
 
   /debounce@1.2.1:

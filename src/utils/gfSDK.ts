@@ -64,8 +64,45 @@ interface MsgCreateGroup {
   groupName: string;
   /** member_request defines a list of member which to be add or remove */
   members: string[];
+
+  extra: string;
 }
 
 export const CreateGroup = async (params: MsgCreateGroup) => {
   return await client.group.createGroup(params);
+};
+
+export const getCollectionInfoByName = async (
+  groupName: string,
+  address: string,
+) => {
+  return await client.group.headGroup(groupName, address);
+};
+
+export const checkAddressInGroup = async (
+  groupName: string,
+  groupOwner: string,
+  member: string,
+) => {
+  return await client.group.headGroupMember(groupName, groupOwner, member);
+};
+
+export const headGroupNFT = async (tokenId: string) => {
+  return await client.group.headGroupNFT({ tokenId });
+};
+
+export const getObjectInfo = async (objectId: string) => {
+  return await client.object.headObjectById(objectId);
+};
+
+export const mirrorGroup = async (id: string, operator: string) => {
+  return await client.crosschain.mirrorGroup({
+    groupName: '',
+    id,
+    operator,
+  });
+};
+
+export const getCollectionInfo = async (bucketId: string) => {
+  return await client.bucket.headBucketById(bucketId);
 };

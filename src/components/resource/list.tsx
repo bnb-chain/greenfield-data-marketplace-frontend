@@ -2,9 +2,11 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { Box, Button, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
-import { useAccount } from 'wagmi';
+import { useAccount, useSwitchNetwork } from 'wagmi';
 import { getBucketFileList } from '../../utils/gfSDK';
 import { formatDateUTC } from '../../utils/';
+import { ListModal } from '../modal/listModal';
+import { GF_CHAIN_ID } from '../../env';
 
 const ProfileList = () => {
   const { handlePageChange, page } = usePagination();
@@ -12,6 +14,9 @@ const ProfileList = () => {
   const { address } = useAccount();
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
+  const [open, setOpen] = useState(false);
+  const { switchNetwork } = useSwitchNetwork();
+  const [detail, setDetail] = useState({});
 
   const bucketName = sessionStorage.getItem('collection_name');
 
@@ -83,7 +88,16 @@ const ProfileList = () => {
       cell: (data: any) => {
         return (
           <div>
-            <Button size={'sm'}>List</Button>
+            <Button
+              size={'sm'}
+              onClick={async () => {
+                console.log(23);
+                await switchNetwork?.(GF_CHAIN_ID);
+                setOpen(true);
+              }}
+            >
+              List
+            </Button>
             <Button size={'sm'} style={{ marginLeft: '6px' }}>
               View detail
             </Button>
@@ -110,6 +124,13 @@ const ProfileList = () => {
         data={list}
         loading={loading}
       />
+      <ListModal
+        isOpen={open}
+        handleOpen={() => {
+          setOpen(false);
+        }}
+        detail={detail}
+      ></ListModal>
     </Container>
   );
 };
@@ -118,5 +139,4 @@ export default ProfileList;
 
 const Container = styled.div`
   width: 996px;
-  height: 664px;
 `;

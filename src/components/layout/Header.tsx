@@ -7,7 +7,12 @@ import { Copy } from '../Copy';
 import { trimLongStr } from '../../utils';
 import ProfileImage from '../svgIcon/ProfileImage';
 import { HeaderProfileBg } from '../svgIcon/HeaderProfileBg';
-import { BookmarkIcon, WithdrawIcon, WalletIcon } from '@totejs/icons';
+import {
+  BookmarkIcon,
+  WithdrawIcon,
+  WalletIcon,
+  PaperLibraryIcon,
+} from '@totejs/icons';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
@@ -26,11 +31,16 @@ const Header = () => {
   return (
     <HeaderFlex
       justifyContent={'space-between'}
+      alignItems={'center'}
       padding={'8px 24px'}
       height={62}
     >
-      <ImageContainer>
-        <img src="/images/logo.png" alt="logo" width={188} height={38} />
+      <ImageContainer
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        <img src="/images/logo-group.png" alt="logo" width={188} height={38} />
       </ImageContainer>
       <ButtonWrapper onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
         <ConnectKitButton.Custom>
@@ -76,10 +86,10 @@ const Header = () => {
               <MenuElement
                 onClick={async (e: any) => {
                   e.preventDefault();
-                  navigate('/profile?tab=collection');
+                  navigate('/profile?tab=collections');
                 }}
               >
-                <BookmarkIcon mr={8} width={24} height={24} /> My Data
+                <PaperLibraryIcon mr={8} width={24} height={24} /> My profile
               </MenuElement>
               <MenuElement
                 onClick={async (e: any) => {
@@ -118,10 +128,10 @@ const HeaderFlex = styled(Flex)`
 `;
 const ImageContainer = styled.div`
   position: relative;
-
+  cursor: pointer;
   img {
-    width: 100px;
-    height: 20px;
+    width: 378px;
+    height: 42px;
   }
 `;
 

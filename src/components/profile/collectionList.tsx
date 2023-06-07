@@ -7,38 +7,21 @@ import { GF_CHAIN_ID } from '../../env';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { formatDateUTC } from '../../utils/';
+import { ListModal } from '../modal/listModal';
+import { useCollectionList } from '../../hooks/useCollectionList';
 
 const CollectionList = () => {
   const { handlePageChange, page } = usePagination();
 
   const { address } = useAccount();
-  const [loading, setLoading] = useState(true);
-  const [list, setList] = useState([]);
+  const { list, loading } = useCollectionList();
+  console.log(list);
+  const [open, setOpen] = useState(false);
+  const [detail, setDetail] = useState({});
+
   const { switchNetwork } = useSwitchNetwork();
   const navigator = useNavigate();
 
-  useEffect(() => {
-    getBucketList(address as string).then((result: any) => {
-      setLoading(false);
-      const { statusCode, body } = result;
-      if (statusCode == 200 && Array.isArray(body)) {
-        setList(body as any);
-      }
-      console.log(result);
-    });
-  }, [address]);
-
-  const List = useCallback(async (bucketName: string) => {
-    const { simulate, broadcast } = await CreateGroup({
-      creator: address as string,
-      groupName: bucketName,
-      members: [],
-    });
-    const simulateInfo = await simulate({
-      denom: 'BNB',
-    });
-    console.log(simulateInfo);
-  }, []);
   const columns = [
     {
       header: 'Data Collection',
@@ -76,16 +59,17 @@ const CollectionList = () => {
     {
       header: 'Action',
       cell: (data: any) => {
-        const {
-          bucket_info: { bucket_name, id },
-        } = data;
+        const { bucket_info } = data;
+        const { bucket_name, id } = bucket_info;
         return (
           <div>
             <Button
               size={'sm'}
               onClick={async () => {
+                sessionStorage.setItem('resource_type', '0');
+                setDetail(bucket_info);
                 await switchNetwork?.(GF_CHAIN_ID);
-                List(`dm_b_${id}`);
+                setOpen(true);
               }}
             >
               List
@@ -94,7 +78,7 @@ const CollectionList = () => {
               onClick={() => {
                 sessionStorage.setItem('collection_name', bucket_name);
                 sessionStorage.setItem('resource_type', '0');
-                navigator(`/resource?tab=overview`);
+                navigator(`/resource?id=${id}&type=collection&tab=overview`);
               }}
               size={'sm'}
               style={{ marginLeft: '6px' }}
@@ -124,6 +108,13 @@ const CollectionList = () => {
         data={list}
         loading={loading}
       />
+      <ListModal
+        isOpen={open}
+        handleOpen={() => {
+          setOpen(false);
+        }}
+        detail={detail}
+      ></ListModal>
     </Container>
   );
 };
@@ -132,5 +123,4 @@ export default CollectionList;
 
 const Container = styled.div`
   width: 1123px;
-  height: 664px;
 `;

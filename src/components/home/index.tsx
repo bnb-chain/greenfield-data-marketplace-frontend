@@ -3,49 +3,47 @@ import { NavBar } from '../NavBar';
 import { useCallback } from 'react';
 import { Box } from '@totejs/uikit';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import CollectionList from './collectionList';
-import PurchaseList from './purchaseList';
+import AllList from './all';
+import TrendingList from './trending';
 
 enum Type {
-  Collections = 'collections',
-  Purchase = 'purchase',
+  All = 'all',
+  Trending = 'trending',
 }
 const navItems = [
   {
-    name: 'My Collections',
-    key: Type.Collections,
+    name: 'Trending',
+    key: Type.Trending,
   },
   {
-    name: 'My Purchase',
-    key: Type.Purchase,
+    name: 'All',
+    key: Type.All,
   },
 ];
 
-const ProfileList = () => {
+const HomeList = () => {
   const [p] = useSearchParams();
   const tab = p.getAll('tab')[0];
 
   const navigator = useNavigate();
-
-  const currentTab = tab ? tab : Type.Collections;
+  const currentTab = tab ? tab : Type.All;
   const handleTabChange = useCallback((tab: any) => {
-    navigator(`/profile?tab=${tab}`);
+    navigator(`/?tab=${tab}`);
   }, []);
-
   return (
     <Container>
       <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
       <Box h={20} />
-      {currentTab === Type.Collections ? (
-        <CollectionList></CollectionList>
+      {currentTab === Type.All ? (
+        <AllList></AllList>
       ) : (
-        <PurchaseList></PurchaseList>
+        <TrendingList></TrendingList>
       )}
     </Container>
   );
 };
 
-export default ProfileList;
+export default HomeList;
 
 const Container = styled.div`
   margin-top: 30px;

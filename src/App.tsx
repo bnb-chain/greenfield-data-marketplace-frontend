@@ -14,6 +14,8 @@ import Resource from './pages/Resource';
 import { theme } from './theme';
 import { Route, Routes, HashRouter } from 'react-router-dom';
 
+import './base/global.css';
+
 import * as env from './env';
 
 const routes = [
@@ -51,7 +53,7 @@ const gfChain: Chain = {
 };
 
 const { chains, provider } = configureChains(
-  [bscTestnet, gfChain],
+  [gfChain, bscTestnet],
   [publicProvider()],
 );
 
@@ -85,7 +87,6 @@ function App() {
       warn: (message: string) => console.log(message),
     },
   });
-
   const colors = theme.colors.light;
   return (
     <WagmiConfig client={client}>

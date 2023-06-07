@@ -14,7 +14,9 @@ const Footer = () => {
 
 export default Footer;
 
-const FooterCon = styled.footer`
+const FooterCon = styled.div`
+  margin-top: 30px;
+  height: 42px;
   background-color: #000000;
 `;
 const CopyRight = styled.div`

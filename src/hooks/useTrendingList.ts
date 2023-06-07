@@ -2,8 +2,8 @@
 // import { useGetChainProviders } from './useGetChainProviders';
 
 import { useEffect, useState } from 'react';
-import { useWeb3 } from './useWeb3';
 import { useAccount } from 'wagmi';
+import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 
 export const useTrendingList = () => {
   const [list, setList] = useState([]);
@@ -11,11 +11,9 @@ export const useTrendingList = () => {
 
   const { address } = useAccount();
 
-  const contractInstance = useWeb3();
-
   useEffect(() => {
-    contractInstance.methods
-      .getSalesRevenueRanking()
+    MarketPlaceContract()
+      .methods.getSalesRevenueRanking()
       .call({ from: address })
       .then((result: any) => {
         setList(result);

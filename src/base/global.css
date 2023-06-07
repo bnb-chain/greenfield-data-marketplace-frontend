@@ -1,0 +1,5 @@
+.require:after{
+    content: '*';
+    margin-left:5px;
+    color: red;
+}
