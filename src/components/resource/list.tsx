@@ -92,7 +92,7 @@ const ProfileList = () => {
               size={'sm'}
               onClick={async () => {
                 console.log(23);
-                await switchNetwork?.(GF_CHAIN_ID);
+                // await switchNetwork?.(GF_CHAIN_ID);
                 setOpen(true);
               }}
             >

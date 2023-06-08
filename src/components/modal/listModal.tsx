@@ -14,7 +14,7 @@ import { useAccount, useSwitchNetwork } from 'wagmi';
 import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
 import { useChainBalance } from '../../hooks/useChainBalance';
 import { useList } from '../../hooks/useList';
-import { delay } from '../../utils';
+import { delay, generateGroupName } from '../../utils';
 import Web3 from 'web3';
 
 interface ListModalProps {
@@ -56,6 +56,7 @@ export const ListModal = (props: ListModalProps) => {
     return Number(price) * 0.99;
   }, [price]);
 
+  const { address } = useAccount();
   return (
     <Modal
       size={'lg'}
@@ -146,10 +147,18 @@ export const ListModal = (props: ListModalProps) => {
                   setWarningPrice(true);
                   return;
                 }
+                const isApprove = localStorage.getItem(`approve_${address}`);
+                if (!isApprove) {
+                  await switchNetwork?.(BSC_CHAIN_ID);
+                  await delay(3);
+                  await Approve();
+                }
+                await switchNetwork?.(GF_CHAIN_ID);
+
                 // dm_o_{bucket_name}_{obj_name}
                 // dm_b_{bucket_name}
                 const obj = {
-                  groupName: `dm_b_${bucket_name}`,
+                  groupName: generateGroupName(bucket_name),
                   // groupName: Math.random().toString(36).slice(-6),
                   extra: JSON.stringify({
                     desc,

@@ -6,21 +6,23 @@ import { CreateGroup, getBucketList } from '../../utils/gfSDK';
 import { GF_CHAIN_ID } from '../../env';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { formatDateUTC } from '../../utils/';
+import { formatDateUTC, generateGroupName } from '../../utils/';
 import { ListModal } from '../modal/listModal';
 import { useCollectionList } from '../../hooks/useCollectionList';
+import { useDelist } from '../../hooks/useDelist';
 
 const CollectionList = () => {
   const { handlePageChange, page } = usePagination();
 
   const { address } = useAccount();
   const { list, loading } = useCollectionList();
-  console.log(list);
   const [open, setOpen] = useState(false);
   const [detail, setDetail] = useState({});
 
   const { switchNetwork } = useSwitchNetwork();
   const navigator = useNavigate();
+
+  const { delist } = useDelist();
 
   const columns = [
     {
@@ -59,20 +61,25 @@ const CollectionList = () => {
     {
       header: 'Action',
       cell: (data: any) => {
-        const { bucket_info } = data;
+        const { bucket_info, listed, groupId } = data;
         const { bucket_name, id } = bucket_info;
         return (
           <div>
             <Button
               size={'sm'}
               onClick={async () => {
-                sessionStorage.setItem('resource_type', '0');
-                setDetail(bucket_info);
-                await switchNetwork?.(GF_CHAIN_ID);
-                setOpen(true);
+                if (!listed) {
+                  sessionStorage.setItem('resource_type', '0');
+                  setDetail(bucket_info);
+                  await switchNetwork?.(GF_CHAIN_ID);
+                  setOpen(true);
+                } else {
+                  console.log(groupId);
+                  console.log(await delist(groupId));
+                }
               }}
             >
-              List
+              {!listed ? 'List' : 'Delist'}
             </Button>
             <Button
               onClick={() => {

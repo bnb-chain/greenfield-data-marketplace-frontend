@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 import { Button, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useNavigate } from 'react-router-dom';
-import { formatDateUTC } from '../../utils';
+import { divide10Exp, trimLongStr } from '../../utils';
+import BN from 'bn.js';
 
 import { useTrendingList } from '../../hooks/useTrendingList';
 
@@ -15,66 +16,49 @@ const TrendingList = () => {
 
   const columns = [
     {
-      header: 'Data Collection',
+      header: '#',
       cell: (data: any) => {
-        const {
-          bucket_info: { bucket_name },
-        } = data;
-        return <div>{bucket_name}</div>;
+        const { rank } = data;
+        return <div>{rank}</div>;
       },
     },
     {
-      header: 'Data Created',
+      header: 'Data Collection',
+      cell: (data: any) => {
+        const { name } = data;
+        return <div>{name}</div>;
+      },
+    },
+    {
+      header: 'Type',
       width: 160,
       cell: (data: any) => {
-        const {
-          bucket_info: { create_at },
-        } = data;
-        return <div>{formatDateUTC(create_at * 1000)}</div>;
+        const { type } = data;
+        return <div>{type}</div>;
       },
     },
     {
       header: 'Price',
       width: 160,
       cell: (data: any) => {
-        return <div>-</div>;
+        const { price } = data;
+        const balance = divide10Exp(new BN(price, 10), 18);
+        return <div>{balance} BNB</div>;
       },
     },
     {
       header: 'Total Vol',
       width: 120,
       cell: (data: any) => {
-        return <div>-</div>;
+        const { totalVol } = data;
+        return <div>{totalVol}</div>;
       },
     },
     {
-      header: 'Action',
+      header: 'Creator',
       cell: (data: any) => {
-        const { bucket_info } = data;
-        const { bucket_name, id } = bucket_info;
-        return (
-          <div>
-            <Button
-              size={'sm'}
-              onClick={async () => {
-                sessionStorage.setItem('resource_type', '0');
-              }}
-            >
-              List
-            </Button>
-            <Button
-              onClick={() => {
-                sessionStorage.setItem('collection_name', bucket_name);
-                sessionStorage.setItem('resource_type', '0');
-                navigator(`/resource?id=${id}&type=collection&tab=overview`);
-              }}
-              size={'sm'}
-              style={{ marginLeft: '6px' }}
-            >
-              View detail
-            </Button>
-          </div>
-        );
+        const { ownerAddress } = data;
+        return <div>{trimLongStr(ownerAddress)}</div>;
       },
     },
   ];

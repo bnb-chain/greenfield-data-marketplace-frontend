@@ -69,3 +69,26 @@ export const divide10Exp = (origin: BN, pow: number) => {
     }
   }
 };
+
+export const generateGroupName = (bucketName: string, objName?: string) => {
+  if (objName) {
+    return `dm_o_${bucketName}_${objName}`;
+  } else {
+    return `dm_b_${bucketName}`;
+  }
+};
+
+export const parseGroupName = (groupName: string) => {
+  let name = groupName;
+  let type = 'Collection';
+  if (name.indexOf('dm_') === 0) {
+    if (name.indexOf('dm_o_') === 0) {
+      type = 'Data';
+    }
+    name = name.split('_').slice(-1)[0];
+  }
+  return {
+    type,
+    name,
+  };
+};

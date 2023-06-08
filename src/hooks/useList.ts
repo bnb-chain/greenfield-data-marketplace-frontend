@@ -1,8 +1,4 @@
-import {
-  CreateGroup,
-  getCollectionInfoByName,
-  mirrorGroup,
-} from '../utils/gfSDK';
+import { CreateGroup, getGroupInfoByName, mirrorGroup } from '../utils/gfSDK';
 import { ISimulateGasFee } from '@bnb-chain/greenfield-chain-sdk';
 import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -67,7 +63,7 @@ export const useList = () => {
   const Mirror = useCallback(
     async (obj: { groupName: string; extra: string }) => {
       const { groupName } = obj;
-      const { groupInfo } = await getCollectionInfoByName(
+      const { groupInfo } = await getGroupInfoByName(
         groupName,
         address as string,
       );
@@ -131,7 +127,7 @@ export const useList = () => {
   const List = useCallback(
     async (obj: { groupName: string; extra: string }) => {
       const { groupName } = obj;
-      const { groupInfo } = await getCollectionInfoByName(
+      const { groupInfo } = await getGroupInfoByName(
         groupName,
         address as string,
       );

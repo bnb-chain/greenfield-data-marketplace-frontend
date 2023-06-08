@@ -72,11 +72,28 @@ export const CreateGroup = async (params: MsgCreateGroup) => {
   return await client.group.createGroup(params);
 };
 
-export const getCollectionInfoByName = async (
+export const getGroupInfoByName = async (
   groupName: string,
-  address: string,
+  groupOwner: string,
 ) => {
-  return await client.group.headGroup(groupName, address);
+  try {
+    return await client.group.headGroup(groupName, groupOwner);
+  } catch (e) {
+    return {};
+  }
+};
+
+export const checkGroupExistByName = async (
+  groupName: string,
+  groupOwner: string,
+) => {
+  const o = await getGroupInfoByName(groupName, groupOwner);
+  return Object.keys(o).length;
+};
+
+export const checkGroupExistById = async (tokenId: string) => {
+  const o = await headGroupNFT(tokenId);
+  return Object.keys(o).length;
 };
 
 export const checkAddressInGroup = async (
@@ -84,11 +101,19 @@ export const checkAddressInGroup = async (
   groupOwner: string,
   member: string,
 ) => {
-  return await client.group.headGroupMember(groupName, groupOwner, member);
+  try {
+    return await client.group.headGroupMember(groupName, groupOwner, member);
+  } catch (e) {
+    return false;
+  }
 };
 
 export const headGroupNFT = async (tokenId: string) => {
-  return await client.group.headGroupNFT({ tokenId });
+  try {
+    return await client.group.headGroupNFT({ tokenId });
+  } catch (e) {
+    return {};
+  }
 };
 
 export const getObjectInfo = async (objectId: string) => {

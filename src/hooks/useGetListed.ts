@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { headGroupNFT } from '../utils/gfSDK';
+import { parseGroupName } from '../utils';
 
 export const useGetListed = () => {
   const [list, setList] = useState(<any>[]);
@@ -29,17 +30,11 @@ export const useGetListed = () => {
         } = item;
         console.log(item);
         const [owner, , , , extra] = attributes;
-        let name = groupName;
-        let type = 'Collection';
-        if (name.indexOf('dm_') === 0) {
-          if (name.indexOf('dm_o_') === 0) {
-            type = 'Data';
-          }
-          name = name.split('_').slice(-1)[0];
-        }
+        const { type, name } = parseGroupName(groupName);
         return {
           ...item,
           name,
+          groupName,
           type,
           ownerAddress: owner.value,
           price: JSON.parse(extra.value).price,

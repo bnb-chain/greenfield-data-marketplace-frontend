@@ -6,42 +6,70 @@ import { getBucketList } from '../../utils/gfSDK';
 import { GF_CHAIN_ID } from '../../env';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { formatDateUTC } from '../../utils/';
+import { divide10Exp, formatDateUTC, trimLongStr } from '../../utils/';
 import { useUserPurchased } from '../../hooks/useUserPurchased';
+import BN from 'bn.js';
+
+const ActionCom = (obj: any) => {
+  const navigator = useNavigate();
+  const { data, address } = obj;
+  const { id, groupName, ownerAddress, type, price } = data;
+  const disableBuy = address === ownerAddress;
+  const { switchNetwork } = useSwitchNetwork();
+
+  return (
+    <div>
+      <Button
+        onClick={() => {
+          // sessionStorage.setItem('collection_name', bucket_name);
+          // sessionStorage.setItem('resource_type', '0');
+          navigator(`/resource?id=${id}&type=collection&tab=overview`);
+        }}
+        size={'sm'}
+        style={{ marginLeft: '6px' }}
+      >
+        View detail
+      </Button>
+    </div>
+  );
+};
 
 const PurchaseList = () => {
   const { handlePageChange, page } = usePagination();
 
-  const { switchNetwork } = useSwitchNetwork();
-  const navigator = useNavigate();
-
   const { list, loading } = useUserPurchased();
+  const { address } = useAccount();
 
   const columns = [
     {
-      header: 'Data Collection',
+      header: 'Data',
       cell: (data: any) => {
-        const {
-          bucket_info: { bucket_name },
-        } = data;
-        return <div>{bucket_name}</div>;
+        const { name } = data;
+        return <div>{name}</div>;
       },
     },
     {
-      header: 'Data Created',
-      width: 160,
+      header: 'Type',
       cell: (data: any) => {
-        const {
-          bucket_info: { create_at },
-        } = data;
-        return <div>{formatDateUTC(create_at * 1000)}</div>;
+        const { type } = data;
+        return <div>{type}</div>;
       },
     },
     {
       header: 'Price',
       width: 160,
       cell: (data: any) => {
-        return <div>-</div>;
+        const { price } = data;
+        const balance = divide10Exp(new BN(price, 10), 18);
+        return <div>{balance} BNB</div>;
+      },
+    },
+    {
+      header: 'Data Listed',
+      width: 160,
+      cell: (data: any) => {
+        const { listTime } = data;
+        return <div>{formatDateUTC(listTime * 1000)}</div>;
       },
     },
     {
@@ -52,35 +80,24 @@ const PurchaseList = () => {
       },
     },
     {
+      header: 'Creator',
+      width: 120,
+      cell: (data: any) => {
+        const { ownerAddress } = data;
+        return <div>{trimLongStr(ownerAddress)}</div>;
+      },
+    },
+    {
       header: 'Action',
       cell: (data: any) => {
-        return (
-          <div>
-            <Button
-              size={'sm'}
-              onClick={() => {
-                switchNetwork?.(GF_CHAIN_ID);
-              }}
-            >
-              List
-            </Button>
-            <Button
-              onClick={() => {
-                navigator(`/collection?tab=overview`);
-              }}
-              size={'sm'}
-              style={{ marginLeft: '6px' }}
-            >
-              View detail
-            </Button>
-          </div>
-        );
+        return <ActionCom data={data} address={address}></ActionCom>;
       },
     },
   ];
+  console.log(list);
   return (
     <Container>
-      {/* <Table
+      <Table
         headerContent={`Latest ${Math.min(
           20,
           list.length,
@@ -95,7 +112,7 @@ const PurchaseList = () => {
         columns={columns}
         data={list}
         loading={loading}
-      /> */}
+      />
     </Container>
   );
 };
