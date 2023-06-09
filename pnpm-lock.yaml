@@ -5,8 +5,8 @@ dependencies:
     specifier: ^7.16.0
     version: 7.22.1
   '@bnb-chain/greenfield-chain-sdk':
-    specifier: 0.2.1-alpha.9
-    version: 0.2.1-alpha.9
+    specifier: 0.2.1-alpha.10
+    version: 0.2.1-alpha.10
   '@emotion/react':
     specifier: ^11.11.0
     version: 11.11.0(@types/react@18.2.7)(react@18.2.0)
@@ -1747,11 +1747,11 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: false
 
-  /@bnb-chain/greenfield-chain-sdk@0.2.1-alpha.9:
-    resolution: {integrity: sha512-uM1TzQg3xKXsAT38VKMh9ULzLMuXu8884D95JiRd2lim/V0kMNmHzSx6jOnAtOH+EQBZdwLNe83JAPJratjCEw==}
+  /@bnb-chain/greenfield-chain-sdk@0.2.1-alpha.10:
+    resolution: {integrity: sha512-WT6zev2a7hyTWLgf1wWfvVSZbZ43YqA5/HeC99gI2l9L/YtNNEl74/r5su6WEY3+CkY9id6bW5CN0HE5c2ZulA==}
     engines: {npm: please use pnpm, yarn: please use pnpm}
     dependencies:
-      '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.10
+      '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.11
       '@bnb-chain/greenfiled-file-handle': 0.2.0
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
@@ -1773,8 +1773,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@bnb-chain/greenfield-cosmos-types@0.4.0-alpha.10:
-    resolution: {integrity: sha512-JTZjKAQfo2e9d0PUXy9umqNNnpEOv2rvUsfAyJFijG8rnHAR1SUJchh0su344b6u0t+bhvUu/fixA3VVqaNvQw==}
+  /@bnb-chain/greenfield-cosmos-types@0.4.0-alpha.11:
+    resolution: {integrity: sha512-59ILIwpifUWUAihTbU+DDEkddH5Xz0lghxUMRGwjvlB8+MF0m5t+R6SAJWk0ZkVMVIWdIGJphjkBJn2ffKbisA==}
     dependencies:
       long: 4.0.0
       protobufjs: 6.11.3

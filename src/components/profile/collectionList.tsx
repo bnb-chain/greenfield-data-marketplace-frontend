@@ -10,6 +10,7 @@ import { formatDateUTC, generateGroupName } from '../../utils/';
 import { ListModal } from '../modal/listModal';
 import { useCollectionList } from '../../hooks/useCollectionList';
 import { useDelist } from '../../hooks/useDelist';
+import { toast } from '@totejs/uikit';
 
 const CollectionList = () => {
   const { handlePageChange, page } = usePagination();
@@ -63,6 +64,7 @@ const CollectionList = () => {
       cell: (data: any) => {
         const { bucket_info, listed, groupId } = data;
         const { bucket_name, id } = bucket_info;
+        console.log(data);
         return (
           <div>
             <Button
@@ -75,7 +77,12 @@ const CollectionList = () => {
                   setOpen(true);
                 } else {
                   console.log(groupId);
-                  console.log(await delist(groupId));
+                  try {
+                    await delist(groupId);
+                    toast.success({ description: 'buy successful' });
+                  } catch (e) {
+                    toast.error({ description: 'buy failed' });
+                  }
                 }
               }}
             >
@@ -83,9 +90,15 @@ const CollectionList = () => {
             </Button>
             <Button
               onClick={() => {
-                sessionStorage.setItem('collection_name', bucket_name);
-                sessionStorage.setItem('resource_type', '0');
-                navigator(`/resource?id=${id}&type=collection&tab=overview`);
+                const {
+                  groupId,
+                  bucket_info: { id },
+                } = data;
+                navigator(
+                  `/resource?&bid=${id}&address=${address}&tab=description${
+                    groupId ? '&gid=' + groupId : ''
+                  }`,
+                );
               }}
               size={'sm'}
               style={{ marginLeft: '6px' }}

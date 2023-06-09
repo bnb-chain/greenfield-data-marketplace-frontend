@@ -7,30 +7,31 @@ import { getBucketFileList } from '../../utils/gfSDK';
 import { formatDateUTC } from '../../utils/';
 import { ListModal } from '../modal/listModal';
 import { GF_CHAIN_ID } from '../../env';
+import { useCollectionItems } from '../../hooks/useCollectionItems';
 
-const ProfileList = () => {
+const ProfileList = (props: any) => {
+  const { name, listed } = props;
+
+  const { list, loading } = useCollectionItems(name);
+
   const { handlePageChange, page } = usePagination();
 
   const { address } = useAccount();
-  const [loading, setLoading] = useState(true);
-  const [list, setList] = useState([]);
   const [open, setOpen] = useState(false);
   const { switchNetwork } = useSwitchNetwork();
   const [detail, setDetail] = useState({});
 
-  const bucketName = sessionStorage.getItem('collection_name');
-
-  useEffect(() => {
-    getBucketFileList({ bucketName }).then((result: any) => {
-      setLoading(false);
-      const { statusCode, body } = result;
-      console.log(body);
-      if (statusCode == 200 && Array.isArray(body)) {
-        setList(body as any);
-      }
-    });
-  }, [address]);
-
+  // useEffect(() => {
+  //   getBucketFileList({ bucketName }).then((result: any) => {
+  //     setLoading(false);
+  //     const { statusCode, body } = result;
+  //     console.log(body);
+  //     if (statusCode == 200 && Array.isArray(body)) {
+  //       setList(body as any);
+  //     }
+  //   });
+  // }, [address]);
+  console.log(list);
   const columns = [
     {
       header: 'Data',
@@ -88,16 +89,18 @@ const ProfileList = () => {
       cell: (data: any) => {
         return (
           <div>
-            <Button
-              size={'sm'}
-              onClick={async () => {
-                console.log(23);
-                // await switchNetwork?.(GF_CHAIN_ID);
-                setOpen(true);
-              }}
-            >
-              List
-            </Button>
+            {listed ? null : (
+              <Button
+                size={'sm'}
+                onClick={async () => {
+                  console.log(23);
+                  // await switchNetwork?.(GF_CHAIN_ID);
+                  setOpen(true);
+                }}
+              >
+                List
+              </Button>
+            )}
             <Button size={'sm'} style={{ marginLeft: '6px' }}>
               View detail
             </Button>

@@ -37,6 +37,10 @@ const getRandomSp = async () => {
   return finalSps[Math.floor(Math.random() * finalSps.length)].endpoint;
 };
 
+export const multiTx = async (list: any) => {
+  return await client.basic.multiTx(list);
+};
+
 export const getBucketList = async (address: string) => {
   const endpoint = await getRandomSp();
   const bucketList = client.bucket.getUserBuckets({

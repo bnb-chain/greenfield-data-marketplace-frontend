@@ -19,9 +19,11 @@ export const trimLongStr = (
   return str;
 };
 
-const formatStr = "MMM-dd-yyyy hh:mm:ss aa '+UTC'";
+// const formatStr = "MMM-dd-yyyy hh:mm:ss aa '+UTC'";
+const formatStr = 'MMM-dd-yyyy';
 
 export const formatDateUTC = (date: number | string) => {
+  console.log(date);
   const numDate = Number(date);
   const zonedTime = utcToZonedTime(numDate, 'UTC');
   return format(zonedTime, formatStr, { timeZone: 'UTC' });

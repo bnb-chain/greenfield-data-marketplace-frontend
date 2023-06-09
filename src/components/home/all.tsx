@@ -12,6 +12,7 @@ import { BuyResult } from '../modal/buyResult';
 import { useState } from 'react';
 import { useApprove } from '../../hooks/useApprove';
 import { useStatus } from '../../hooks/useStatus';
+import { useSalesRevenue } from '../../hooks/useSalesRevenue';
 
 const ActionCom = (obj: any) => {
   const navigator = useNavigate();
@@ -62,9 +63,9 @@ const ActionCom = (obj: any) => {
       )}
       <Button
         onClick={() => {
-          // sessionStorage.setItem('collection_name', bucket_name);
-          // sessionStorage.setItem('resource_type', '0');
-          navigator(`/resource?id=${id}&type=collection&tab=overview`);
+          navigator(
+            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description`,
+          );
         }}
         size={'sm'}
         style={{ marginLeft: '6px' }}
@@ -81,6 +82,15 @@ const ActionCom = (obj: any) => {
       ></BuyResult>
     </div>
   );
+};
+
+interface ITotalVol {
+  id: string;
+}
+const TotalVol = (props: ITotalVol) => {
+  const { id } = props;
+  const { salesRevenue } = useSalesRevenue(id);
+  return <div>{salesRevenue}</div>;
 };
 const AllList = () => {
   const { handlePageChange, page } = usePagination();
@@ -119,14 +129,15 @@ const AllList = () => {
       width: 160,
       cell: (data: any) => {
         const { listTime } = data;
-        return <div>{formatDateUTC(listTime * 1000)}</div>;
+        return <div>{listTime ? formatDateUTC(listTime * 1000) : '-'}</div>;
       },
     },
     {
       header: 'Total Vol',
       width: 120,
       cell: (data: any) => {
-        return <div>-</div>;
+        const { id } = data;
+        return <TotalVol id={id}></TotalVol>;
       },
     },
     {

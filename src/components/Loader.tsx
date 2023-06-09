@@ -36,8 +36,10 @@ const rotate = keyframes`
 
 const SpinImage = styled.div`
   animation: ${rotate} 1s linear infinite;
-  border: ${(props: any) => `5px solid ${props.theme.scene.primary.opacity}`};
-  border-bottom-color: ${(props: any) => props.theme.scene.primary.normal};
+  border: ${(props: any) =>
+    `5px solid ${props.theme.colors.scene.primary.opacity}`};
+  border-bottom-color: ${(props: any) =>
+    props.theme.colors.scene.primary.normal};
   border-radius: 50%;
   animation: ${rotate} 1s linear infinite;
 `;

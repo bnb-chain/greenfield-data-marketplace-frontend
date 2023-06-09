@@ -1,4 +1,9 @@
-import { CreateGroup, getGroupInfoByName, mirrorGroup } from '../utils/gfSDK';
+import {
+  CreateGroup,
+  getGroupInfoByName,
+  mirrorGroup,
+  multiTx,
+} from '../utils/gfSDK';
 import { ISimulateGasFee } from '@bnb-chain/greenfield-chain-sdk';
 import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -8,9 +13,65 @@ import { MARKETPLACE_CONTRACT_ADDRESS } from '../env';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 
 export const useList = () => {
-  const [simulateGroupInfo, setSimulateGroupInfo] = useState<ISimulateGasFee>();
+  const [simulateInfo, setSimulateInfo] = useState<ISimulateGasFee>();
 
   const { address, connector } = useAccount();
+
+  const InitiateList = useCallback(
+    async (obj: { groupName: string; extra: string }) => {
+      const { groupName, extra } = obj;
+
+      const { groupInfo } = await getGroupInfoByName(
+        groupName,
+        address as string,
+      );
+      if (!groupInfo) return false;
+
+      const createGroupTx = await CreateGroup({
+        creator: address as string,
+        groupName: groupName,
+        members: [address as string],
+        extra,
+      });
+
+      const mirrorGroupTx = await mirrorGroup(groupInfo.id, address as string);
+
+      const { simulate, broadcast } = await multiTx([
+        createGroupTx,
+        mirrorGroupTx,
+      ]);
+
+      const simulateMultiTxInfo = await simulate({
+        denom: 'BNB',
+      });
+
+      setSimulateInfo(simulateMultiTxInfo);
+
+      console.log(simulateMultiTxInfo, '-------simulateMultiTxInfo');
+      const res = await broadcast({
+        denom: 'BNB',
+        gasLimit: Number(simulateMultiTxInfo.gasLimit) * 2,
+        gasPrice: simulateMultiTxInfo.gasPrice,
+        payer: address as string,
+        granter: '',
+        signTypedDataCallback: async (addr: string, message: string) => {
+          console.log(connector);
+          const provider = await connector?.getProvider();
+          return await provider?.request({
+            method: 'eth_signTypedData_v4',
+            params: [addr, message],
+          });
+        },
+      });
+
+      if (res.code === 0) {
+        console.log(res, '-----InitiateList result');
+        alert('InitiateList success');
+      }
+      return res;
+    },
+    [connector],
+  );
 
   const GenGroup = useCallback(
     async (obj: { groupName: string; extra: string }) => {
@@ -33,11 +94,11 @@ export const useList = () => {
       const simulateGroupInfo = await simulate({
         denom: 'BNB',
       });
-      setSimulateGroupInfo(simulateGroupInfo);
+      setSimulateInfo(simulateGroupInfo);
       console.log(simulateGroupInfo, '-------simulateGroupInfo');
       const res = await broadcast({
         denom: 'BNB',
-        gasLimit: Number(simulateGroupInfo.gasLimit) * 2,
+        gasLimit: Number(simulateGroupInfo.gasLimit),
         gasPrice: simulateGroupInfo.gasPrice,
         payer: address as string,
         granter: '',
@@ -155,7 +216,8 @@ export const useList = () => {
   );
 
   return {
-    simulateGroupInfo,
+    InitiateList,
+    simulateInfo,
     GenGroup,
     Mirror,
     List,

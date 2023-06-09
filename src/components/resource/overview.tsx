@@ -1,19 +1,24 @@
 import styled from '@emotion/styled';
 import { Box, Flex } from '@totejs/uikit';
 
-const Overview = () => {
+interface IOverView {
+  desc: string;
+}
+const Overview = (props: IOverView) => {
+  const { desc } = props;
   return (
     <Container>
+      <Box h={20}></Box>
       <DescBox w={996} h={100}>
-        AI generated harry potter illustrations, HD image, can be used in many
-        scenarios, all kinds of styles, sizes, types included, easy to use.{' '}
+        {desc ||
+          'DescriptionDecentralized Artificial Intelligence (DAI) is a type of AI system that utilizes Blockchain technology to store and process data. In a DAI system, decision-making processes are decentralized and based on consensus among multiple nodes instead of being controlled by a single central authority. This approach provides a more secure, transparent, and trustworthy alternative to traditional AI systems.'}
       </DescBox>
-      <Box h={65}></Box>
+      {/* <Box h={65}></Box>
       <Title>Details</Title>
       <Box h={20}></Box>
       <SupInfoCon w={996} h={300} padding={'40'}>
         <SupInfoFlex></SupInfoFlex>
-      </SupInfoCon>
+      </SupInfoCon> */}
     </Container>
   );
 };
@@ -24,26 +29,26 @@ const Container = styled.div``;
 
 const DescBox = styled(Box)`
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.19);
+  // background: rgba(255, 255, 255, 0.19);
 `;
 
-const Title = styled.div`
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 31px;
+// const Title = styled.div`
+//   font-family: 'Space Grotesk';
+//   font-style: normal;
+//   font-weight: 400;
+//   font-size: 24px;
+//   line-height: 31px;
 
-  color: #ffffff;
-`;
+//   color: #ffffff;
+// `;
 
-const SupInfoCon = styled(Box)`
-  background: rgba(255, 255, 255, 0.19);
-`;
+// const SupInfoCon = styled(Box)`
+//   background: rgba(255, 255, 255, 0.19);
+// `;
 
-const SupInfoFlex = styled(Flex)`
-  border: 1px solid #5f6368;
-  border-radius: 8px;
+// const SupInfoFlex = styled(Flex)`
+//   border: 1px solid #5f6368;
+//   border-radius: 8px;
 
-  padding: 20px;
-`;
+//   padding: 20px;
+// `;

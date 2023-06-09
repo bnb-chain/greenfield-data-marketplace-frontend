@@ -34,13 +34,13 @@ export const ListProcess = (props: SuccessfulProps) => {
       <Flex flexDirection={'column'} gap={24} flex={1}>
         <ProgressContainer>
           <ProgressStep>
-            <ProgressName active={true}>Initialize Withdrawal</ProgressName>
+            <ProgressName active={true}>Initialize List</ProgressName>
             <ProgressSuccessIcon width={32} height={32} />
           </ProgressStep>
           <HorizontalBarFist status={step && step >= 2 ? true : false} />
           <ProgressStep>
             <ProgressName active={step && step >= 2 ? true : false}>
-              Prove Withdrawal
+              Prove List
             </ProgressName>
             {step && step >= 2 ? (
               <ProgressSuccessIcon width={32} height={32} />
@@ -51,7 +51,7 @@ export const ListProcess = (props: SuccessfulProps) => {
           <HorizontalBarSecond status={step && step >= 3 ? true : false} />
           <ProgressStep>
             <ProgressName active={step && step >= 3 ? true : false}>
-              Finalize Withdrawal
+              Finalize List
             </ProgressName>
             {step && step >= 3 ? (
               <ProgressSuccessIcon width={32} height={32} />
@@ -77,7 +77,7 @@ const Container = styled(Modal)`
     padding: 48px 24px;
     width: 568px;
     background: ${(props: any) => props.theme.colors.readable.normal};
-    color: ${(props: any) => props.theme.colors.bg?.card};
+    color: #5f6368;
   }
 `;
 
@@ -94,7 +94,7 @@ const ModalDescription = styled.div`
   line-height: 23px;
   margin-top: -8px;
   text-align: center;
-  color: ${(props: any) => props.theme.colors.readable?.pageButton};
+  color: #5f6368;
 `;
 
 const ProgressContainer = styled(Flex)`
@@ -124,7 +124,7 @@ const ProgressIcon = styled(Flex)`
   border-radius: 50%;
   width: 32px;
   height: 32px;
-  color: ${(props: any) => props.theme.colors.readable.normal};
+  color: #5f6368;
   font-weight: 600;
   font-size: 16px;
   line-height: 20px;

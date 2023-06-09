@@ -24,23 +24,26 @@ export const useUserPurchased = () => {
             return headGroupNFT(item);
           });
           let result = await Promise.all(t);
-          result = result.map((item: any, index) => {
-            const {
-              metaData: { attributes, groupName },
-            } = item;
-            const [owner, , , , extra] = attributes;
-            const { type, name } = parseGroupName(groupName);
-            return {
-              ...item,
-              name,
-              groupName,
-              type,
-              ownerAddress: owner.value,
-              price: JSON.parse(extra.value).price,
-              id: _ids[index],
-              listTime: _dates[index],
-            };
-          });
+          result = result
+            .map((item: any, index) => {
+              if (!Object.keys(item).length) return false;
+              const {
+                metaData: { attributes, groupName },
+              } = item;
+              const [owner, , , , extra] = attributes;
+              const { type, name } = parseGroupName(groupName);
+              return {
+                ...item,
+                name,
+                groupName,
+                type,
+                ownerAddress: owner.value,
+                price: JSON.parse(extra.value).price,
+                id: _ids[index],
+                listTime: _dates[index],
+              };
+            })
+            .filter((item) => item);
           console.log(result, '---getUserPurchased');
           setList(result);
         }

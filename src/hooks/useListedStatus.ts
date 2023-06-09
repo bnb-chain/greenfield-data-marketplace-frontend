@@ -11,9 +11,11 @@ export const useListedStatus = () => {
 
   const checkListed = useCallback(
     async (groupId: string) => {
-      const result = await MarketPlaceContract()
+      console.log(groupId, '-----prices1');
+      const result = await MarketPlaceContract(false)
         .methods.prices(groupId)
         .call({ from: address });
+      console.log(groupId, result, '-----prices2');
       if (result > 0) {
         setListStatus(true);
         return true;

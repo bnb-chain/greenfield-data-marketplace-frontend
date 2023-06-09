@@ -1,26 +1,29 @@
 import styled from '@emotion/styled';
 import { Flex, Button, Box } from '@totejs/uikit';
 import { NavBar } from '../components/NavBar';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Overview from '../components/resource/overview';
 import List from '../components/resource/list';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ListModal } from '../components/modal/listModal';
 import { GF_CHAIN_ID } from '../env';
-import { useSwitchNetwork } from 'wagmi';
+import { useAccount, useSwitchNetwork } from 'wagmi';
+import { useResourceInfo } from '../hooks/useResourceInfo';
+import { Loader } from '../components/Loader';
+import { divide10Exp, generateGroupName, trimLongStr } from '../utils';
+import BN from 'bn.js';
+import { useCollectionItems } from '../hooks/useCollectionItems';
+import { useSalesRevenue } from '../hooks/useSalesRevenue';
+import { useListedDate } from '../hooks/useListedDate';
 
 enum Type {
-  Overview = 'Overview',
-  DataList = 'DataList',
+  Description = 'description',
+  DataList = 'dataList',
 }
 const navItems = [
   {
-    name: 'Overview',
-    key: Type.Overview,
-  },
-  {
-    name: 'DataList',
-    key: Type.DataList,
+    name: 'Description',
+    key: Type.Description,
   },
 ];
 
@@ -28,22 +31,57 @@ const Resource = () => {
   const navigator = useNavigate();
   const [p] = useSearchParams();
   const tab = p.getAll('tab')[0];
+  const groupId = p.getAll('gid')[0];
+  const bucketId = p.getAll('bid')[0];
+  const objectId = p.getAll('oid')[0];
+  const ownerAddress = p.getAll('address')[0];
+  const gName = p.getAll('gn')[0];
+
   const { switchNetwork } = useSwitchNetwork();
-  const currentTab = tab ? tab : Type.Overview;
+  const currentTab = tab ? tab : Type.Description;
   const [open, setOpen] = useState(false);
-  const [detail, setDetail] = useState({});
 
   const handleTabChange = useCallback((tab: any) => {
-    navigator(`/resource?tab=${tab}`);
+    navigator(
+      `/resource?${p.toString().replace(/tab=([^&]*)/g, `tab=${tab}`)}`,
+    );
   }, []);
 
-  const bucketName = sessionStorage.getItem('collection_name');
-  const resourceType = sessionStorage.getItem('resource_type');
+  const { address } = useAccount();
+
+  const resourceType = objectId ? '1' : '0';
+
+  const { loading, baseInfo } = useResourceInfo({
+    groupId,
+    bucketId,
+    objectId,
+    address: ownerAddress,
+    groupName: gName,
+  });
+  console.log(groupId, baseInfo);
+
+  const { name, price, url, desc, listed } = baseInfo;
+
+  const { num } = useCollectionItems(name);
+
+  const { salesRevenue } = useSalesRevenue(groupId);
+
+  const { listedDate } = useListedDate(groupId);
+
+  if (loading) return <Loader></Loader>;
+
+  if (address === ownerAddress) {
+    navItems[1] = {
+      name: 'DataList',
+      key: Type.DataList,
+    };
+  }
+
   return (
     <Container>
       <ResourceInfo gap={20}>
         <ImgCon>
-          <img src="" alt="" />
+          <img src={url} alt="" />
         </ImgCon>
         <Info
           gap={4}
@@ -51,44 +89,61 @@ const Resource = () => {
           justifyContent={'space-around'}
         >
           <NameCon gap={4} alignItems={'center'} justifyContent={'flex-start'}>
-            <Name>{bucketName}</Name>
+            <Name>{name}</Name>
             {resourceType == '0' ? (
               <Tag alignItems={'center'} justifyContent={'center'}>
                 Data Collection
               </Tag>
             ) : null}
           </NameCon>
-          <ItemNum>123</ItemNum>
+          {resourceType == '0' ? <ItemNum>{num} Items</ItemNum> : null}
           <OwnCon>
-            Created by <span>You</span>
+            Created by{' '}
+            {address === ownerAddress ? (
+              <span>You</span>
+            ) : (
+              <span>{trimLongStr(ownerAddress)}</span>
+            )}{' '}
+            At {listedDate}
           </OwnCon>
-          <MarketInfo>12312</MarketInfo>
+          {listed ? (
+            <MarketInfo>{divide10Exp(new BN(price, 10), 18)} BNB</MarketInfo>
+          ) : null}
           <ActionGroup gap={10}>
-            <Button
-              size={'sm'}
-              onClick={async () => {
-                await switchNetwork?.(GF_CHAIN_ID);
-                setOpen(true);
-              }}
-            >
-              List
-            </Button>
+            {listed ? null : (
+              <Button
+                size={'sm'}
+                onClick={async () => {
+                  await switchNetwork?.(GF_CHAIN_ID);
+                  setOpen(true);
+                }}
+              >
+                List
+              </Button>
+            )}
             <Button size={'sm'}>View in Dcellar</Button>
-            <BoughtNum>98,765 Bought</BoughtNum>
+            {listed ? <BoughtNum>{salesRevenue} Bought</BoughtNum> : null}
           </ActionGroup>
         </Info>
       </ResourceInfo>
       <Box h={30}></Box>
       <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
       <Box h={10} w={996}></Box>
-      {currentTab === Type.Overview ? <Overview></Overview> : <List></List>}
-      <ListModal
-        isOpen={open}
-        handleOpen={() => {
-          setOpen(false);
-        }}
-        detail={detail}
-      ></ListModal>
+      {currentTab === Type.Description ? (
+        <Overview desc={desc}></Overview>
+      ) : (
+        <List name={name} listed={listed}></List>
+      )}
+      {/* <ListModal
+      isOpen={open}
+      handleOpen={() => {
+        setOpen(false);
+      }}
+      detail={{
+        bucket_name: bucketName,
+        id: groupId,
+      }}
+    ></ListModal> */}
     </Container>
   );
 };
