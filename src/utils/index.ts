@@ -1,6 +1,8 @@
 import { format, utcToZonedTime } from 'date-fns-tz';
 import ReactDOM from 'react-dom';
 import BN from 'bn.js';
+import Identicon from 'identicon.js';
+import sha265 from 'sha256';
 
 export const trimLongStr = (
   str: string,
@@ -23,7 +25,6 @@ export const trimLongStr = (
 const formatStr = 'MMM-dd-yyyy';
 
 export const formatDateUTC = (date: number | string) => {
-  console.log(date);
   const numDate = Number(date);
   const zonedTime = utcToZonedTime(numDate, 'UTC');
   return format(zonedTime, formatStr, { timeZone: 'UTC' });
@@ -93,4 +94,11 @@ export const parseGroupName = (groupName: string) => {
     type,
     name,
   };
+};
+
+export const defaultImg = (name: string, width: number) => {
+  if (!name) return '';
+  const sha = sha265(name);
+  const dataBase = new Identicon(sha, width).toString();
+  return `data:image/png;base64,${dataBase}`;
 };

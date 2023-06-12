@@ -12,7 +12,7 @@ export const useSalesVolumeList = () => {
   const { address } = useAccount();
 
   useEffect(() => {
-    MarketPlaceContract()
+    MarketPlaceContract(false)
       .methods.getSalesVolume(0, 20)
       .call({ from: address })
       .then((result: any) => {

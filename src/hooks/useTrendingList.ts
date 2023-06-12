@@ -14,7 +14,7 @@ export const useTrendingList = () => {
   const { address } = useAccount();
 
   useEffect(() => {
-    MarketPlaceContract()
+    MarketPlaceContract(false)
       .methods.getSalesVolumeRanking()
       .call({ from: address })
       .then(async (result: any) => {
@@ -36,13 +36,17 @@ export const useTrendingList = () => {
             } = item;
             const [owner, , , , extra] = attributes;
             const { type, name } = parseGroupName(groupName);
+
+            const { price, url } = JSON.parse(extra.value);
+
             return {
               ...item,
               name,
               groupName,
               type,
               ownerAddress: owner.value,
-              price: JSON.parse(extra.value).price,
+              price,
+              url,
               id: _ids[index],
               listTime: _dates[index],
               totalVol: _volumes[index],

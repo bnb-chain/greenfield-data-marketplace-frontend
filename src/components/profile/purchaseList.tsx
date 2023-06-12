@@ -21,9 +21,9 @@ const ActionCom = (obj: any) => {
     <div>
       <Button
         onClick={() => {
-          // sessionStorage.setItem('collection_name', bucket_name);
-          // sessionStorage.setItem('resource_type', '0');
-          navigator(`/resource?id=${id}&type=collection&tab=overview`);
+          navigator(
+            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=description`,
+          );
         }}
         size={'sm'}
         style={{ marginLeft: '6px' }}

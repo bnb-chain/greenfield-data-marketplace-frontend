@@ -5,20 +5,20 @@ import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 
-export const useSalesRevenue = (groupId: string) => {
+export const useSalesVolume = (groupId: string) => {
   const { address } = useAccount();
-  const [salesRevenue, setSalesRevenue] = useState(0);
+  const [salesVolume, setSalesVolume] = useState(0);
 
   useEffect(() => {
     if (groupId) {
       MarketPlaceContract(false)
-        .methods.salesRevenue(groupId)
+        .methods.salesVolume(groupId)
         .call({ from: address })
         .then((result: any) => {
-          console.log(result, '---useSalesRevenue');
-          setSalesRevenue(result);
+          console.log(result, '---useSalesVolume');
+          setSalesVolume(result);
         });
     }
   }, [address, groupId]);
-  return { salesRevenue };
+  return { useSalesVolume, salesVolume };
 };

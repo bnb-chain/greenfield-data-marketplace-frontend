@@ -1,24 +1,25 @@
 import styled from '@emotion/styled';
-import { Button, Table } from '@totejs/uikit';
+import { Button, Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useAccount, useSwitchNetwork } from 'wagmi';
 import { CreateGroup, getBucketList } from '../../utils/gfSDK';
 import { GF_CHAIN_ID } from '../../env';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { formatDateUTC, generateGroupName } from '../../utils/';
-import { ListModal } from '../modal/listModal';
+import { defaultImg, formatDateUTC, generateGroupName } from '../../utils/';
+
 import { useCollectionList } from '../../hooks/useCollectionList';
 import { useDelist } from '../../hooks/useDelist';
 import { toast } from '@totejs/uikit';
+import { useModal } from '../../hooks/useModal';
 
 const CollectionList = () => {
   const { handlePageChange, page } = usePagination();
 
   const { address } = useAccount();
   const { list, loading } = useCollectionList();
-  const [open, setOpen] = useState(false);
-  const [detail, setDetail] = useState({});
+
+  const modalData = useModal();
 
   const { switchNetwork } = useSwitchNetwork();
   const navigator = useNavigate();
@@ -32,7 +33,16 @@ const CollectionList = () => {
         const {
           bucket_info: { bucket_name },
         } = data;
-        return <div>{bucket_name}</div>;
+        return (
+          <ImgContainer
+            alignItems={'center'}
+            justifyContent={'flex-start'}
+            gap={6}
+          >
+            <ImgCon src={defaultImg(bucket_name, 40)}></ImgCon>
+            {bucket_name}
+          </ImgContainer>
+        );
       },
     },
     {
@@ -63,7 +73,6 @@ const CollectionList = () => {
       header: 'Action',
       cell: (data: any) => {
         const { bucket_info, listed, groupId } = data;
-        const { bucket_name, id } = bucket_info;
         console.log(data);
         return (
           <div>
@@ -71,10 +80,11 @@ const CollectionList = () => {
               size={'sm'}
               onClick={async () => {
                 if (!listed) {
-                  sessionStorage.setItem('resource_type', '0');
-                  setDetail(bucket_info);
                   await switchNetwork?.(GF_CHAIN_ID);
-                  setOpen(true);
+                  modalData.modalDispatch({
+                    type: 'OPEN_LIST',
+                    initInfo: bucket_info,
+                  });
                 } else {
                   console.log(groupId);
                   try {
@@ -128,13 +138,6 @@ const CollectionList = () => {
         data={list}
         loading={loading}
       />
-      <ListModal
-        isOpen={open}
-        handleOpen={() => {
-          setOpen(false);
-        }}
-        detail={detail}
-      ></ListModal>
     </Container>
   );
 };
@@ -143,4 +146,14 @@ export default CollectionList;
 
 const Container = styled.div`
   width: 1123px;
+`;
+
+const ImgContainer = styled(Flex)``;
+
+const ImgCon = styled.img`
+  width: 40px;
+  height: 40px;
+
+  background: #d9d9d9;
+  border-radius: 8px;
 `;

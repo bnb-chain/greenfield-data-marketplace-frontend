@@ -334,6 +334,93 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "opType",
+        "type": "uint8"
+      }
+    ],
+    "name": "UpdateFailed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "opType",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "members",
+        "type": "address[]"
+      }
+    ],
+    "name": "UpdateSubmitted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "opType",
+        "type": "uint8"
+      }
+    ],
+    "name": "UpdateSuccess",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "AUTH_CODE_CREATE",
     "outputs": [
@@ -349,6 +436,19 @@
   {
     "inputs": [],
     "name": "AUTH_CODE_DELETE",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "AUTH_CODE_UPDATE",
     "outputs": [
       {
         "internalType": "uint32",
@@ -380,25 +480,6 @@
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "BucketStorageSlots",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -450,6 +531,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ERC1155Token",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -515,6 +609,25 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "GroupStorageSlots",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -620,6 +733,19 @@
   {
     "inputs": [],
     "name": "ROLE_DELETE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ROLE_UPDATE",
     "outputs": [
       {
         "internalType": "bytes32",
@@ -749,6 +875,19 @@
   },
   {
     "inputs": [],
+    "name": "TYPE_UPDATE",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "additional",
     "outputs": [
       {
@@ -776,122 +915,14 @@
   {
     "inputs": [
       {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "creator",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "enum BucketStorage.BucketVisibilityType",
-            "name": "visibility",
-            "type": "uint8"
-          },
-          {
-            "internalType": "address",
-            "name": "paymentAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "primarySpAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "primarySpApprovalExpiredHeight",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes",
-            "name": "primarySpSignature",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint64",
-            "name": "chargedReadQuota",
-            "type": "uint64"
-          },
-          {
-            "internalType": "bytes",
-            "name": "extraData",
-            "type": "bytes"
-          }
-        ],
-        "internalType": "struct BucketStorage.CreateBucketSynPackage",
+        "internalType": "address",
         "name": "",
-        "type": "tuple"
-      }
-    ],
-    "name": "createBucket",
-    "outputs": [
+        "type": "address"
+      },
       {
-        "internalType": "bool",
+        "internalType": "string",
         "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "creator",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "enum BucketStorage.BucketVisibilityType",
-            "name": "visibility",
-            "type": "uint8"
-          },
-          {
-            "internalType": "address",
-            "name": "paymentAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "primarySpAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "primarySpApprovalExpiredHeight",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes",
-            "name": "primarySpSignature",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint64",
-            "name": "chargedReadQuota",
-            "type": "uint64"
-          },
-          {
-            "internalType": "bytes",
-            "name": "extraData",
-            "type": "bytes"
-          }
-        ],
-        "internalType": "struct BucketStorage.CreateBucketSynPackage",
-        "name": "",
-        "type": "tuple"
+        "type": "string"
       },
       {
         "internalType": "uint256",
@@ -926,7 +957,31 @@
         "type": "tuple"
       }
     ],
-    "name": "createBucket",
+    "name": "createGroup",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "createGroup",
     "outputs": [
       {
         "internalType": "bool",
@@ -945,7 +1000,7 @@
         "type": "uint256"
       }
     ],
-    "name": "deleteBucket",
+    "name": "deleteGroup",
     "outputs": [
       {
         "internalType": "bool",
@@ -996,7 +1051,7 @@
         "type": "tuple"
       }
     ],
-    "name": "deleteBucket",
+    "name": "deleteGroup",
     "outputs": [
       {
         "internalType": "bool",
@@ -1193,12 +1248,17 @@
       },
       {
         "internalType": "address",
+        "name": "_ERC1155_token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "_additional",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_bucketRlp",
+        "name": "_groupRlp",
         "type": "address"
       }
     ],
@@ -1354,6 +1414,130 @@
     "name": "skipPackage",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "operator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum GroupStorage.UpdateGroupOpType",
+            "name": "opType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address[]",
+            "name": "members",
+            "type": "address[]"
+          },
+          {
+            "internalType": "bytes",
+            "name": "extraData",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct GroupStorage.UpdateGroupSynPackage",
+        "name": "",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "appAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "refundAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "enum PackageQueue.FailureHandleStrategy",
+            "name": "failureHandleStrategy",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes",
+            "name": "callbackData",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct CmnStorage.ExtraData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateGroup",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "operator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum GroupStorage.UpdateGroupOpType",
+            "name": "opType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address[]",
+            "name": "members",
+            "type": "address[]"
+          },
+          {
+            "internalType": "bytes",
+            "name": "extraData",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct GroupStorage.UpdateGroupSynPackage",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateGroup",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "payable",
     "type": "function"
   },
   {

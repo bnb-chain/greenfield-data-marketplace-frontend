@@ -9,15 +9,26 @@ import {
   ModalCloseButton,
   Button,
 } from '@totejs/uikit';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useAccount, useSwitchNetwork } from 'wagmi';
-import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
+import {
+  BSC_CHAIN_ID,
+  GF_CHAIN_ID,
+  GROUP_HUB_CONTRACT_ADDRESS,
+  MARKETPLACE_CONTRACT_ADDRESS,
+} from '../../env';
 import { useChainBalance } from '../../hooks/useChainBalance';
 import { useList } from '../../hooks/useList';
-import { delay, formatDateUTC, generateGroupName } from '../../utils';
+import {
+  defaultImg,
+  delay,
+  formatDateUTC,
+  generateGroupName,
+} from '../../utils';
 import Web3 from 'web3';
 import { useApprove } from '../../hooks/useApprove';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
+import { useModal } from '../../hooks/useModal';
 
 interface ListModalProps {
   isOpen: boolean;
@@ -26,7 +37,7 @@ interface ListModalProps {
 }
 
 export const ListModal = (props: ListModalProps) => {
-  const { Mirror, GenGroup, List, InitiateList } = useList();
+  const { InitiateList } = useList();
   const { Approve } = useApprove();
 
   const { isOpen, handleOpen, detail } = props;
@@ -37,7 +48,7 @@ export const ListModal = (props: ListModalProps) => {
   const [waringPrice, setWarningPrice] = useState(false);
   const { switchNetwork } = useSwitchNetwork();
   const { GfBalanceVal, BscBalanceVal } = useChainBalance();
-  const [detailInfo, setDetailInfo] = useState({});
+  const modalData = useModal();
 
   const [isApprove, setApprove] = useState(true);
 
@@ -61,24 +72,30 @@ export const ListModal = (props: ListModalProps) => {
     return Number(price) * 0.99;
   }, [price]);
 
-  const { address } = useAccount();
+  const reset = useCallback(() => {
+    setPrice('');
+    setDesc('');
+    setImgUrl('');
+    handleOpen(false);
+  }, []);
+
   return (
     <Container
       size={'lg'}
       isOpen={isOpen}
       onClose={() => {
-        setPrice('');
-        setDesc('');
-        setImgUrl('');
-        handleOpen(false);
+        reset();
       }}
+      closeOnOverlayClick={false}
     >
       <ModalCloseButton />
       <Header>List an collection</Header>
       <CustomBody>
         <Box h={10}></Box>
         <InfoCon gap={26} justifyContent={'center'} alignItems={'center'}>
-          <ImgCon></ImgCon>
+          <ImgCon>
+            <img src={defaultImg(bucket_name, 80)} alt="" />
+          </ImgCon>
           <BaseInfo flexDirection={'column'}>
             <ResourceNameCon alignItems={'center'}>
               {bucket_name}
@@ -172,12 +189,7 @@ export const ListModal = (props: ListModalProps) => {
                   setWarningPrice(true);
                   return;
                 }
-                const isApprove = localStorage.getItem(`approve_${address}`);
-                if (!isApprove) {
-                  await switchNetwork?.(BSC_CHAIN_ID);
-                  await delay(3);
-                  await Approve();
-                }
+
                 await switchNetwork?.(GF_CHAIN_ID);
 
                 // dm_o_{bucket_name}_{obj_name}
@@ -191,18 +203,15 @@ export const ListModal = (props: ListModalProps) => {
                     price: Web3.utils.toWei(price),
                   }),
                 };
-                // const groupInfo = await InitiateList(obj);
-                const initiateInfo = await GenGroup(obj);
-                // console.log(initiateInfo, '-----initiateInfo');
-                const mirrorInfo = await Mirror(obj);
 
-                await switchNetwork?.(BSC_CHAIN_ID);
+                reset();
 
-                console.log('switch network is successful');
+                InitiateList(obj);
 
-                await delay(5);
-
-                await List(obj);
+                modalData.modalDispatch({
+                  type: 'OPEN_LIST_PROCESS',
+                  listData: obj,
+                });
               }}
             >
               Start List Process
@@ -277,8 +286,10 @@ const ImgCon = styled.div`
   width: 80px;
   height: 80px;
 
-  background: #d9d9d9;
-  border-radius: 8px;
+  img {
+    background: #d9d9d9;
+    border-radius: 8px;
+  }
 `;
 const ResourceNameCon = styled(Flex)`
   font-family: 'Poppins';

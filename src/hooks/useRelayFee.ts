@@ -5,7 +5,7 @@ export const useRelayFee = () => {
   const [relayFee, setRelayFee] = useState(0);
 
   useEffect(() => {
-    MarketPlaceContract()
+    MarketPlaceContract(false)
       .methods.getMinRelayFee()
       .call()
       .then((result: any) => {

@@ -10,10 +10,15 @@ import { GF_CHAIN_ID } from '../env';
 import { useAccount, useSwitchNetwork } from 'wagmi';
 import { useResourceInfo } from '../hooks/useResourceInfo';
 import { Loader } from '../components/Loader';
-import { divide10Exp, generateGroupName, trimLongStr } from '../utils';
+import {
+  defaultImg,
+  divide10Exp,
+  generateGroupName,
+  trimLongStr,
+} from '../utils';
 import BN from 'bn.js';
 import { useCollectionItems } from '../hooks/useCollectionItems';
-import { useSalesRevenue } from '../hooks/useSalesRevenue';
+import { useSalesVolume } from '../hooks/useSalesVolume';
 import { useListedDate } from '../hooks/useListedDate';
 
 enum Type {
@@ -64,7 +69,7 @@ const Resource = () => {
 
   const { num } = useCollectionItems(name);
 
-  const { salesRevenue } = useSalesRevenue(groupId);
+  const { salesVolume } = useSalesVolume(groupId);
 
   const { listedDate } = useListedDate(groupId);
 
@@ -81,7 +86,7 @@ const Resource = () => {
     <Container>
       <ResourceInfo gap={20}>
         <ImgCon>
-          <img src={url} alt="" />
+          <img src={url || defaultImg(name, 246)} alt="" />
         </ImgCon>
         <Info
           gap={4}
@@ -122,7 +127,7 @@ const Resource = () => {
               </Button>
             )}
             <Button size={'sm'}>View in Dcellar</Button>
-            {listed ? <BoughtNum>{salesRevenue} Bought</BoughtNum> : null}
+            {listed ? <BoughtNum>{salesVolume} Bought</BoughtNum> : null}
           </ActionGroup>
         </Info>
       </ResourceInfo>
@@ -158,8 +163,11 @@ const ResourceInfo = styled(Flex)``;
 const ImgCon = styled.div`
   width: 246px;
   height: 246px;
-  background-color: #d9d9d9;
-  border-radius: 8px;
+
+  img {
+    background-color: #d9d9d9;
+    border-radius: 8px;
+  }
 `;
 
 const Info = styled(Flex)``;

@@ -7,68 +7,90 @@ import {
 import { ISimulateGasFee } from '@bnb-chain/greenfield-chain-sdk';
 import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
-import { GroupHubContract } from '../base/contract/groupHub';
-import { MARKETPLACE_CONTRACT_ADDRESS } from '../env';
 
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
+import { useModal } from './useModal';
 
 export const useList = () => {
   const [simulateInfo, setSimulateInfo] = useState<ISimulateGasFee>();
 
   const { address, connector } = useAccount();
 
+  const stateModal = useModal();
+
   const InitiateList = useCallback(
     async (obj: { groupName: string; extra: string }) => {
-      const { groupName, extra } = obj;
+      console.log(obj, '----InitiateList params');
 
-      const { groupInfo } = await getGroupInfoByName(
-        groupName,
-        address as string,
-      );
-      if (!groupInfo) return false;
+      // setTimeout(() => {
+      //   stateModal.modalDispatch({
+      //     type: 'UPDATE_LIST_STATUS',
+      //     initListStatus: 1,
+      //     initListResult: {},
+      //   });
+      // }, 3000);
 
-      const createGroupTx = await CreateGroup({
-        creator: address as string,
-        groupName: groupName,
-        members: [address as string],
-        extra,
-      });
+      try {
+        const { groupName, extra } = obj;
 
-      const mirrorGroupTx = await mirrorGroup(groupInfo.id, address as string);
+        const createGroupTx = await CreateGroup({
+          creator: address as string,
+          groupName: groupName,
+          members: [address as string],
+          extra,
+        });
 
-      const { simulate, broadcast } = await multiTx([
-        createGroupTx,
-        mirrorGroupTx,
-      ]);
+        const mirrorGroupTx = await mirrorGroup(
+          groupName,
+          '0',
+          address as string,
+        );
 
-      const simulateMultiTxInfo = await simulate({
-        denom: 'BNB',
-      });
+        const { simulate, broadcast } = await multiTx([
+          createGroupTx,
+          mirrorGroupTx,
+        ]);
 
-      setSimulateInfo(simulateMultiTxInfo);
+        const simulateMultiTxInfo = await simulate({
+          denom: 'BNB',
+        });
 
-      console.log(simulateMultiTxInfo, '-------simulateMultiTxInfo');
-      const res = await broadcast({
-        denom: 'BNB',
-        gasLimit: Number(simulateMultiTxInfo.gasLimit) * 2,
-        gasPrice: simulateMultiTxInfo.gasPrice,
-        payer: address as string,
-        granter: '',
-        signTypedDataCallback: async (addr: string, message: string) => {
-          console.log(connector);
-          const provider = await connector?.getProvider();
-          return await provider?.request({
-            method: 'eth_signTypedData_v4',
-            params: [addr, message],
+        setSimulateInfo(simulateMultiTxInfo);
+
+        console.log(simulateMultiTxInfo, '-------simulateMultiTxInfo');
+
+        const res = await broadcast({
+          denom: 'BNB',
+          gasLimit: Number(simulateMultiTxInfo.gasLimit) * 2,
+          gasPrice: simulateMultiTxInfo.gasPrice,
+          payer: address as string,
+          granter: '',
+          signTypedDataCallback: async (addr: string, message: string) => {
+            console.log(connector);
+            const provider = await connector?.getProvider();
+            return await provider?.request({
+              method: 'eth_signTypedData_v4',
+              params: [addr, message],
+            });
+          },
+        });
+
+        if (res.code === 0) {
+          console.log(res, '-----InitiateList result');
+          stateModal.modalDispatch({
+            type: 'UPDATE_LIST_STATUS',
+            initListStatus: 1,
+            initListResult: res,
           });
-        },
-      });
-
-      if (res.code === 0) {
-        console.log(res, '-----InitiateList result');
-        alert('InitiateList success');
+        } else {
+          stateModal.modalDispatch({ type: 'OPEN_LIST_ERROR' });
+        }
+        return res;
+      } catch (e) {
+        console.log(e, '----InitiateList Error');
+        stateModal.modalDispatch({ type: 'OPEN_LIST_ERROR' });
+        return false;
       }
-      return res;
     },
     [connector],
   );
@@ -132,7 +154,11 @@ export const useList = () => {
 
       if (!groupInfo) return;
 
-      const mirrorGroupTx = await mirrorGroup(groupInfo.id, address as string);
+      const mirrorGroupTx = await mirrorGroup(
+        groupName,
+        groupInfo.id,
+        address as string,
+      );
 
       const simulateInfo = await mirrorGroupTx.simulate({
         denom: 'BNB',
@@ -164,53 +190,31 @@ export const useList = () => {
     [connector],
   );
 
-  const Approve = useCallback(() => {
-    const approveStatus = localStorage.getItem('approve');
-    if (approveStatus === '1') {
-      return Promise.resolve(1);
-    } else {
-      return new Promise((res, rej) => {
-        GroupHubContract()
-          .methods.grant(MARKETPLACE_CONTRACT_ADDRESS, 4, 0xffffffff)
-          .send({ from: address })
-          .then((result: any) => {
-            console.log(result, '-----Approve result');
-            localStorage.setItem('approve', '1');
-            res(result);
-          })
-          .catch((err: any) => {
-            rej(err);
-          });
-      });
-    }
-  }, []);
-
   const List = useCallback(
     async (obj: { groupName: string; extra: string }) => {
-      const { groupName } = obj;
-      const { groupInfo } = await getGroupInfoByName(
-        groupName,
-        address as string,
-      );
+      try {
+        const { groupName } = obj;
+        const { groupInfo } = await getGroupInfoByName(
+          groupName,
+          address as string,
+        );
 
-      if (!groupInfo) return;
-      const { id } = groupInfo;
-      let { extra } = groupInfo as any;
-      extra = JSON.parse(extra);
-      const { price } = extra;
+        if (!groupInfo) return;
+        const { id } = groupInfo;
+        let { extra } = groupInfo as any;
+        extra = JSON.parse(extra);
+        const { price } = extra;
 
-      return await new Promise((res, rej) => {
-        MarketPlaceContract()
+        const result = await MarketPlaceContract()
           .methods.list(id, price)
-          .send({ from: address })
-          .then((result: any) => {
-            console.log(result, '-----list result');
-            res(result);
-          })
-          .catch((err: any) => {
-            rej(err);
-          });
-      });
+          .send({ from: address });
+
+        console.log(result, '-----list result');
+        return result;
+      } catch (e) {
+        stateModal.modalDispatch({ type: 'OPEN_LIST_ERROR' });
+        return false;
+      }
     },
     [],
   );
@@ -221,6 +225,5 @@ export const useList = () => {
     GenGroup,
     Mirror,
     List,
-    Approve,
   };
 };

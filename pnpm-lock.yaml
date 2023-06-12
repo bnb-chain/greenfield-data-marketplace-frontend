@@ -118,6 +118,9 @@ dependencies:
   html-webpack-plugin:
     specifier: ^5.5.0
     version: 5.5.1(webpack@5.84.1)
+  identicon.js:
+    specifier: ^2.3.3
+    version: 2.3.3
   identity-obj-proxy:
     specifier: ^3.0.0
     version: 3.0.0
@@ -178,6 +181,9 @@ dependencies:
   semver:
     specifier: ^7.3.5
     version: 7.5.1
+  sha256:
+    specifier: ^0.2.0
+    version: 0.2.0
   source-map-loader:
     specifier: ^3.0.0
     version: 3.0.2(webpack@5.84.1)
@@ -219,6 +225,12 @@ devDependencies:
   '@types/bn.js':
     specifier: ^5.1.1
     version: 5.1.1
+  '@types/identicon.js':
+    specifier: ^2.3.1
+    version: 2.3.1
+  '@types/sha256':
+    specifier: ^0.2.0
+    version: 0.2.0
   eslint-config-prettier:
     specifier: ^8.8.0
     version: 8.8.0(eslint@8.41.0)
@@ -3931,6 +3943,10 @@ packages:
       '@types/node': 16.18.34
     dev: false
 
+  /@types/identicon.js@2.3.1:
+    resolution: {integrity: sha512-QyPIfllzfVTHVJ/xX5+cOKpWuX7Zv0EKQbzTCbIn6QjMOg4bn1j73Av1LIIvRqkDV+TErJuonwZg/IOl4tbPDQ==}
+    dev: true
+
   /@types/istanbul-lib-coverage@2.0.4:
     resolution: {integrity: sha512-z/QT1XN4K4KYuslS23k62yDIDLwLFkzxOuMplDtObz0+y7VqJCaO2o+SPwHCvLFZh7xazvvoor2tA/hPz9ee7g==}
     dev: false
@@ -4082,6 +4098,12 @@ packages:
       '@types/mime': 3.0.1
       '@types/node': 16.18.34
     dev: false
+
+  /@types/sha256@0.2.0:
+    resolution: {integrity: sha512-QYMr6HuxTQunFWRLZpGopbkgQFoFWOmKTBGgNSYiWMqU/CWnQSTo3edyHvgsRXsOWtOSOG/cmDptPzgCeOsQGw==}
+    dependencies:
+      '@types/node': 16.18.34
+    dev: true
 
   /@types/sockjs@0.3.33:
     resolution: {integrity: sha512-f0KEEe05NvUnat+boPTZ0dgaLZ4SfSouXUgv5noUiefG2ajgKjmETo9ZJyuqsl7dfl2aHlLJUiki6B4ZYldiiw==}
@@ -6030,8 +6052,16 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /convert-hex@0.1.0:
+    resolution: {integrity: sha512-w20BOb1PiR/sEJdS6wNrUjF5CSfscZFUp7R9NSlXH8h2wynzXVEPFPJECAnkNylZ+cvf3p7TyRUHggDmrwXT9A==}
+    dev: false
+
   /convert-source-map@1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
+    dev: false
+
+  /convert-string@0.1.0:
+    resolution: {integrity: sha512-1KX9ESmtl8xpT2LN2tFnKSbV4NiarbVi8DVb39ZriijvtTklyrT+4dT1wsGMHKD3CJUjXgvJzstm9qL9ICojGA==}
     dev: false
 
   /cookie-signature@1.0.6:
@@ -8539,6 +8569,10 @@ packages:
 
   /idb@7.1.1:
     resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
+    dev: false
+
+  /identicon.js@2.3.3:
+    resolution: {integrity: sha512-/qgOkXKZ7YbeCYbawJ9uQQ3XJ3uBg9VDpvHjabCAPp6aRMhjLaFAxG90+1TxzrhKaj6AYpVGrx6UXQfQA41UEA==}
     dev: false
 
   /identity-obj-proxy@3.0.0:
@@ -12400,6 +12434,13 @@ packages:
     dependencies:
       inherits: 2.0.4
       safe-buffer: 5.2.1
+    dev: false
+
+  /sha256@0.2.0:
+    resolution: {integrity: sha512-kTWMJUaez5iiT9CcMv8jSq6kMhw3ST0uRdcIWl3D77s6AsLXNXRp3heeqqfu5+Dyfu4hwpQnMzhqHh8iNQxw0w==}
+    dependencies:
+      convert-hex: 0.1.0
+      convert-string: 0.1.0
     dev: false
 
   /shallowequal@1.1.0:

@@ -1,8 +1,14 @@
 import styled from '@emotion/styled';
-import { Button, Table } from '@totejs/uikit';
+import { Button, Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useNavigate } from 'react-router-dom';
-import { formatDateUTC, trimLongStr, divide10Exp, delay } from '../../utils';
+import {
+  formatDateUTC,
+  trimLongStr,
+  divide10Exp,
+  delay,
+  defaultImg,
+} from '../../utils';
 import { useGetListed } from '../../hooks/useGetListed';
 import BN from 'bn.js';
 import { useAccount, useSwitchNetwork } from 'wagmi';
@@ -12,7 +18,7 @@ import { BuyResult } from '../modal/buyResult';
 import { useState } from 'react';
 import { useApprove } from '../../hooks/useApprove';
 import { useStatus } from '../../hooks/useStatus';
-import { useSalesRevenue } from '../../hooks/useSalesRevenue';
+import { useSalesVolume } from '../../hooks/useSalesVolume';
 
 const ActionCom = (obj: any) => {
   const navigator = useNavigate();
@@ -89,8 +95,8 @@ interface ITotalVol {
 }
 const TotalVol = (props: ITotalVol) => {
   const { id } = props;
-  const { salesRevenue } = useSalesRevenue(id);
-  return <div>{salesRevenue}</div>;
+  const { salesVolume } = useSalesVolume(id);
+  return <div>{salesVolume}</div>;
 };
 const AllList = () => {
   const { handlePageChange, page } = usePagination();
@@ -104,8 +110,18 @@ const AllList = () => {
     {
       header: 'Data',
       cell: (data: any) => {
-        const { name } = data;
-        return <div>{name}</div>;
+        const { name, url } = data;
+
+        return (
+          <ImgContainer
+            alignItems={'center'}
+            justifyContent={'flex-start'}
+            gap={6}
+          >
+            <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
+            {name}
+          </ImgContainer>
+        );
       },
     },
     {
@@ -181,4 +197,14 @@ export default AllList;
 
 const Container = styled.div`
   width: 1123px;
+`;
+
+const ImgContainer = styled(Flex)``;
+
+const ImgCon = styled.img`
+  width: 40px;
+  height: 40px;
+
+  background: #d9d9d9;
+  border-radius: 8px;
 `;

@@ -14,6 +14,7 @@ import {
   PaperLibraryIcon,
 } from '@totejs/icons';
 import { useNavigate } from 'react-router-dom';
+import { useRevoke } from '../../hooks/useRevoke';
 
 const Header = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false);
@@ -26,6 +27,8 @@ const Header = () => {
   const onMouseLeave = useCallback(() => {
     setDropDownOpen(false);
   }, []);
+
+  const { revoke } = useRevoke();
 
   const navigate = useNavigate();
   return (
@@ -99,6 +102,13 @@ const Header = () => {
               >
                 <WalletIcon mr={8} width={24} height={24} /> My Purchase
               </MenuElement>
+              <MenuElement
+                onClick={() => {
+                  revoke();
+                }}
+              >
+                <WalletIcon mr={8} width={24} height={24} /> Revoke
+              </MenuElement>
               <Disconnect
                 onClick={async () => {
                   await disconnect();
@@ -169,7 +179,7 @@ const DropDown = styled.div`
   right: 0;
   border-radius: 12px;
   width: 300px;
-  height: 340px;
+  height: 370px;
   background: ${(props: any) => props.theme.colors.bg?.middle};
   box-shadow: ${(props: any) => props.theme.shadows.normal};
 `;

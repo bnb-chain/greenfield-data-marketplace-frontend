@@ -124,9 +124,13 @@ export const getObjectInfo = async (objectId: string) => {
   return await client.object.headObjectById(objectId);
 };
 
-export const mirrorGroup = async (id: string, operator: string) => {
+export const mirrorGroup = async (
+  groupName: string,
+  id: string,
+  operator: string,
+) => {
   return await client.crosschain.mirrorGroup({
-    groupName: '',
+    groupName,
     id,
     operator,
   });

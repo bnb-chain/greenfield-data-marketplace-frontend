@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import { Button, Table } from '@totejs/uikit';
+import { Button, Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useNavigate } from 'react-router-dom';
-import { divide10Exp, trimLongStr } from '../../utils';
+import { defaultImg, divide10Exp, trimLongStr } from '../../utils';
 import BN from 'bn.js';
 
 import { useTrendingList } from '../../hooks/useTrendingList';
@@ -25,8 +25,17 @@ const TrendingList = () => {
     {
       header: 'Data Collection',
       cell: (data: any) => {
-        const { name } = data;
-        return <div>{name}</div>;
+        const { name, url } = data;
+        return (
+          <ImgContainer
+            alignItems={'center'}
+            justifyContent={'flex-start'}
+            gap={6}
+          >
+            <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
+            {name}
+          </ImgContainer>
+        );
       },
     },
     {
@@ -88,4 +97,14 @@ export default TrendingList;
 
 const Container = styled.div`
   width: 1123px;
+`;
+
+const ImgContainer = styled(Flex)``;
+
+const ImgCon = styled.img`
+  width: 40px;
+  height: 40px;
+
+  background: #d9d9d9;
+  border-radius: 8px;
 `;
