@@ -102,3 +102,11 @@ export const defaultImg = (name: string, width: number) => {
   const dataBase = new Identicon(sha, width).toString();
   return `data:image/png;base64,${dataBase}`;
 };
+
+export const parseFileSize = (size: number) => {
+  const unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  let index = 0;
+  index = Math.floor(Math.log(size) / Math.log(1024));
+  const _size = size / Math.pow(1024, index);
+  return _size.toFixed(2) + unitArr[index];
+};

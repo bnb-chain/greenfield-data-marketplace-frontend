@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import Search from '../components/Search';
 import HomeList from '../components/home';
+import { Flex } from '@totejs/uikit';
 
 const Home = () => {
   return (
-    <Container>
+    <Container flexDirection={'column'} alignItems={'center'}>
       <Title>
         Fast, secure, simple <br></br>
         BNB Greenfield Data MarketPlace
@@ -18,7 +19,7 @@ const Home = () => {
 
 export default Home;
 
-const Container = styled.div``;
+const Container = styled(Flex)``;
 const Title = styled.h1`
   margin: 60px 0;
 

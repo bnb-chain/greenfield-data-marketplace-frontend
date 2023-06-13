@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/base/request';
+import { apiClient } from '../base/request';
 
 export const useAddressTx = (
   address: string,

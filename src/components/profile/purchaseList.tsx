@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { divide10Exp, formatDateUTC, trimLongStr } from '../../utils/';
 import { useUserPurchased } from '../../hooks/useUserPurchased';
 import BN from 'bn.js';
+import { useSalesVolume } from '../../hooks/useSalesVolume';
 
 const ActionCom = (obj: any) => {
   const navigator = useNavigate();
@@ -32,6 +33,12 @@ const ActionCom = (obj: any) => {
       </Button>
     </div>
   );
+};
+
+const TotalVol = (props: any) => {
+  const { groupId } = props;
+  const { salesVolume } = useSalesVolume(groupId);
+  return <div>{Number(salesVolume) || '-'}</div>;
 };
 
 const PurchaseList = () => {
@@ -76,7 +83,8 @@ const PurchaseList = () => {
       header: 'Total Vol',
       width: 120,
       cell: (data: any) => {
-        return <div>-</div>;
+        const { id } = data;
+        return <TotalVol groupId={id}></TotalVol>;
       },
     },
     {

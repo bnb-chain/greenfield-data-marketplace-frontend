@@ -12,3 +12,6 @@ export const GROUP_HUB_CONTRACT_ADDRESS =
 
 export const CROSS_CHAIN_FEE = 0.000001;
 export const INITIATE_LIST_FEE = 0.00001;
+
+export const LIST_FEE_ON_GF = 0.0000036;
+export const LIST_ESTIMATE_FEE_ON_BSC = 0.0000036;

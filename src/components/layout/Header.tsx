@@ -15,6 +15,7 @@ import {
 } from '@totejs/icons';
 import { useNavigate } from 'react-router-dom';
 import { useRevoke } from '../../hooks/useRevoke';
+import { useHasRole } from '../../hooks/useHasRole';
 
 const Header = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false);
@@ -29,6 +30,7 @@ const Header = () => {
   }, []);
 
   const { revoke } = useRevoke();
+  const { hasRole, setHasRole } = useHasRole();
 
   const navigate = useNavigate();
   return (
@@ -102,13 +104,17 @@ const Header = () => {
               >
                 <WalletIcon mr={8} width={24} height={24} /> My Purchase
               </MenuElement>
-              <MenuElement
-                onClick={() => {
-                  revoke();
-                }}
-              >
-                <WalletIcon mr={8} width={24} height={24} /> Revoke
-              </MenuElement>
+              {hasRole && (
+                <MenuElement
+                  onClick={() => {
+                    revoke().then(() => {
+                      setHasRole(true);
+                    });
+                  }}
+                >
+                  <WalletIcon mr={8} width={24} height={24} /> Revoke
+                </MenuElement>
+              )}
               <Disconnect
                 onClick={async () => {
                   await disconnect();

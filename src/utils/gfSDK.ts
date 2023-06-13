@@ -139,3 +139,24 @@ export const mirrorGroup = async (
 export const getCollectionInfo = async (bucketId: string) => {
   return await client.bucket.headBucketById(bucketId);
 };
+
+export const searchKey = async (key: string) => {
+  console.log(
+    key,
+    'dm_',
+    JSON.stringify({
+      sourceType: 'SOURCE_TYPE_ORIGIN',
+      limit: 0,
+      offset: 20,
+    }),
+  );
+  try {
+    return await client.sp.listGroup(key, 'dm_', {
+      sourceType: 'SOURCE_TYPE_ORIGIN',
+      limit: 1000,
+      offset: 0,
+    });
+  } catch (e) {
+    return [];
+  }
+};

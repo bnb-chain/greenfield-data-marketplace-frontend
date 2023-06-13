@@ -1,13 +1,19 @@
-import { mobileMedia, useResponsive } from '@/hooks/useResponsive';
 import styled from '@emotion/styled';
 import { BackIcon, GoIcon } from '@totejs/icons';
 import { Box, Flex } from '@totejs/uikit';
 
-import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { NoData } from './NoData';
 import { Loader } from './Loader';
+import { mobileMedia, useResponsive } from '../hooks/useResponsive';
 
 export interface ISearchData {
   title: string;
@@ -30,14 +36,25 @@ const SingleRow = forwardRef((props: any, ref: any) => {
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <Box flex={1} fontSize={14} overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+      <Box
+        flex={1}
+        fontSize={14}
+        overflow="hidden"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+      >
         {cell.render(d, active)}
       </Box>
       {active && !isMobile && showSelectIcon && (
         <Flex>
           <SelectTxt>Select</SelectTxt>
           <EnterIcon>
-            <img alt="enter" width={11} height={8} src="/images/enter.svg"></img>
+            <img
+              alt="enter"
+              width={11}
+              height={8}
+              src="/images/enter.svg"
+            ></img>
           </EnterIcon>
         </Flex>
       )}
@@ -69,7 +86,9 @@ export default function ScrollSelect({
 
   useEffect(() => {
     setComputedLength(
-      data.filter((d) => d.list.length > 0).map((d) => (d.list.length > 5 ? 5 : d.list.length)),
+      data
+        .filter((d) => d.list.length > 0)
+        .map((d) => (d.list.length > 5 ? 5 : d.list.length)),
     );
   }, [data]);
 
@@ -79,7 +98,7 @@ export default function ScrollSelect({
     setFocusIndex(0);
   }, [searchValue]);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const hasResult = displayData.length > 0;
 
@@ -113,7 +132,11 @@ export default function ScrollSelect({
           }
           const currentEl = displayElementRefs.current[newIndex];
           currentEl?.scrollIntoViewIfNeeded?.();
-          currentEl?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+          currentEl?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
           return newIndex;
         });
       } else {
@@ -147,7 +170,11 @@ export default function ScrollSelect({
           }
           const currentEl = elementRefs.current[newIndex];
           currentEl?.scrollIntoViewIfNeeded?.();
-          currentEl?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+          currentEl?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
           return newIndex;
         });
       }
@@ -164,7 +191,7 @@ export default function ScrollSelect({
 
   if (!hasResult && !loading) {
     return (
-      <Flex direction="column" alignItems="center" maxHeight="inherit">
+      <NoDataCon direction="column" alignItems="center" maxHeight="inherit">
         <Box height={105}></Box>
         <NoData />
         <Box height={22}> </Box>
@@ -178,7 +205,7 @@ export default function ScrollSelect({
           </Box>
         </Flex>
         <Box height={116}></Box>
-      </Flex>
+      </NoDataCon>
     );
   }
 
@@ -214,7 +241,7 @@ export default function ScrollSelect({
           {displayCell?.list.map((d: any, i: number) => {
             const isActive = displayFocusIndex === i;
             return (
-              <Link  key={i} to={displayCell?.link(d)}>
+              <Link key={i} to={displayCell?.link(d)}>
                 <SingleRow
                   ref={(ref) => {
                     displayElementRefs.current = {
@@ -262,7 +289,7 @@ export default function ScrollSelect({
                     }, 0) + i;
                   const isActive = focusIndex === realIndex;
                   return i < 5 ? (
-                    <Link  key={`${index}+${i}`} to={cell.link(d)}>
+                    <Link key={`${index}+${i}`} to={cell.link(d)}>
                       <SingleRow
                         ref={(ref) => {
                           elementRefs.current = {
@@ -315,11 +342,15 @@ export default function ScrollSelect({
   );
 }
 
+const NoDataCon = styled(Flex)`
+  background: ${(props: any) => props.theme.colors.bg.bottom};
+`;
+
 const Panel = styled.div`
   height: 100%;
   width: 100%;
   max-height: inherit;
-  background: ${(props: any) => props.theme.bg.middle};
+  background: ${(props: any) => props.theme.colors.bg.bottom};
   overflow-x: hidden;
   ${mobileMedia} {
     border-radius: 0;
@@ -331,8 +362,8 @@ const Title = styled.div`
   padding: 8px 24px;
   font-weight: 600;
   font-size: 12px;
-  color: ${(props: any) => props.theme.primary};
-  background: ${(props: any) => props.theme.bg.bottom};
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
+  background: ${(props: any) => props.theme.colors.bg.bottom};
   position: sticky;
   font-family: 'poppins';
   top: 0;
@@ -350,15 +381,16 @@ const Row = styled.div<{ active: boolean }>`
   text-decoration: none;
   padding: 12px 24px;
   gap: 4px;
-  background: ${(props: any) => (props.active ? props.theme.bg.top.active : 'inherit')};
+  background: ${(props: any) =>
+    props.active ? props.theme.colors.bg.top.active : 'inherit'};
   overflow: hidden;
   &:hover {
-    background: ${(props: any) => props.theme.bg.top.active};
+    background: ${(props: any) => props.theme.colors.bg.top.active};
   }
 `;
 
 const SelectTxt = styled.span`
-  color: ${(props: any) => props.theme.readable?.secondary};
+  color: ${(props: any) => props.theme.colors.readable?.secondary};
   font-size: 12px;
   margin-right: 4px;
   font-weight: 500;
@@ -372,7 +404,7 @@ const EmptyTxt = styled.div`
 `;
 
 const EnterIcon = styled.div`
-  background: ${(props: any) => props.theme.readable.secondary};
+  background: ${(props: any) => props.theme.colors.readable.secondary};
   width: 24px;
   height: 16px;
   border-radius: 3px;

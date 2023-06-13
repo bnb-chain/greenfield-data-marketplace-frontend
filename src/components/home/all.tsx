@@ -36,7 +36,7 @@ const ActionCom = (obj: any) => {
 
   const { Approve } = useApprove();
   return (
-    <div>
+    <ButtonCon gap={6}>
       {status == 1 && (
         <Button
           size={'sm'}
@@ -74,7 +74,6 @@ const ActionCom = (obj: any) => {
           );
         }}
         size={'sm'}
-        style={{ marginLeft: '6px' }}
       >
         View detail
       </Button>
@@ -86,7 +85,7 @@ const ActionCom = (obj: any) => {
         }}
         description={description}
       ></BuyResult>
-    </div>
+    </ButtonCon>
   );
 };
 
@@ -208,3 +207,5 @@ const ImgCon = styled.img`
   background: #d9d9d9;
   border-radius: 8px;
 `;
+
+const ButtonCon = styled(Flex)``;

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
-import { getBucketFileList } from '../utils/gfSDK';
+import { getBucketFileList, getGroupInfoByName } from '../utils/gfSDK';
+import { generateGroupName } from '../utils';
+import { useListedStatus } from './useListedStatus';
 
 export const useCollectionItems = (bucketName: string) => {
   // 0 owner
@@ -11,6 +13,7 @@ export const useCollectionItems = (bucketName: string) => {
   const [loading, setLoading] = useState(true);
   const [num, setNum] = useState(0);
 
+  const { checkListed } = useListedStatus();
   useEffect(() => {
     if (bucketName) {
       getBucketFileList({ bucketName })
@@ -20,7 +23,34 @@ export const useCollectionItems = (bucketName: string) => {
 
           if (code == 0) {
             const { key_count, objects } = body;
-            setList(objects);
+
+            const t = objects.map(async (item: any) => {
+              const {
+                object_info: { bucket_name, object_name },
+              } = item;
+              const groupName = generateGroupName(bucket_name, object_name);
+              console.log(groupName);
+              const { groupInfo } = await getGroupInfoByName(
+                groupName,
+                address as string,
+              );
+              console.log(groupInfo);
+              if (!groupInfo) return item;
+              const { id } = groupInfo;
+              const result = await checkListed(id);
+              return { ...item, groupId: id, listed: !!result, price: result };
+            });
+            Promise.all(t)
+              .then((res: any) => {
+                setList(res);
+              })
+              .catch((error) => {
+                setList([]);
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+
             setNum(key_count);
           } else {
             setList([]);

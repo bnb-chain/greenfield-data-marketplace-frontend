@@ -15,6 +15,7 @@ import {
   divide10Exp,
   generateGroupName,
   trimLongStr,
+  formatDateUTC,
 } from '../utils';
 import BN from 'bn.js';
 import { useCollectionItems } from '../hooks/useCollectionItems';
@@ -109,7 +110,7 @@ const Resource = () => {
             ) : (
               <span>{trimLongStr(ownerAddress)}</span>
             )}{' '}
-            At {listedDate}
+            At {formatDateUTC(listedDate * 1000)}
           </OwnCon>
           {listed ? (
             <MarketInfo>{divide10Exp(new BN(price, 10), 18)} BNB</MarketInfo>

@@ -4,33 +4,32 @@ import { Box, Button, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useAccount, useSwitchNetwork } from 'wagmi';
 import { getBucketFileList } from '../../utils/gfSDK';
-import { formatDateUTC } from '../../utils/';
+import { divide10Exp, formatDateUTC, parseFileSize } from '../../utils/';
 import { ListModal } from '../modal/listModal';
 import { GF_CHAIN_ID } from '../../env';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
+import { useSalesVolume } from '../../hooks/useSalesVolume';
+import { useModal } from '../../hooks/useModal';
+import { useDelist } from '../../hooks/useDelist';
+import { toast } from '@totejs/uikit';
+import { BN } from 'bn.js';
+
+const TotalVol = (props: any) => {
+  const { groupId } = props;
+  const { salesVolume } = useSalesVolume(groupId);
+  return <div>{salesVolume}</div>;
+};
 
 const ProfileList = (props: any) => {
-  const { name, listed } = props;
+  const { name } = props;
 
   const { list, loading } = useCollectionItems(name);
 
   const { handlePageChange, page } = usePagination();
 
-  const { address } = useAccount();
-  const [open, setOpen] = useState(false);
-  const { switchNetwork } = useSwitchNetwork();
-  const [detail, setDetail] = useState({});
+  const modalData = useModal();
+  const { delist } = useDelist();
 
-  // useEffect(() => {
-  //   getBucketFileList({ bucketName }).then((result: any) => {
-  //     setLoading(false);
-  //     const { statusCode, body } = result;
-  //     console.log(body);
-  //     if (statusCode == 200 && Array.isArray(body)) {
-  //       setList(body as any);
-  //     }
-  //   });
-  // }, [address]);
   console.log(list);
   const columns = [
     {
@@ -59,7 +58,7 @@ const ProfileList = (props: any) => {
         const {
           object_info: { payload_size },
         } = data;
-        return <div>{(payload_size / 1024).toFixed(2) + 'kb'}</div>;
+        return <div>{parseFileSize(payload_size)}</div>;
       },
     },
     {
@@ -75,32 +74,47 @@ const ProfileList = (props: any) => {
     {
       header: 'Price',
       cell: (data: any) => {
-        return <div>-</div>;
+        const { price } = data;
+        const balance = divide10Exp(new BN(price, 10), 18);
+        return <div>{balance} BNB</div>;
       },
     },
     {
       header: 'Total Vol',
       cell: (data: any) => {
-        return <div>-</div>;
+        const { groupId } = data;
+        return <TotalVol groupId={groupId}></TotalVol>;
       },
     },
     {
       header: 'Action',
       cell: (data: any) => {
+        const { object_info, listed, groupId } = data;
         return (
           <div>
-            {listed ? null : (
-              <Button
-                size={'sm'}
-                onClick={async () => {
-                  console.log(23);
-                  // await switchNetwork?.(GF_CHAIN_ID);
-                  setOpen(true);
-                }}
-              >
-                List
-              </Button>
-            )}
+            <Button
+              size={'sm'}
+              onClick={async () => {
+                sessionStorage.setItem('resource_type', '1');
+                if (!listed) {
+                  modalData.modalDispatch({
+                    type: 'OPEN_LIST',
+                    initInfo: object_info,
+                  });
+                } else {
+                  console.log(groupId);
+                  try {
+                    await delist(groupId);
+                    toast.success({ description: 'buy successful' });
+                  } catch (e) {
+                    toast.error({ description: 'buy failed' });
+                  }
+                }
+              }}
+            >
+              {!listed ? 'List' : 'Delist'}
+            </Button>
+
             <Button size={'sm'} style={{ marginLeft: '6px' }}>
               View detail
             </Button>
@@ -127,13 +141,6 @@ const ProfileList = (props: any) => {
         data={list}
         loading={loading}
       />
-      <ListModal
-        isOpen={open}
-        handleOpen={() => {
-          setOpen(false);
-        }}
-        detail={detail}
-      ></ListModal>
     </Container>
   );
 };

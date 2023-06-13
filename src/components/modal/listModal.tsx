@@ -10,11 +10,13 @@ import {
   Button,
 } from '@totejs/uikit';
 import { useCallback, useMemo, useState } from 'react';
-import { useAccount, useSwitchNetwork } from 'wagmi';
+import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 import {
   BSC_CHAIN_ID,
   GF_CHAIN_ID,
   GROUP_HUB_CONTRACT_ADDRESS,
+  LIST_ESTIMATE_FEE_ON_BSC,
+  LIST_FEE_ON_GF,
   MARKETPLACE_CONTRACT_ADDRESS,
 } from '../../env';
 import { useChainBalance } from '../../hooks/useChainBalance';
@@ -29,6 +31,8 @@ import Web3 from 'web3';
 import { useApprove } from '../../hooks/useApprove';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useModal } from '../../hooks/useModal';
+import { useHasRole } from '../../hooks/useHasRole';
+import { useChains } from 'connectkit';
 
 interface ListModalProps {
   isOpen: boolean;
@@ -50,9 +54,12 @@ export const ListModal = (props: ListModalProps) => {
   const { GfBalanceVal, BscBalanceVal } = useChainBalance();
   const modalData = useModal();
 
-  const [isApprove, setApprove] = useState(true);
+  const { chain } = useNetwork();
 
-  const { bucket_name, id, create_at } = detail;
+  const { bucket_name, id, create_at, object_name } = detail;
+
+  const name = object_name || bucket_name;
+
   const { num } = useCollectionItems(bucket_name);
 
   const onChangePrice = (event: any) => {
@@ -72,6 +79,18 @@ export const ListModal = (props: ListModalProps) => {
     return Number(price) * 0.99;
   }, [price]);
 
+  const GF_FEE_SUFF = useMemo(() => {
+    return GfBalanceVal >= LIST_FEE_ON_GF;
+  }, [GfBalanceVal]);
+
+  const BSC_FEE_SUFF = useMemo(() => {
+    return BscBalanceVal >= LIST_ESTIMATE_FEE_ON_BSC;
+  }, [GfBalanceVal]);
+
+  const SUFF = useMemo(() => {
+    return GF_FEE_SUFF && BSC_FEE_SUFF;
+  }, [GF_FEE_SUFF, BSC_FEE_SUFF]);
+
   const reset = useCallback(() => {
     setPrice('');
     setDesc('');
@@ -89,28 +108,37 @@ export const ListModal = (props: ListModalProps) => {
       closeOnOverlayClick={false}
     >
       <ModalCloseButton />
-      <Header>List an collection</Header>
+      <Header> {object_name ? 'List Data' : 'List an collection'}</Header>
       <CustomBody>
         <Box h={10}></Box>
         <InfoCon gap={26} justifyContent={'center'} alignItems={'center'}>
           <ImgCon>
-            <img src={defaultImg(bucket_name, 80)} alt="" />
+            <img src={defaultImg(name, 80)} alt="" />
           </ImgCon>
-          <BaseInfo flexDirection={'column'}>
+          <BaseInfo flexDirection={'column'} alignItems={'flex-start'}>
             <ResourceNameCon alignItems={'center'}>
-              {bucket_name}
-              {resourceType === '0' ? (
+              {name}
+              {!object_name ? (
                 <Tag justifyContent={'center'} alignItems={'center'}>
                   Data collection
                 </Tag>
               ) : null}
             </ResourceNameCon>
-            <ResourceNum gap={4}>
-              {num} Items created at
-              {create_at ? (
-                <CreateTime>{formatDateUTC(create_at * 1000)}</CreateTime>
-              ) : null}
-            </ResourceNum>
+            {object_name ? (
+              <FileInfo gap={12}>
+                <span>{detail.payload_size} </span>
+                <div>
+                  Collection <span>{bucket_name}</span>
+                </div>
+              </FileInfo>
+            ) : (
+              <ResourceNum gap={4}>
+                {num} Items created at
+                {create_at ? (
+                  <CreateTime>{formatDateUTC(create_at * 1000)}</CreateTime>
+                ) : null}
+              </ResourceNum>
+            )}
           </BaseInfo>
         </InfoCon>
         <Box h={10}></Box>
@@ -161,8 +189,19 @@ export const ListModal = (props: ListModalProps) => {
                 <ColoredWarningIcon size="sm" color="#AEB4BC" />
               </ItemSubTittle>
               <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
-                <Fee>0.0000036 BNB</Fee>
-                <Balance>Greenfield Balance: {GfBalanceVal} BNB </Balance>
+                <Fee>{LIST_FEE_ON_GF} BNB</Fee>
+                {GF_FEE_SUFF ? (
+                  <Balance>Greenfield Balance: {GfBalanceVal} BNB </Balance>
+                ) : (
+                  <BalanceWarn
+                    gap={5}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                  >
+                    <ColoredWarningIcon size="sm" color="#ff6058" />{' '}
+                    Insufficient Greenfield Balance
+                  </BalanceWarn>
+                )}
               </BalanceCon>
             </Item>
             <LineBox h={0.1}></LineBox>
@@ -172,8 +211,15 @@ export const ListModal = (props: ListModalProps) => {
                 <ColoredWarningIcon size="sm" color="#AEB4BC" />
               </ItemSubTittle>
               <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
-                <Fee>0.0000036 BNB</Fee>
-                <Balance>BSC Balance: {BscBalanceVal} BNB </Balance>
+                <Fee>{LIST_ESTIMATE_FEE_ON_BSC} BNB</Fee>
+                {BSC_FEE_SUFF ? (
+                  <Balance>BSC Balance: {BscBalanceVal} BNB </Balance>
+                ) : (
+                  <BalanceWarn>
+                    <ColoredWarningIcon size="sm" color="#ff6058" />{' '}
+                    Insufficient BSC Balance
+                  </BalanceWarn>
+                )}
               </BalanceCon>
             </Item>
           </BottomInfo>
@@ -181,7 +227,7 @@ export const ListModal = (props: ListModalProps) => {
       </CustomBody>
       <ModalFooter>
         <FooterCon flexDirection={'column'} gap={6}>
-          {isApprove ? (
+          {chain && chain.id === GF_CHAIN_ID && (
             <Button
               width={'100%'}
               onClick={async () => {
@@ -190,12 +236,10 @@ export const ListModal = (props: ListModalProps) => {
                   return;
                 }
 
-                await switchNetwork?.(GF_CHAIN_ID);
-
                 // dm_o_{bucket_name}_{obj_name}
                 // dm_b_{bucket_name}
                 const obj = {
-                  groupName: generateGroupName(bucket_name),
+                  groupName: generateGroupName(bucket_name, object_name),
                   // groupName: Math.random().toString(36).slice(-6),
                   extra: JSON.stringify({
                     desc,
@@ -213,22 +257,21 @@ export const ListModal = (props: ListModalProps) => {
                   listData: obj,
                 });
               }}
+              disabled={!SUFF}
             >
               Start List Process
             </Button>
-          ) : (
+          )}
+          {chain && chain.id !== GF_CHAIN_ID ? (
             <Button
               width={'100%'}
               onClick={async () => {
-                Approve().then(() => {
-                  setApprove(true);
-                });
+                switchNetwork?.(GF_CHAIN_ID);
               }}
             >
-              Approve
+              Switch to Greenfield to Start
             </Button>
-          )}
-
+          ) : null}
           <Tips alignItems={'center'} gap={10} justifyContent={'center'}>
             <ColoredWarningIcon />
             Please notice that all the data items on the data collection will be
@@ -333,6 +376,23 @@ const ResourceNum = styled(Flex)`
   color: #000000;
 `;
 
+const FileInfo = styled(Flex)`
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 28px;
+
+  color: #979797;
+  div {
+    display: flex;
+    gap: 2px;
+  }
+  span {
+    color: #181a1e;
+  }
+`;
+
 const InputCon = styled.div`
   .ui-input {
     background: #ffffff;
@@ -399,6 +459,17 @@ const Balance = styled.div`
   line-height: 18px;
 
   color: #696a6c;
+`;
+
+const BalanceWarn = styled(Flex)`
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 18px;
+  /* identical to box height, or 180% */
+
+  color: #ff6058;
 `;
 
 const LineBox = styled(Box)`

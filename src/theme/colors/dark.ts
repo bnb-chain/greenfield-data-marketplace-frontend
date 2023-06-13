@@ -22,11 +22,10 @@ export const dark = {
         active: '#2E323A',
       },
     },
-
     scene: {
       primary: {
         normal: '#E1A325',
-        active: '#CD7CFF',
+        active: '#f39d53',
         opacity: rgba('#B845FF', 0.1),
       },
 

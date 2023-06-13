@@ -46,6 +46,9 @@ export const ListProcess = (props: ListProcessProps) => {
   const [loading, setLoading] = useState(true);
 
   const { hasRole, setHasRole } = useHasRole();
+
+  const defaultHasRole = hasRole;
+
   console.log(hasRole, '--------hasRole');
   const init = useCallback(async () => {
     await delay(1);
@@ -64,7 +67,7 @@ export const ListProcess = (props: ListProcessProps) => {
       setStep(1);
       setLoading(false);
       init();
-      setTitle('Initiate Succeed');
+      setTitle(hasRole ? 'Finalize on BSC' : 'Approve on BSC');
     }
   }, [stateModal.modalState.initListStatus]);
 
@@ -103,14 +106,14 @@ export const ListProcess = (props: ListProcessProps) => {
             )}
           </ProgressStep>
           <HorizontalBarFist
-            width={hasRole ? '180' : '114'}
+            width={defaultHasRole ? '172' : '114'}
             status={step && step >= 2 ? true : false}
           />
-          {hasRole ? null : (
+          {defaultHasRole ? null : (
             <>
               <ProgressStep>
                 <ProgressName active={step && step >= 2 ? true : false}>
-                  Prove List
+                  Approve on BSC
                 </ProgressName>
                 {step && step >= 2 ? (
                   <ProgressSuccessIcon width={32} height={32} />
@@ -118,7 +121,10 @@ export const ListProcess = (props: ListProcessProps) => {
                   <ProgressIcon>2</ProgressIcon>
                 )}
               </ProgressStep>
-              <HorizontalBarSecond status={step && step >= 3 ? true : false} />
+              <HorizontalBarSecond
+                hasRole={defaultHasRole}
+                status={step && step >= 3 ? true : false}
+              />
             </>
           )}
           <ProgressStep>
@@ -128,7 +134,7 @@ export const ListProcess = (props: ListProcessProps) => {
             {step && step >= 3 ? (
               <ProgressSuccessIcon width={32} height={32} />
             ) : (
-              <ProgressIcon>{hasRole ? 2 : 3}</ProgressIcon>
+              <ProgressIcon>{defaultHasRole ? 2 : 3}</ProgressIcon>
             )}
           </ProgressStep>
         </ProgressContainer>
@@ -186,6 +192,7 @@ export const ListProcess = (props: ListProcessProps) => {
                       setStep(3);
                       setStatus(1);
                       setModalTitle('List Success');
+                      setDescription('');
                       setBscHash(transactionHash);
                     });
                   }
@@ -203,12 +210,23 @@ export const ListProcess = (props: ListProcessProps) => {
               await Approve();
               setHasRole(true);
               setLoading(false);
+              setTitle('Finalize on BSC');
             }}
           >
             Approve
           </Button>
         )}
-        {status == 1 && <Button>Got it</Button>}
+        {status == 1 && (
+          <Button
+            onClick={() => {
+              reset();
+              stateModal.modalDispatch({ type: 'RESET' });
+              handleOpen(false);
+            }}
+          >
+            Got it
+          </Button>
+        )}
       </Flex>
     </Container>
   );
@@ -290,7 +308,9 @@ const ProgressIcon = styled(Flex)`
   line-height: 20px;
   justify-content: center;
   align-items: center;
-  background: ${(props: any) => props.theme.colors.readable.grey10};
+  background: #aeb4bc;
+
+  color: #ffffff;
 `;
 
 const MoreIconCon = styled(MoreIcon)`
@@ -319,8 +339,8 @@ const HorizontalBarFist = styled.div<{ status: boolean; width: string }>`
   left: 77px;
 `;
 
-const HorizontalBarSecond = styled.div<{ status: boolean }>`
-  width: 105px;
+const HorizontalBarSecond = styled.div<{ status: boolean; hasRole: boolean }>`
+  width: ${(props: any) => (props.hasRole ? '105px' : '90px')};
   height: 2px;
   position: absolute;
   top: 40px;
@@ -328,5 +348,5 @@ const HorizontalBarSecond = styled.div<{ status: boolean }>`
     props.status
       ? props.theme.colors.scene.success.progressBar
       : props.theme.colors.readable.top.secondary};
-  right: 60px;
+  right: ${(props: any) => (props.hasRole ? '65px' : '60px')};
 `;

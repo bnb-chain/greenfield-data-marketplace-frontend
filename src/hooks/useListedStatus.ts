@@ -1,29 +1,34 @@
 // import { useCallback, useState, useEffect } from 'react';
 // import { useGetChainProviders } from './useGetChainProviders';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 
-export const useListedStatus = () => {
+export const useListedStatus = (groupId?: string) => {
   const { address } = useAccount();
   const [listStatus, setListStatus] = useState(false);
-
+  const [price, setPrice] = useState(0);
   const checkListed = useCallback(
     async (groupId: string) => {
-      console.log(groupId, '-----prices1');
-      const result = await MarketPlaceContract(false)
-        .methods.prices(groupId)
-        .call({ from: address });
-      console.log(groupId, result, '-----prices2');
-      if (result > 0) {
-        setListStatus(true);
-        return true;
+      if (groupId) {
+        const result = await MarketPlaceContract(false)
+          .methods.prices(groupId)
+          .call({ from: address });
+        console.log(groupId, result, '-----prices');
+        if (result > 0) {
+          setPrice(result);
+          setListStatus(true);
+          return result;
+        }
       }
       return false;
     },
     [address],
   );
 
-  return { checkListed, listStatus };
+  useEffect(() => {
+    groupId && checkListed(groupId);
+  }, [groupId]);
+  return { checkListed, listStatus, price };
 };
