@@ -14,6 +14,7 @@ interface IType {
   objectId?: string;
   address: string;
   groupName?: string;
+  update?: boolean;
 }
 export const useResourceInfo = ({
   groupId,
@@ -21,6 +22,7 @@ export const useResourceInfo = ({
   objectId,
   address,
   groupName,
+  update,
 }: IType) => {
   const [baseInfo, setBaseInfo] = useState(<any>{});
   const [loading, setLoading] = useState(true);
@@ -38,9 +40,18 @@ export const useResourceInfo = ({
     if (objectId) {
       objectInfo = await getObjectInfo(objectId);
     }
-
+    console.log(
+      groupId,
+      bucketId,
+      objectId,
+      address,
+      groupName,
+      update,
+      '------useResourceInfo',
+    );
     if (bucketId && !groupName) {
       bucketInfoRes = await getCollectionInfo(bucketId);
+      console.log(bucketInfoRes, '------bucketInfoRes');
       const {
         bucketInfo: { bucketName },
       } = bucketInfoRes;
@@ -64,13 +75,17 @@ export const useResourceInfo = ({
               groupInfo: { extra, owner },
             } = groupResult;
             const { price, url, desc } = JSON.parse(extra);
+            const { name, type } = parseGroupName(groupName as string);
             setBaseInfo({
-              name: parseGroupName(groupName as string).name,
+              name,
+              type,
               price,
               url,
               desc,
               owner,
               listed,
+              groupName,
+              extra,
             });
           })
           .finally(() => {
@@ -90,7 +105,7 @@ export const useResourceInfo = ({
     }
 
     console.log(bucketId, info);
-  }, [groupId, address, bucketId, objectId]);
+  }, [groupId, address, bucketId, objectId, update]);
   useEffect(() => {
     getBaseInfo();
     // const _promise = groupId
@@ -119,7 +134,7 @@ export const useResourceInfo = ({
     //     });
     // } else {
     // }
-  }, [groupId, address, bucketId, objectId]);
+  }, [groupId, address, bucketId, objectId, update]);
 
   return { baseInfo, loading };
 };

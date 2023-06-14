@@ -8,6 +8,7 @@ import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import BN from 'bn.js';
 import { useRelayFee } from './useRelayFee';
 import { divide10Exp } from '../utils';
+import { useModal } from './useModal';
 
 export const useBuy = (
   groupName: string,
@@ -23,6 +24,8 @@ export const useBuy = (
 
   const { relayFee } = useRelayFee();
 
+  const state = useModal();
+
   const buy = useCallback(
     async (groupId: number) => {
       if (status === 1) {
@@ -30,12 +33,19 @@ export const useBuy = (
         const n = Number(divide10Exp(totalFee, 18));
 
         if (BscBalanceVal >= n) {
-          return await MarketPlaceContract()
-            .methods.buy(groupId, address)
-            .send({
-              from: address,
-              value: totalFee,
-            });
+          try {
+            const result = await MarketPlaceContract()
+              .methods.buy(groupId, address)
+              .send({
+                from: address,
+                value: totalFee,
+              });
+            state.modalDispatch({ type: 'BUY_END', buyResult: result });
+            return result;
+          } catch (e) {
+            state.modalDispatch({ type: 'BUY_END', buyResult: e });
+            return e;
+          }
         } else {
           return false;
         }
@@ -44,5 +54,5 @@ export const useBuy = (
     },
     [status, BscBalanceVal, price, relayFee],
   );
-  return { buy };
+  return { buy, relayFee };
 };

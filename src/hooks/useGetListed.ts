@@ -16,7 +16,7 @@ export const useGetListed = () => {
   const getList = useCallback(async () => {
     const list = await MarketPlaceContract(false)
       .methods.getListed(0, 20)
-      .call({ from: address });
+      .call();
     const { _ids, _dates } = list;
     console.log(list);
     if (Array.isArray(_ids)) {
@@ -57,6 +57,6 @@ export const useGetListed = () => {
   }, [address]);
   useEffect(() => {
     getList();
-  }, []);
+  }, [address]);
   return { loading, list };
 };

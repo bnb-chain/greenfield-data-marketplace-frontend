@@ -9,7 +9,7 @@ import sha265 from 'sha256';
 const Profile = () => {
   const { address } = useAccount();
 
-  const sha = sha265(address as string);
+  const sha = sha265((address as string) || 'default');
   const dataBase = new Identicon(sha, 120).toString();
   const url = `data:image/png;base64,${dataBase}`;
 
@@ -25,7 +25,7 @@ const Profile = () => {
           <Copy value={address} />
         </Info>
       </PersonInfo>
-      <ProfileList></ProfileList>
+      {address && <ProfileList></ProfileList>}
     </Container>
   );
 };

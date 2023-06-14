@@ -6,14 +6,21 @@ import { Flex } from '@totejs/uikit';
 import { ListModal } from '../modal/listModal';
 import { ListProcess } from '../modal/listProcess';
 import { ListError } from '../modal/listError';
+import { BuyIndex } from '../modal/buy/index';
 import { useModal } from '../../hooks/useModal';
-import { batchUpdate } from '../../utils';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const modalData = useModal();
 
-  const { openList, initInfo, listData, openListProcess, openListError } =
-    modalData.modalState;
+  const {
+    openList,
+    initInfo,
+    listData,
+    openListProcess,
+    openListError,
+    openBuy,
+    buyData,
+  } = modalData.modalState;
 
   const handleListOpen = useCallback(() => {
     modalData.modalDispatch({ type: 'CLOSE_LIST' });
@@ -27,6 +34,10 @@ export default function Layout({ children }: { children: ReactNode }) {
     modalData.modalDispatch({ type: 'CLOSE_LIST_ERROR' });
   }, []);
 
+  const handleBuyOpen = useCallback(() => {
+    modalData.modalDispatch({ type: 'CLOSE_BUY' });
+  }, []);
+
   return (
     <>
       <Container flexDirection={'column'} justifyContent={'space-between'}>
@@ -34,7 +45,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <Main>{children}</Main>
         <Footer />
       </Container>
-      {initInfo && (
+      {openList && (
         <ListModal
           isOpen={openList}
           handleOpen={() => {
@@ -58,6 +69,10 @@ export default function Layout({ children }: { children: ReactNode }) {
           handleListErrorOpen();
         }}
       ></ListError>
+
+      {/* {openBuy && ( */}
+      <BuyIndex></BuyIndex>
+      {/* )} */}
     </>
   );
 }

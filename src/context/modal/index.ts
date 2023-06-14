@@ -4,7 +4,12 @@ export const initialState: any = {
   openList: false,
   openListProcess: false,
   openListError: false,
+  openBuy: false,
+  buying: false,
+  buyEnd: false,
+  buyResult: {},
   listData: {},
+  buyData: {},
   initInfo: {},
   initListStatus: 0,
   initListResult: {},
@@ -17,10 +22,15 @@ export interface ModalState {
     openList: boolean;
     openListProcess: boolean;
     openListError: boolean;
+    openBuy: boolean;
+    buying: boolean;
     listData: object;
+    buyData: object;
     initInfo: object;
     initListStatus: number;
     initListResult: object;
+    buyEnd: boolean;
+    buyResult: object;
   };
   modalDispatch: React.Dispatch<any>;
 }
@@ -70,6 +80,38 @@ export const ModalReducer = (initialState: any, action: any) => {
         ...initialState,
         initListStatus: action.initListStatus,
         initListResult: action.initListResult,
+      };
+    case 'OPEN_BUY':
+      return {
+        ...initialState,
+        openBuy: true,
+        buyData: action.buyData,
+      };
+    case 'BUYING':
+      return {
+        ...initialState,
+        buying: true,
+        openBuy: false,
+      };
+    case 'BUY_END':
+      return {
+        ...initialState,
+        buying: false,
+        openBuy: false,
+        buyEnd: true,
+        buyResult: action.buyResult,
+      };
+    case 'CLOSE_BUY_END':
+      return {
+        ...initialState,
+        buying: false,
+        openBuy: false,
+        buyEnd: false,
+      };
+    case 'CLOSE_BUY':
+      return {
+        ...initialState,
+        openBuy: false,
       };
     case 'RESET':
       return defaultState;

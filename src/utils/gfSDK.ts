@@ -124,6 +124,19 @@ export const getObjectInfo = async (objectId: string) => {
   return await client.object.headObjectById(objectId);
 };
 
+export const updateGroupInfo = async (
+  address: string,
+  groupName: string,
+  extra: string,
+) => {
+  return await client.group.updateGroupExtra({
+    operator: address,
+    groupOwner: address,
+    groupName,
+    Extra: extra,
+  });
+};
+
 export const mirrorGroup = async (
   groupName: string,
   id: string,

@@ -15,7 +15,7 @@ export const useCollectionItems = (bucketName: string) => {
 
   const { checkListed } = useListedStatus();
   useEffect(() => {
-    if (bucketName) {
+    if (bucketName && address) {
       getBucketFileList({ bucketName })
         .then((result: any) => {
           console.log(bucketName, result);

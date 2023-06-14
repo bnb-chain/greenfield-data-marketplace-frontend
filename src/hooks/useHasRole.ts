@@ -12,20 +12,22 @@ export const useHasRole = () => {
   const [hasRole, setHasRole] = useState(false);
 
   useEffect(() => {
-    GroupHubContract(false)
-      .methods.hasRole(
-        Web3.utils.keccak256('ROLE_UPDATE'),
-        address,
-        MARKETPLACE_CONTRACT_ADDRESS,
-      )
-      .call({ from: address })
-      .then((result: any) => {
-        console.log(result, '----useHasRole');
-        setHasRole(result);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+    if (address) {
+      GroupHubContract(false)
+        .methods.hasRole(
+          Web3.utils.keccak256('ROLE_UPDATE'),
+          address,
+          MARKETPLACE_CONTRACT_ADDRESS,
+        )
+        .call({ from: address })
+        .then((result: any) => {
+          console.log(result, '----useHasRole');
+          setHasRole(result);
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+    }
   }, [address]);
 
   return { hasRole, setHasRole };

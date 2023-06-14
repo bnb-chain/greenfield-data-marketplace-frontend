@@ -7,6 +7,7 @@ export const useApprove = () => {
   const { address } = useAccount();
 
   const Approve = useCallback(() => {
+    if (!address) return Promise.reject(false);
     return new Promise((res, rej) => {
       GroupHubContract()
         .methods.grant(MARKETPLACE_CONTRACT_ADDRESS, 4, 0xffffffff)

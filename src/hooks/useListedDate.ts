@@ -15,7 +15,7 @@ export const useListedDate = (groupId: string) => {
         .methods.listedDate(groupId)
         .call({ from: address })
         .then((result: any) => {
-          console.log(result, '---useSalesRevenue');
+          console.log(result, '---useListedDate');
           setListedDate(result);
         });
     }

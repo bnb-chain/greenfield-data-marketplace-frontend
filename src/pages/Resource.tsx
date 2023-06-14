@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 import { Flex, Button, Box } from '@totejs/uikit';
 import { NavBar } from '../components/NavBar';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Overview from '../components/resource/overview';
 import List from '../components/resource/list';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ListModal } from '../components/modal/listModal';
+import { EditModal } from '../components/modal/editModal';
 import { GF_CHAIN_ID } from '../env';
 import { useAccount, useSwitchNetwork } from 'wagmi';
+import { ConnectKitButton } from 'connectkit';
 import { useResourceInfo } from '../hooks/useResourceInfo';
 import { Loader } from '../components/Loader';
 import {
@@ -21,6 +22,9 @@ import BN from 'bn.js';
 import { useCollectionItems } from '../hooks/useCollectionItems';
 import { useSalesVolume } from '../hooks/useSalesVolume';
 import { useListedDate } from '../hooks/useListedDate';
+import { useStatus } from '../hooks/useStatus';
+import { useModal } from '../hooks/useModal';
+import { PenIcon } from '@totejs/icons';
 
 enum Type {
   Description = 'description',
@@ -55,7 +59,7 @@ const Resource = () => {
 
   const { address } = useAccount();
 
-  const resourceType = objectId ? '1' : '0';
+  const [update, setUpdate] = useState(false);
 
   const { loading, baseInfo } = useResourceInfo({
     groupId,
@@ -63,20 +67,40 @@ const Resource = () => {
     objectId,
     address: ownerAddress,
     groupName: gName,
+    update,
   });
   console.log(groupId, baseInfo);
 
-  const { name, price, url, desc, listed } = baseInfo;
+  const { name, price, url, desc, listed, type } = baseInfo;
 
+  const resourceType = objectId || type === 'Data' ? '0' : '1';
+  console.log(resourceType, objectId, type);
   const { num } = useCollectionItems(name);
 
   const { salesVolume } = useSalesVolume(groupId);
 
   const { listedDate } = useListedDate(groupId);
 
+  const { status } = useStatus(gName, ownerAddress, address as string);
+
+  const [showEdit, setShowEdit] = useState(false);
+
+  const showBuy = useMemo(() => {
+    return status == 1 || status == -1;
+  }, [status, address]);
+
+  console.log(showBuy, status, address);
+  const modalData = useModal();
+
+  useEffect(() => {
+    return () => {
+      navItems.length > 1 && navItems.pop();
+    };
+  }, []);
+
   if (loading) return <Loader></Loader>;
 
-  if (address === ownerAddress) {
+  if ((address === ownerAddress || status == 2) && resourceType === '1') {
     navItems[1] = {
       name: 'DataList',
       key: Type.DataList,
@@ -86,8 +110,29 @@ const Resource = () => {
   return (
     <Container>
       <ResourceInfo gap={20}>
-        <ImgCon>
+        <ImgCon
+          onMouseMove={() => {
+            if (address === ownerAddress) {
+              setShowEdit(true);
+            }
+          }}
+          onMouseLeave={() => {
+            if (address === ownerAddress) {
+              setShowEdit(false);
+            }
+          }}
+          onClick={() => {
+            if (address === ownerAddress) {
+              setOpen(true);
+            }
+          }}
+        >
           <img src={url || defaultImg(name, 246)} alt="" />
+          {showEdit && (
+            <EditCon alignItems={'center'} justifyContent={'center'}>
+              <PenIcon />
+            </EditCon>
+          )}
         </ImgCon>
         <Info
           gap={4}
@@ -96,13 +141,13 @@ const Resource = () => {
         >
           <NameCon gap={4} alignItems={'center'} justifyContent={'flex-start'}>
             <Name>{name}</Name>
-            {resourceType == '0' ? (
+            {resourceType == '1' ? (
               <Tag alignItems={'center'} justifyContent={'center'}>
                 Data Collection
               </Tag>
             ) : null}
           </NameCon>
-          {resourceType == '0' ? <ItemNum>{num} Items</ItemNum> : null}
+          {resourceType == '1' ? <ItemNum>{num} Items</ItemNum> : null}
           <OwnCon>
             Created by{' '}
             {address === ownerAddress ? (
@@ -116,18 +161,66 @@ const Resource = () => {
             <MarketInfo>{divide10Exp(new BN(price, 10), 18)} BNB</MarketInfo>
           ) : null}
           <ActionGroup gap={10}>
-            {listed ? null : (
+            {address === ownerAddress && !listed && (
               <Button
                 size={'sm'}
                 onClick={async () => {
-                  await switchNetwork?.(GF_CHAIN_ID);
-                  setOpen(true);
+                  modalData.modalDispatch({
+                    type: 'OPEN_LIST',
+                    listData: baseInfo,
+                  });
                 }}
               >
                 List
               </Button>
             )}
-            <Button size={'sm'}>View in Dcellar</Button>
+
+            <ConnectKitButton.Custom>
+              {({ isConnected, show, address, ensName }) => {
+                return (
+                  showBuy && (
+                    <Button
+                      size={'sm'}
+                      onClick={() => {
+                        if (!isConnected) {
+                          show?.();
+                        } else {
+                          modalData.modalDispatch({
+                            type: 'OPEN_BUY',
+                            buyData: baseInfo,
+                          });
+                        }
+                      }}
+                    >
+                      Buy
+                    </Button>
+                  )
+                );
+              }}
+            </ConnectKitButton.Custom>
+            {/* {showBuy && (
+              <Button
+                size={'sm'}
+                onClick={() => {
+                  modalData.modalDispatch({
+                    type: 'OPEN_BUY',
+                    buyData: baseInfo,
+                  });
+                }}
+              >
+                Buy
+              </Button>
+            )} */}
+            <Button
+              size={'sm'}
+              onClick={() => {
+                window.open(
+                  `https://dcellar-qa.fe.nodereal.cc/buckets/${name}`,
+                );
+              }}
+            >
+              View in Dcellar
+            </Button>
             {listed ? <BoughtNum>{salesVolume} Bought</BoughtNum> : null}
           </ActionGroup>
         </Info>
@@ -140,16 +233,22 @@ const Resource = () => {
       ) : (
         <List name={name} listed={listed}></List>
       )}
-      {/* <ListModal
-      isOpen={open}
-      handleOpen={() => {
-        setOpen(false);
-      }}
-      detail={{
-        bucket_name: bucketName,
-        id: groupId,
-      }}
-    ></ListModal> */}
+      {open && (
+        <EditModal
+          isOpen={open}
+          handleOpen={() => {
+            setOpen(false);
+          }}
+          detail={{
+            ...baseInfo,
+            desc,
+            url,
+          }}
+          updateFn={() => {
+            setUpdate(true);
+          }}
+        ></EditModal>
+      )}
     </Container>
   );
 };
@@ -162,13 +261,30 @@ const Container = styled.div`
 const ResourceInfo = styled(Flex)``;
 
 const ImgCon = styled.div`
+  position: relative;
   width: 246px;
   height: 246px;
 
   img {
+    width: 246px;
+    height: 246px;
+
     background-color: #d9d9d9;
     border-radius: 8px;
   }
+`;
+
+const EditCon = styled(Flex)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #d9d9d9;
+
+  border-radius: 8px;
+
+  cursor: pointer;
 `;
 
 const Info = styled(Flex)``;

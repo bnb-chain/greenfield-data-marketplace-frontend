@@ -7,15 +7,17 @@ export const useStatus = (
   groupOwner: string,
   member: string,
 ) => {
+  // -1 do not login
   // 0 owner
   // 1 Waiting for purchase
   // 2 purchase
   const { address } = useAccount();
-  const [status, setStatus] = useState(0);
+  const [status, setStatus] = useState(address ? 0 : -1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (address !== groupOwner) {
+    if (address) setStatus(0);
+    if (address && address !== groupOwner) {
       checkAddressInGroup(groupName, groupOwner, member)
         .then((result) => {
           if (result) {

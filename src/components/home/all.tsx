@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { useApprove } from '../../hooks/useApprove';
 import { useStatus } from '../../hooks/useStatus';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
+import { useModal } from '../../hooks/useModal';
 
 const ActionCom = (obj: any) => {
   const navigator = useNavigate();
@@ -35,33 +36,18 @@ const ActionCom = (obj: any) => {
   const [description, setDescription] = useState('');
 
   const { Approve } = useApprove();
+
+  const modalData = useModal();
   return (
     <ButtonCon gap={6}>
       {status == 1 && (
         <Button
           size={'sm'}
           onClick={async () => {
-            sessionStorage.setItem(
-              'resource_type',
-              type === 'collection' ? '0' : '1',
-            );
-            await switchNetwork?.(BSC_CHAIN_ID);
-            await delay(1);
-            await Approve();
-            await buy(id).then(
-              (result) => {
-                setOpen(true);
-                setVariant('success');
-                setDescription('Purchase successful');
-                console.log(result);
-              },
-              (error) => {
-                setOpen(true);
-                setVariant('error');
-                setDescription(error.code ? error.message : 'Purchase failed');
-                console.log(error);
-              },
-            );
+            modalData.modalDispatch({
+              type: 'OPEN_BUY',
+              buyData: data,
+            });
           }}
         >
           Buy
