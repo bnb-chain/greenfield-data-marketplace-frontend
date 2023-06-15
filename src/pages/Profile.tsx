@@ -5,6 +5,7 @@ import { Flex } from '@totejs/uikit';
 import ProfileList from '../components/profile/';
 import Identicon from 'identicon.js';
 import sha265 from 'sha256';
+import Logo from '../images/logo.png';
 
 const Profile = () => {
   const { address } = useAccount();
@@ -20,7 +21,7 @@ const Profile = () => {
           <img src={url} alt="" />
         </ImgCon>
         <Info gap={16} alignItems={'center'} justifyContent={'center'}>
-          <Icon src="/images/logo.png" alt="" />
+          <Icon src={Logo} alt="" />
           <Address>{address}</Address>
           <Copy value={address} />
         </Info>

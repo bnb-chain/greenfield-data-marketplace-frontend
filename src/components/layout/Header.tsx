@@ -16,6 +16,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useRevoke } from '../../hooks/useRevoke';
 import { useHasRole } from '../../hooks/useHasRole';
+import LogoGroup from '../../images/logo-group.png';
 
 const Header = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false);
@@ -45,7 +46,7 @@ const Header = () => {
           navigate('/');
         }}
       >
-        <img src="/images/logo-group.png" alt="logo" width={188} height={38} />
+        <img src={LogoGroup} alt="logo" width={188} height={38} />
       </ImageContainer>
       <ButtonWrapper onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
         <ConnectKitButton.Custom>

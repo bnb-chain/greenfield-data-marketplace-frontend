@@ -49,12 +49,12 @@ const SingleRow = forwardRef((props: any, ref: any) => {
         <Flex>
           <SelectTxt>Select</SelectTxt>
           <EnterIcon>
-            <img
+            {/* <img
               alt="enter"
               width={11}
               height={8}
-              src="/images/enter.svg"
-            ></img>
+              src="../../../images/enter.svg"
+            ></img> */}
           </EnterIcon>
         </Flex>
       )}
