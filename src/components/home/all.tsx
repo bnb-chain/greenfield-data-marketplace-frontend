@@ -12,11 +12,6 @@ import {
 import { useGetListed } from '../../hooks/useGetListed';
 import BN from 'bn.js';
 import { useAccount, useSwitchNetwork } from 'wagmi';
-import { useBuy } from '../../hooks/useBuy';
-import { BSC_CHAIN_ID } from '../../env';
-import { BuyResult } from '../modal/buyResult';
-import { useState } from 'react';
-import { useApprove } from '../../hooks/useApprove';
 import { useStatus } from '../../hooks/useStatus';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
@@ -27,15 +22,6 @@ const ActionCom = (obj: any) => {
   const { id, groupName, ownerAddress, type, price } = data;
 
   const { status } = useStatus(groupName, ownerAddress, address);
-
-  const { buy } = useBuy(groupName, ownerAddress, price);
-  const { switchNetwork } = useSwitchNetwork();
-
-  const [open, setOpen] = useState(false);
-  const [variant, setVariant] = useState('');
-  const [description, setDescription] = useState('');
-
-  const { Approve } = useApprove();
 
   const modalData = useModal();
   return (
@@ -63,14 +49,6 @@ const ActionCom = (obj: any) => {
       >
         View detail
       </Button>
-      <BuyResult
-        variant={variant}
-        isOpen={open}
-        handleOpen={() => {
-          setOpen(false);
-        }}
-        description={description}
-      ></BuyResult>
     </ButtonCon>
   );
 };

@@ -25,7 +25,6 @@ const PriceCon = (props: any) => {
   const { groupId } = props;
   const { price } = useListedStatus(groupId);
 
-  console.log(groupId, price);
   let balance = '-';
   if (price) {
     balance = divide10Exp(new BN(price, 10), 18) + ' BNB';
@@ -44,7 +43,7 @@ const CollectionList = () => {
 
   const { address } = useAccount();
   const { list, loading } = useCollectionList();
-
+  console.log(list, '----useCollectionList');
   const modalData = useModal();
 
   const { switchNetwork } = useSwitchNetwork();
@@ -115,12 +114,22 @@ const CollectionList = () => {
                   });
                 } else {
                   console.log(groupId);
-                  try {
-                    await delist(groupId);
-                    toast.success({ description: 'buy successful' });
-                  } catch (e) {
-                    toast.error({ description: 'buy failed' });
-                  }
+                  // try {
+                  // await delist(groupId);
+                  const { bucket_name, create_at, owner } = bucket_info;
+                  modalData.modalDispatch({
+                    type: 'OPEN_DELIST',
+                    delistData: {
+                      groupId,
+                      bucket_name,
+                      create_at,
+                      owner,
+                    },
+                  });
+                  //   toast.success({ description: 'buy successful' });
+                  // } catch (e) {
+                  //   toast.error({ description: 'buy failed' });
+                  // }
                 }
               }}
             >

@@ -3,14 +3,15 @@ import React from 'react';
 export const initialState: any = {
   openList: false,
   openListProcess: false,
-  openListError: false,
   openBuy: false,
   buying: false,
-  buyEnd: false,
-  buyResult: {},
+  openDelist: false,
+  openResult: false,
   listData: {},
   buyData: {},
   initInfo: {},
+  delistData: {},
+  result: {},
   initListStatus: 0,
   initListResult: {},
 };
@@ -21,7 +22,6 @@ export interface ModalState {
   modalState: {
     openList: boolean;
     openListProcess: boolean;
-    openListError: boolean;
     openBuy: boolean;
     buying: boolean;
     listData: object;
@@ -29,8 +29,10 @@ export interface ModalState {
     initInfo: object;
     initListStatus: number;
     initListResult: object;
-    buyEnd: boolean;
-    buyResult: object;
+    openDelist: boolean;
+    delistData: object;
+    openResult: boolean;
+    result: object;
   };
   modalDispatch: React.Dispatch<any>;
 }
@@ -61,18 +63,6 @@ export const ModalReducer = (initialState: any, action: any) => {
         ...initialState,
         openListProcess: false,
       };
-    case 'OPEN_LIST_ERROR':
-      return {
-        ...initialState,
-        openList: false,
-        openListProcess: false,
-        openListError: true,
-      };
-    case 'CLOSE_LIST_ERROR':
-      return {
-        ...initialState,
-        openListError: false,
-      };
     case 'UPDATE_LIST_DATA':
       return { ...initialState, listData: action.listData };
     case 'UPDATE_LIST_STATUS':
@@ -93,25 +83,38 @@ export const ModalReducer = (initialState: any, action: any) => {
         buying: true,
         openBuy: false,
       };
-    case 'BUY_END':
-      return {
-        ...initialState,
-        buying: false,
-        openBuy: false,
-        buyEnd: true,
-        buyResult: action.buyResult,
-      };
-    case 'CLOSE_BUY_END':
-      return {
-        ...initialState,
-        buying: false,
-        openBuy: false,
-        buyEnd: false,
-      };
     case 'CLOSE_BUY':
       return {
         ...initialState,
         openBuy: false,
+      };
+    case 'OPEN_DELIST':
+      return {
+        ...initialState,
+        openDelist: true,
+        delistData: action.delistData,
+      };
+    case 'CLOSE_DELIST':
+      return {
+        ...initialState,
+        openDelist: false,
+      };
+    case 'OPEN_RESULT':
+      return {
+        ...initialState,
+        openList: false,
+        openListProcess: false,
+        openListError: false,
+        openBuy: false,
+        buying: false,
+        openDelist: false,
+        openResult: true,
+        result: action.result,
+      };
+    case 'CLOSE_RESULT':
+      return {
+        ...initialState,
+        openResult: false,
       };
     case 'RESET':
       return defaultState;

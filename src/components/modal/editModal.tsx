@@ -38,7 +38,7 @@ export const EditModal = (props: ListModalProps) => {
   const { isOpen, handleOpen, detail, updateFn } = props;
 
   const { switchNetwork } = useSwitchNetwork();
-  const { GfBalanceVal, BscBalanceVal } = useChainBalance();
+  const { GfBalanceVal } = useChainBalance();
   const modalData = useModal();
 
   const { chain } = useNetwork();
@@ -198,11 +198,6 @@ export const EditModal = (props: ListModalProps) => {
               disabled={!GF_FEE_SUFF || INFO_NO_CHANGE || loading}
               isLoading={loading}
             >
-              {/* {loading ? (
-                <Loader minHeight={20} style={{ color: '#e1a325' }}></Loader>
-              ) : (
-                'Confirm'
-              )} */}
               Confirm
             </Button>
           )}

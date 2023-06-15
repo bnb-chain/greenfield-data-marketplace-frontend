@@ -2,7 +2,7 @@ import { Modal, Flex, ModalCloseButton, Button } from '@totejs/uikit';
 import styled from '@emotion/styled';
 import { ProgressSuccessIcon } from '../svgIcon/ProgressSuccess';
 import { useNavigate } from 'react-router-dom';
-import { MoreIcon } from '@totejs/icons';
+import { MoreIcon, SendIcon } from '@totejs/icons';
 import { useModal } from '../../hooks/useModal';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader } from '../Loader';
@@ -94,8 +94,9 @@ export const ListProcess = (props: ListProcessProps) => {
       <Flex flexDirection={'column'} gap={24} flex={1}>
         <ProgressContainer width={hasRole ? '312' : '412'}>
           <ProgressStep>
-            <ProgressName active={step == 1}>
+            <ProgressName active={step == 1} alignItems={'center'}>
               Initiate on Greenfield
+              {status == 1 && <SendIcon />}
             </ProgressName>
             {step == 0 ? (
               <MoreIconCon>
@@ -106,7 +107,7 @@ export const ListProcess = (props: ListProcessProps) => {
             )}
           </ProgressStep>
           <HorizontalBarFist
-            width={defaultHasRole ? '172' : '114'}
+            width={defaultHasRole ? '160' : '114'}
             status={step && step >= 2 ? true : false}
           />
           {defaultHasRole ? null : (
@@ -128,8 +129,18 @@ export const ListProcess = (props: ListProcessProps) => {
             </>
           )}
           <ProgressStep>
-            <ProgressName active={step && step >= 3 ? true : false}>
+            <ProgressName
+              active={step && step >= 3 ? true : false}
+              alignItems={'center'}
+            >
               Finalize on BSC
+              {status == 1 && (
+                <SendIcon
+                  onClick={() => {
+                    window.open(`https://testnet.bscscan.com/tx/${bscHash}`);
+                  }}
+                />
+              )}
             </ProgressName>
             {step && step >= 3 ? (
               <ProgressSuccessIcon width={32} height={32} />
@@ -139,19 +150,6 @@ export const ListProcess = (props: ListProcessProps) => {
           </ProgressStep>
         </ProgressContainer>
 
-        {status == 1 && (
-          <SuccessCon>
-            <SuccessBut variant="ghost">View in GreenfieldScan</SuccessBut>
-            <SuccessBut
-              variant="ghost"
-              onClick={() => {
-                window.open(`https://testnet.bscscan.com/tx/${bscHash}`);
-              }}
-            >
-              View in BSC
-            </SuccessBut>
-          </SuccessCon>
-        )}
         {loading ? <LoaderCon minHeight={42}></LoaderCon> : null}
         {title && <ModalTitle>{title}</ModalTitle>}
         {description && <ModalDescription>{description}</ModalDescription>}
@@ -173,18 +171,23 @@ export const ListProcess = (props: ListProcessProps) => {
               onClick={async () => {
                 setTitle('Finalize Listing');
                 setStep(2);
-                setDescription('Waiting for transaction status confirmation');
-                await delay(1);
                 console.log(
                   stateModal.modalState.listData,
                   '--------stateModal.modalState.listData',
                 );
                 setLoading(true);
+                let tmp = {};
                 try {
                   const listResult: any = await List(
                     stateModal.modalState.listData as any,
                   );
-                  const { transactionHash } = listResult;
+                  const { status, transactionHash } = listResult as any;
+                  const success = status && transactionHash;
+                  tmp = {
+                    variant: success ? 'success' : 'error',
+                    description: success ? 'List successful' : 'List failed',
+                  };
+
                   if (transactionHash) {
                     batchUpdate(() => {
                       setLoading(false);
@@ -196,7 +199,17 @@ export const ListProcess = (props: ListProcessProps) => {
                       setBscHash(transactionHash);
                     });
                   }
-                } catch (e) {}
+                } catch (e: any) {
+                  tmp = {
+                    variant: 'error',
+                    description: e.message ? e.message : 'List failed',
+                  };
+                }
+
+                stateModal.modalDispatch({
+                  type: 'OPEN_RESULT',
+                  result: tmp,
+                });
               }}
             >
               List to BSC Testnet
@@ -288,7 +301,7 @@ const ProgressStep = styled(Flex)`
   gap: 8px;
 `;
 
-const ProgressName = styled.div<{ active: boolean }>`
+const ProgressName = styled(Flex)<{ active: boolean }>`
   font-size: 12px;
   font-weight: 500;
   line-height: 15px;
@@ -296,6 +309,10 @@ const ProgressName = styled.div<{ active: boolean }>`
     props.active
       ? props.theme.colors.bg?.card
       : props.theme.colors.readable?.pageButton};
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const ProgressIcon = styled(Flex)`
@@ -336,7 +353,7 @@ const HorizontalBarFist = styled.div<{ status: boolean; width: string }>`
     props.status
       ? props.theme.colors.scene.success.progressBar
       : props.theme.colors.readable.top.secondary};
-  left: 77px;
+  left: 84px;
 `;
 
 const HorizontalBarSecond = styled.div<{ status: boolean; hasRole: boolean }>`

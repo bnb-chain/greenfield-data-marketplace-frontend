@@ -33,6 +33,7 @@ export const useBuy = (
         const n = Number(divide10Exp(totalFee, 18));
 
         if (BscBalanceVal >= n) {
+          let tmp = {};
           try {
             const result = await MarketPlaceContract()
               .methods.buy(groupId, address)
@@ -40,12 +41,22 @@ export const useBuy = (
                 from: address,
                 value: totalFee,
               });
-            state.modalDispatch({ type: 'BUY_END', buyResult: result });
-            return result;
-          } catch (e) {
-            state.modalDispatch({ type: 'BUY_END', buyResult: e });
-            return e;
+            const { status, transactionHash } = result as any;
+            const success = status && transactionHash;
+            tmp = {
+              variant: success ? 'success' : 'error',
+              description: success ? 'Buy successful' : 'Buy failed',
+            };
+          } catch (e: any) {
+            tmp = {
+              variant: 'error',
+              description: e.message ? e.message : 'Buy failed',
+            };
           }
+          state.modalDispatch({
+            type: 'OPEN_RESULT',
+            result: tmp,
+          });
         } else {
           return false;
         }

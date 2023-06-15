@@ -210,7 +210,11 @@ export default function ScrollSelect({
   }
 
   return (
-    <Panel>
+    <Panel
+      onClick={(e: any) => {
+        e.stopPropagation();
+      }}
+    >
       {loading ? (
         <Loader />
       ) : displayCell ? (

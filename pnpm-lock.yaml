@@ -7,6 +7,9 @@ dependencies:
   '@bnb-chain/greenfield-chain-sdk':
     specifier: 0.2.1-alpha.12
     version: 0.2.1-alpha.12
+  '@dopex-io/web3-multicall':
+    specifier: ^0.1.9
+    version: 0.1.9(web3@1.10.0)
   '@emotion/react':
     specifier: ^11.11.0
     version: 11.11.0(@types/react@18.2.7)(react@18.2.0)
@@ -2121,6 +2124,14 @@ packages:
       postcss-selector-parser: ^6.0.10
     dependencies:
       postcss-selector-parser: 6.0.13
+    dev: false
+
+  /@dopex-io/web3-multicall@0.1.9(web3@1.10.0):
+    resolution: {integrity: sha512-oLs2x0bdBTvrY83ZzO4v1PXf1If475qoctS5mMSxDtuBwwSd7N8kv/BR+liZF++5r/f+TAfbNJbqsH8NrtQh0w==}
+    peerDependencies:
+      web3: ^1.0.0
+    dependencies:
+      web3: 1.10.0
     dev: false
 
   /@emotion/babel-plugin@11.11.0:

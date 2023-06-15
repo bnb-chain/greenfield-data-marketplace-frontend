@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Button, StateModal } from '@totejs/uikit';
 
-export const BuyResult = (props: any) => {
+export const ActionResult = (props: any) => {
   const { isOpen, handleOpen, variant, description } = props;
   return (
     <Container

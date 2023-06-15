@@ -5,7 +5,8 @@ import styled from '@emotion/styled';
 import { Flex } from '@totejs/uikit';
 import { ListModal } from '../modal/listModal';
 import { ListProcess } from '../modal/listProcess';
-import { ListError } from '../modal/listError';
+import { DelistModal } from '../modal/delistModal';
+import { ActionResult } from '../modal/actionResult';
 import { BuyIndex } from '../modal/buy/index';
 import { useModal } from '../../hooks/useModal';
 
@@ -15,11 +16,10 @@ export default function Layout({ children }: { children: ReactNode }) {
   const {
     openList,
     initInfo,
-    listData,
     openListProcess,
-    openListError,
-    openBuy,
-    buyData,
+    openDelist,
+    openResult,
+    result,
   } = modalData.modalState;
 
   const handleListOpen = useCallback(() => {
@@ -30,12 +30,12 @@ export default function Layout({ children }: { children: ReactNode }) {
     modalData.modalDispatch({ type: 'CLOSE_LIST_PROCESS' });
   }, []);
 
-  const handleListErrorOpen = useCallback(() => {
-    modalData.modalDispatch({ type: 'CLOSE_LIST_ERROR' });
+  const handleDelistOpen = useCallback(() => {
+    modalData.modalDispatch({ type: 'CLOSE_DELIST' });
   }, []);
 
-  const handleBuyOpen = useCallback(() => {
-    modalData.modalDispatch({ type: 'CLOSE_BUY' });
+  const handleResultOpen = useCallback(() => {
+    modalData.modalDispatch({ type: 'CLOSE_RESULT' });
   }, []);
 
   return (
@@ -63,16 +63,22 @@ export default function Layout({ children }: { children: ReactNode }) {
         }}
       ></ListProcess>
 
-      <ListError
-        isOpen={openListError}
-        handleOpen={() => {
-          handleListErrorOpen();
-        }}
-      ></ListError>
-
-      {/* {openBuy && ( */}
       <BuyIndex></BuyIndex>
-      {/* )} */}
+
+      <DelistModal
+        isOpen={openDelist}
+        handleOpen={() => {
+          handleDelistOpen();
+        }}
+      ></DelistModal>
+
+      <ActionResult
+        isOpen={openResult}
+        handleOpen={() => {
+          handleResultOpen();
+        }}
+        {...result}
+      ></ActionResult>
     </>
   );
 }

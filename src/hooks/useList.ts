@@ -192,29 +192,24 @@ export const useList = () => {
 
   const List = useCallback(
     async (obj: { groupName: string; extra: string }) => {
-      try {
-        const { groupName } = obj;
-        const { groupInfo } = await getGroupInfoByName(
-          groupName,
-          address as string,
-        );
+      const { groupName } = obj;
+      const { groupInfo } = await getGroupInfoByName(
+        groupName,
+        address as string,
+      );
 
-        if (!groupInfo) return;
-        const { id } = groupInfo;
-        let { extra } = groupInfo as any;
-        extra = JSON.parse(extra);
-        const { price } = extra;
+      if (!groupInfo) return;
+      const { id } = groupInfo;
+      let { extra } = groupInfo as any;
+      extra = JSON.parse(extra);
+      const { price } = extra;
 
-        const result = await MarketPlaceContract()
-          .methods.list(id, price)
-          .send({ from: address });
+      const result = await MarketPlaceContract()
+        .methods.list(id, price)
+        .send({ from: address });
 
-        console.log(result, '-----list result');
-        return result;
-      } catch (e) {
-        stateModal.modalDispatch({ type: 'OPEN_LIST_ERROR' });
-        return false;
-      }
+      console.log(result, '-----list result');
+      return result;
     },
     [],
   );

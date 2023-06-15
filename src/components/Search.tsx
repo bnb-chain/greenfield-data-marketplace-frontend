@@ -7,6 +7,9 @@ import ScrollSelect from './ScrollSelect';
 import { useDebounce } from '../hooks';
 import { searchKey } from '../utils/gfSDK';
 import { parseGroupName } from '../utils';
+import { multiCallFun } from '../base/contract/multiCall';
+import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
+import { useAccount } from 'wagmi';
 
 const Group = (props: any) => {
   const {
@@ -22,6 +25,8 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
+
+  const { address } = useAccount();
 
   const handleSearchChange = useCallback((v: string) => {
     setSearchValue(v);
@@ -39,7 +44,25 @@ const Search = () => {
       const result: any = await searchKey(searchValue);
       const { groups } = result;
       if (groups.length) {
-        setList(groups);
+        const res = await multiCallFun(
+          groups.map((item: any) => {
+            const {
+              group: { id },
+            } = item;
+            return MarketPlaceContract(false).methods.prices(id);
+          }),
+        );
+        const list: any = res
+          .map((item: string, index: number) => {
+            console.log(item, item.length);
+            if (item.length > 1) {
+              return groups[index];
+            }
+            return false;
+          })
+          .filter((item: any) => !!item);
+
+        setList(list);
       }
       setLoading(false);
     }

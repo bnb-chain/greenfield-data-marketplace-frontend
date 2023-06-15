@@ -33,6 +33,7 @@ export const dark = {
         normal: '#02C076',
         active: '#48FFB8',
         opacity: rgba('#2ED191', 0.1),
+        progressBar: '#02C076',
       },
 
       danger: {
