@@ -13,6 +13,7 @@ import { useModal } from '../../hooks/useModal';
 import { useDelist } from '../../hooks/useDelist';
 import { toast } from '@totejs/uikit';
 import { BN } from 'bn.js';
+import { useNavigate } from 'react-router-dom';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -29,6 +30,10 @@ const ProfileList = (props: any) => {
 
   const modalData = useModal();
   const { delist } = useDelist();
+
+  const { address } = useAccount();
+
+  const navigate = useNavigate();
 
   console.log(list);
   const columns = [
@@ -90,32 +95,43 @@ const ProfileList = (props: any) => {
       header: 'Action',
       cell: (data: any) => {
         const { object_info, listed, groupId } = data;
+        const { owner, id } = object_info;
         return (
           <div>
-            <Button
-              size={'sm'}
-              onClick={async () => {
-                sessionStorage.setItem('resource_type', '1');
-                if (!listed) {
-                  modalData.modalDispatch({
-                    type: 'OPEN_LIST',
-                    initInfo: object_info,
-                  });
-                } else {
-                  console.log(groupId);
-                  try {
-                    await delist(groupId);
-                    toast.success({ description: 'buy successful' });
-                  } catch (e) {
-                    toast.error({ description: 'buy failed' });
+            {owner === address && (
+              <Button
+                size={'sm'}
+                onClick={async () => {
+                  sessionStorage.setItem('resource_type', '1');
+                  if (!listed) {
+                    modalData.modalDispatch({
+                      type: 'OPEN_LIST',
+                      initInfo: object_info,
+                    });
+                  } else {
+                    console.log(groupId);
+                    try {
+                      await delist(groupId);
+                      toast.success({ description: 'buy successful' });
+                    } catch (e) {
+                      toast.error({ description: 'buy failed' });
+                    }
                   }
-                }
-              }}
-            >
-              {!listed ? 'List' : 'Delist'}
-            </Button>
+                }}
+              >
+                {!listed ? 'List' : 'Delist'}
+              </Button>
+            )}
 
-            <Button size={'sm'} style={{ marginLeft: '6px' }}>
+            <Button
+              onClick={() => {
+                navigate(
+                  `/resource?oid=${id}&address=${address}&tab=description`,
+                );
+              }}
+              size={'sm'}
+              style={{ marginLeft: '6px' }}
+            >
               View detail
             </Button>
           </div>

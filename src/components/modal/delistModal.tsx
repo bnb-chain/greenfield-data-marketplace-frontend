@@ -26,7 +26,6 @@ export const DelistModal = (props: any) => {
 
   const { delistData }: { delistData: any } = modalData.modalState;
 
-  console.log(delistData);
   const { object_name, create_at, bucket_name, owner, groupId } = delistData;
 
   const name = object_name || bucket_name;

@@ -11,6 +11,7 @@ import { useAccount } from 'wagmi';
 
 export const useEdit = (address: string, groupName: string, extra: string) => {
   const [simulateInfo, setSimulateInfo] = useState<ISimulateGasFee>();
+  const [simLoading, setSimLoading] = useState(false);
 
   const { connector } = useAccount();
 
@@ -25,16 +26,23 @@ export const useEdit = (address: string, groupName: string, extra: string) => {
         },
         '------edit info',
       );
-      const { simulate, broadcast } = await updateGroupInfo(
-        address,
-        groupName,
-        extra,
-      );
-      const simulateEditInfo = await simulate({
-        denom: 'BNB',
-      });
-      setSimulateInfo(simulateEditInfo);
-      console.log(simulateEditInfo, '-------simulateEditInfo');
+      try {
+        setSimLoading(true);
+        const { simulate, broadcast } = await updateGroupInfo(
+          address,
+          groupName,
+          extra,
+        );
+        const simulateEditInfo = await simulate({
+          denom: 'BNB',
+        });
+        setSimulateInfo(simulateEditInfo);
+
+        console.log(simulateEditInfo, '-------simulateEditInfo');
+      } catch (e) {
+        console.log(e);
+      }
+      setSimLoading(false);
     },
     [address, groupName, extra],
   );
@@ -83,5 +91,6 @@ export const useEdit = (address: string, groupName: string, extra: string) => {
   return {
     edit,
     simulateInfo,
+    simLoading,
   };
 };

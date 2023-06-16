@@ -189,6 +189,7 @@ const DropDown = styled.div`
   height: 370px;
   background: ${(props: any) => props.theme.colors.bg?.middle};
   box-shadow: ${(props: any) => props.theme.shadows.normal};
+  z-index: 11;
 `;
 
 const AddressWrapper = styled.div`

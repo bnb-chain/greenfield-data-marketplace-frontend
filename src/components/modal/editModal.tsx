@@ -81,7 +81,7 @@ export const EditModal = (props: ListModalProps) => {
     });
   }, [desc, imgUrl]);
 
-  const { edit, simulateInfo } = useEdit(
+  const { edit, simulateInfo, simLoading } = useEdit(
     address as string,
     groupName,
     extraStr,
@@ -151,18 +151,24 @@ export const EditModal = (props: ListModalProps) => {
                 <ColoredWarningIcon size="sm" color="#AEB4BC" />
               </ItemSubTittle>
               <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
-                <Fee>{simulateInfo?.gasFee || '-'} BNB</Fee>
-                {GF_FEE_SUFF ? (
-                  <Balance>Greenfield Balance: {GfBalanceVal} BNB </Balance>
+                {simLoading ? (
+                  <Loader size={24}></Loader>
                 ) : (
-                  <BalanceWarn
-                    gap={5}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                  >
-                    <ColoredWarningIcon size="sm" color="#ff6058" />{' '}
-                    Insufficient Greenfield Balance
-                  </BalanceWarn>
+                  <>
+                    <Fee>{simulateInfo?.gasFee || '-'} BNB</Fee>
+                    {GF_FEE_SUFF ? (
+                      <Balance>Greenfield Balance: {GfBalanceVal} BNB </Balance>
+                    ) : (
+                      <BalanceWarn
+                        gap={5}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                      >
+                        <ColoredWarningIcon size="sm" color="#ff6058" />{' '}
+                        Insufficient Greenfield Balance
+                      </BalanceWarn>
+                    )}
+                  </>
                 )}
               </BalanceCon>
             </Item>
@@ -234,6 +240,11 @@ const Header = styled(ModalHeader)`
   text-align: center;
 
   color: #000000;
+`;
+
+const LoaderCon = styled(Loader)`
+  width: 20px;
+  height: 20px;
 `;
 
 const CustomBody = styled(ModalBody)`

@@ -2,11 +2,11 @@ import {
   Box,
   Button,
   Flex,
-  ModalBody,
-  ModalCloseButton,
-  ModalHeader,
-  ModalFooter,
-  Modal,
+  QDrawerBody,
+  QDrawerCloseButton,
+  QDrawerHeader,
+  QDrawerFooter,
+  QDrawer,
 } from '@totejs/uikit';
 import { useModal } from '../../../hooks/useModal';
 import styled from '@emotion/styled';
@@ -24,8 +24,6 @@ import { BN } from 'bn.js';
 import { useBuy } from '../../../hooks/useBuy';
 import { useNetwork, useSwitchNetwork } from 'wagmi';
 import { BSC_CHAIN_ID } from '../../../env';
-import { useHasRole } from '../../../hooks/useHasRole';
-import { useApprove } from '../../../hooks/useApprove';
 
 export const BuyModal = (props: any) => {
   const modalData = useModal();
@@ -43,10 +41,6 @@ export const BuyModal = (props: any) => {
 
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
-
-  const { hasRole, setHasRole } = useHasRole();
-
-  const { Approve } = useApprove();
 
   const priceBNB = useMemo(() => {
     const balance = divide10Exp(new BN(price, 10), 18);
@@ -71,46 +65,47 @@ export const BuyModal = (props: any) => {
   }, [GfBalanceVal, TotalPrice]);
 
   return (
-    <Container isOpen={isOpen} onClose={handleOpen}>
-      <ModalCloseButton />
-      <Header>Check out</Header>
+    <Container isOpen={isOpen} onClose={handleOpen} background={'#ffffff'}>
+      <QDrawerCloseButton />
+      <Header>Checking out</Header>
       <CustomBody>
-        <Box h={10}></Box>
-        <InfoCon gap={26} justifyContent={'flex-start'} alignItems={'center'}>
+        <InfoCon gap={12} justifyContent={'flex-start'} alignItems={'center'}>
           <ImgCon>
             <img src={defaultImg(name, 80)} alt="" />
           </ImgCon>
-          <BaseInfo flexDirection={'column'} alignItems={'flex-start'}>
-            <ResourceNameCon alignItems={'center'}>
-              {name}
-              {type === 'Collection' ? (
-                <Tag justifyContent={'center'} alignItems={'center'}>
-                  Data collection
-                </Tag>
-              ) : null}
-            </ResourceNameCon>
-            {type !== 'Collection' ? (
-              <FileInfo gap={12}>
-                <div>
-                  Collection <span>{groupName}</span>
-                </div>
-              </FileInfo>
-            ) : (
-              <ResourceNum gap={4}>
-                {num} Items listed at
-                {listTime ? (
-                  <CreateTime>{formatDateUTC(listTime * 1000)}</CreateTime>
+          <BaseInfo
+            alignItems={'center'}
+            justifyContent={'space-between'}
+            flex={1}
+          >
+            <LeftInfo>
+              <ResourceNameCon alignItems={'center'} flexDirection={'column'}>
+                {name}
+                {type === 'Collection' ? (
+                  <Tag justifyContent={'center'} alignItems={'center'}>
+                    Data collection
+                  </Tag>
                 ) : null}
-              </ResourceNum>
-            )}
+              </ResourceNameCon>
+              {/* {type !== 'Collection' ? (
+                <FileInfo gap={12}>
+                  <div>
+                    Collection <span>{groupName}</span>
+                  </div>
+                </FileInfo>
+              ) : (
+                <ResourceNum gap={4}>
+                  {num} Items listed at
+                  {listTime ? (
+                    <CreateTime>{formatDateUTC(listTime * 1000)}</CreateTime>
+                  ) : null}
+                </ResourceNum>
+              )} */}
+            </LeftInfo>
+            <ItemPrice>{priceBNB} BNB</ItemPrice>
           </BaseInfo>
         </InfoCon>
-        <Box h={10}></Box>
         <BuyInfo>
-          <ItemCon justifyContent={'space-between'}>
-            <ItemTitle>Price</ItemTitle>
-            <ItemVal>{priceBNB} BNB</ItemVal>
-          </ItemCon>
           <ItemCon justifyContent={'space-between'}>
             <ItemTitle>Gas fee</ItemTitle>
             <ItemVal>{relayFeeBNB} BNB</ItemVal>
@@ -133,20 +128,8 @@ export const BuyModal = (props: any) => {
         </BuyInfo>
       </CustomBody>
       {!BSC_FEE_SUFF && <BalanceWarn>Insufficient Balance</BalanceWarn>}
-      <ModalFooter>
-        {chain && chain.id === BSC_CHAIN_ID && !hasRole && (
-          <Button
-            width={'50%'}
-            onClick={async () => {
-              await Approve();
-              setHasRole(true);
-            }}
-            disabled={!BSC_FEE_SUFF}
-          >
-            Approve
-          </Button>
-        )}
-        {chain && chain.id === BSC_CHAIN_ID && hasRole && (
+      <QDrawerFooter>
+        {chain && chain.id === BSC_CHAIN_ID && (
           <Button
             width={'50%'}
             onClick={() => {
@@ -171,18 +154,19 @@ export const BuyModal = (props: any) => {
         <Cancel width={'50%'} onClick={handleOpen} variant="ghost">
           Cancel
         </Cancel>
-      </ModalFooter>
+      </QDrawerFooter>
     </Container>
   );
 };
 
-const Container = styled(Modal)`
-  .ui-modal-content {
+const Container = styled(QDrawer)`
+  color: red;
+  .ui-drawer-content {
     background: #ffffff;
   }
 `;
 
-const Header = styled(ModalHeader)`
+const Header = styled(QDrawerHeader)`
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
@@ -196,13 +180,27 @@ const Header = styled(ModalHeader)`
   color: #000000;
 `;
 
-const CustomBody = styled(ModalBody)`
-  height: 260px;
+const CustomBody = styled(QDrawerBody)`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const InfoCon = styled(Flex)``;
 
 const BaseInfo = styled(Flex)``;
+
+const LeftInfo = styled.div``;
+
+const ItemPrice = styled.div`
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #5f6368;
+`;
 
 const ImgCon = styled.div`
   width: 80px;
@@ -217,7 +215,7 @@ const ResourceNameCon = styled(Flex)`
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 28px;
 
   color: #5f6368;
@@ -231,14 +229,13 @@ const CreateTime = styled.div`
   line-height: 28px;
 `;
 const Tag = styled(Flex)`
-  margin-left: 16px;
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 8px;
   line-height: 28px;
 
-  width: 73px;
+  width: 60px;
   height: 16px;
 
   background: #d9d9d9;

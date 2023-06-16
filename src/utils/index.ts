@@ -84,15 +84,19 @@ export const generateGroupName = (bucketName: string, objName?: string) => {
 export const parseGroupName = (groupName: string) => {
   let name = groupName;
   let type = 'Collection';
+  let bucketName = '';
   if (name.indexOf('dm_') === 0) {
     if (name.indexOf('dm_o_') === 0) {
       type = 'Data';
     }
-    name = name.split('_').slice(-1)[0];
+    const temp = name.split('_');
+    name = temp.slice(-1)[0];
+    bucketName = temp[2];
   }
   return {
     type,
     name,
+    bucketName,
   };
 };
 

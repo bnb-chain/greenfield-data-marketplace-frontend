@@ -71,7 +71,7 @@ const Resource = () => {
   });
   console.log(groupId, baseInfo);
 
-  const { name, price, url, desc, listed, type } = baseInfo;
+  const { name, price, url, desc, listed, type, bucketName } = baseInfo;
 
   const resourceType = objectId || type === 'Data' ? '0' : '1';
   console.log(resourceType, objectId, type);
@@ -215,7 +215,7 @@ const Resource = () => {
               size={'sm'}
               onClick={() => {
                 window.open(
-                  `https://dcellar-qa.fe.nodereal.cc/buckets/${name}`,
+                  `https://dcellar-qa.fe.nodereal.cc/buckets/${bucketName}`,
                 );
               }}
             >
@@ -229,7 +229,13 @@ const Resource = () => {
       <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
       <Box h={10} w={996}></Box>
       {currentTab === Type.Description ? (
-        <Overview desc={desc}></Overview>
+        <Overview
+          desc={desc}
+          showEdit={address === ownerAddress}
+          editFun={() => {
+            setOpen(true);
+          }}
+        ></Overview>
       ) : (
         <List name={name} listed={listed}></List>
       )}

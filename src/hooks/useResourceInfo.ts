@@ -5,6 +5,7 @@ import {
   getGroupInfoByName,
   headGroupNFT,
   getObjectInfo,
+  getObjectInfoByName,
 } from '../utils/gfSDK';
 import { useListedStatus } from './useListedStatus';
 
@@ -35,10 +36,22 @@ export const useResourceInfo = ({
     const info: any = {};
 
     let bucketInfoRes: any;
-
+    console.log(objectId, '-------objectId111');
+    let objectName = '';
+    let bucketName = '';
+    if (groupName) {
+      const { name, type, bucketName: _ } = parseGroupName(groupName);
+      if (type === 'Data') {
+        objectName = name;
+        bucketName = _;
+      }
+    }
     let objectInfo: any;
     if (objectId) {
+      console.log(objectId, '------objectInfo22');
       objectInfo = await getObjectInfo(objectId);
+
+      objectName = objectInfo.object_name;
     }
     console.log(
       groupId,
@@ -69,13 +82,22 @@ export const useResourceInfo = ({
           : Promise.resolve(false);
 
         Promise.all([_promise, getGroupInfoByName(groupName, address)])
-          .then((result: any) => {
+          .then(async (result: any) => {
             const [listed, groupResult] = result;
             const {
               groupInfo: { extra, owner },
             } = groupResult;
             const { price, url, desc } = JSON.parse(extra);
-            const { name, type } = parseGroupName(groupName as string);
+            const { name, type, bucketName } = parseGroupName(
+              groupName as string,
+            );
+
+            const objectInfo = {};
+            if (objectName && bucketName) {
+              console.log(objectName, bucketName, '-----objectName,bucketName');
+              const obj = await getObjectInfoByName(bucketName, objectName);
+              console.log(obj, '----objectInfo');
+            }
             setBaseInfo({
               name,
               type,
@@ -86,6 +108,7 @@ export const useResourceInfo = ({
               listed,
               groupName,
               extra,
+              bucketName,
             });
           })
           .finally(() => {
