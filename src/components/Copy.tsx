@@ -5,9 +5,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 export interface CopyProps extends BoxProps {
   value?: string;
   children?: React.ReactNode;
+  copyToolTips?: string;
 }
 
-export const Copy = ({ value = '', children, ...restProps }: CopyProps) => {
+export const Copy = ({
+  value = '',
+  copyToolTips,
+  children,
+  ...restProps
+}: CopyProps) => {
   const { hasCopied, setValue, onCopy } = useClipboard(value ?? '');
   const [isHover, setIsHover] = useState(false);
 
@@ -28,7 +34,7 @@ export const Copy = ({ value = '', children, ...restProps }: CopyProps) => {
         Copied
       </Flex>
     ) : (
-      'Copy'
+      copyToolTips || 'Copy'
     );
   }, [hasCopied]);
 

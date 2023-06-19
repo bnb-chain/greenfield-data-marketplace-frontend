@@ -10,6 +10,7 @@ import { parseGroupName } from '../utils';
 import { multiCallFun } from '../base/contract/multiCall';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { useAccount } from 'wagmi';
+import Web3 from 'web3';
 
 const Group = (props: any) => {
   const {
@@ -41,28 +42,32 @@ const Search = () => {
       setList([]);
       console.log(searchValue, '-----searchValue');
       setLoading(true);
-      const result: any = await searchKey(searchValue);
-      const { groups } = result;
-      if (groups.length) {
-        const res = await multiCallFun(
-          groups.map((item: any) => {
-            const {
-              group: { id },
-            } = item;
-            return MarketPlaceContract(false).methods.prices(id);
-          }),
-        );
-        const list: any = res
-          .map((item: string, index: number) => {
-            console.log(item, item.length);
-            if (item.length > 1) {
-              return groups[index];
-            }
-            return false;
-          })
-          .filter((item: any) => !!item);
+      if (Web3.utils.isAddress(searchValue)) {
+        setList([searchValue as never]);
+      } else {
+        const result: any = await searchKey(searchValue);
+        const { groups } = result;
+        if (groups.length) {
+          const res = await multiCallFun(
+            groups.map((item: any) => {
+              const {
+                group: { id },
+              } = item;
+              return MarketPlaceContract(false).methods.prices(id);
+            }),
+          );
+          const list: any = res
+            .map((item: string, index: number) => {
+              console.log(item, item.length);
+              if (item.length > 1) {
+                return groups[index];
+              }
+              return false;
+            })
+            .filter((item: any) => !!item);
 
-        setList(list);
+          setList(list);
+        }
       }
       setLoading(false);
     }
@@ -97,19 +102,33 @@ const Search = () => {
         render,
         link,
       };
+      const addressList = {
+        title: 'Address',
+        list: [],
+        render: (item: string) => {
+          return <div>{item}</div>;
+        },
+        link: (item: string) => {
+          return `profile?address=${item}`;
+        },
+      };
       list.forEach((d: any) => {
-        const {
-          group: { group_name },
-        } = d;
-        const { type } = parseGroupName(group_name);
-        if (type === 'Collection') {
-          collectionList.list.push(d as never);
-        }
-        if (type === 'Data') {
-          dataList.list.push(d as never);
+        if (typeof d === 'string') {
+          addressList.list.push(d as never);
+        } else {
+          const {
+            group: { group_name },
+          } = d;
+          const { type } = parseGroupName(group_name);
+          if (type === 'Collection') {
+            collectionList.list.push(d as never);
+          }
+          if (type === 'Data') {
+            dataList.list.push(d as never);
+          }
         }
       });
-      return [collectionList, dataList];
+      return [collectionList, dataList, addressList];
     }
     return [{ title: '', list: [], render: () => <></>, link: () => '12' }];
   }, [list]);

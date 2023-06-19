@@ -1,17 +1,21 @@
 // import { useCallback, useState, useEffect } from 'react';
 // import { useGetChainProviders } from './useGetChainProviders';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { headGroupNFT } from '../utils/gfSDK';
 import { parseGroupName } from '../utils';
 
-export const useGetListed = () => {
+export const useGetListed = (realAddress?: string) => {
   const [list, setList] = useState(<any>[]);
   const [loading, setLoading] = useState(true);
 
-  const { address } = useAccount();
+  const { address: walletAddress } = useAccount();
+
+  const address = useMemo(() => {
+    return realAddress || walletAddress;
+  }, [walletAddress, realAddress]);
 
   const getList = useCallback(async () => {
     const list = await MarketPlaceContract(false)

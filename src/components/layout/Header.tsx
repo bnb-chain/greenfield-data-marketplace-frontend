@@ -95,16 +95,16 @@ const Header = () => {
                   navigate('/profile?tab=collections');
                 }}
               >
-                <PaperLibraryIcon mr={8} width={24} height={24} /> My profile
+                <PaperLibraryIcon mr={8} width={24} height={24} /> My Profile
               </MenuElement>
-              <MenuElement
+              {/* <MenuElement
                 onClick={async (e: any) => {
                   e.preventDefault();
                   navigate('/profile?tab=purchase');
                 }}
               >
                 <WalletIcon mr={8} width={24} height={24} /> My Purchase
-              </MenuElement>
+              </MenuElement> */}
               {hasRole && (
                 <MenuElement
                   onClick={() => {
@@ -186,7 +186,7 @@ const DropDown = styled.div`
   right: 0;
   border-radius: 12px;
   width: 300px;
-  height: 370px;
+  height: 300px;
   background: ${(props: any) => props.theme.colors.bg?.middle};
   box-shadow: ${(props: any) => props.theme.shadows.normal};
   z-index: 11;

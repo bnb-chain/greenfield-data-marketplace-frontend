@@ -1,7 +1,19 @@
 import { GF_RPC_URL, GF_CHAIN_ID } from '../env';
 import { Client } from '@bnb-chain/greenfield-chain-sdk';
 
-export const client = Client.create(GF_RPC_URL, String(GF_CHAIN_ID));
+export const getSingleton = function () {
+  let client: Client | null;
+  return function () {
+    if (!client) {
+      client = Client.create(GF_RPC_URL, String(GF_CHAIN_ID));
+    }
+    return client;
+  };
+};
+
+export const getClient = getSingleton();
+
+export const client = getClient();
 
 export const getSps = async () => {
   const sps = await client.sp.getStorageProviders();
@@ -29,7 +41,7 @@ export const selectSp = async () => {
   return selectSpInfo;
 };
 
-const getRandomSp = async () => {
+export const getRandomSp = async () => {
   const sps = await client.sp.getStorageProviders();
   const finalSps = (sps ?? []).filter(
     (v: any) => v?.description?.moniker !== 'QATest',
@@ -49,6 +61,30 @@ export const getBucketList = async (address: string) => {
   });
 
   return bucketList;
+};
+
+export const getQuota = async (bucketName: string) => {
+  try {
+    const endpoint = await getRandomSp();
+    const { code, body } = await client.bucket.getBucketReadQuota({
+      bucketName,
+      endpoint,
+    });
+    if (code !== 0 || !body) {
+      console.error(`Get bucket read quota met error. Error code: ${code}`);
+      return null;
+    }
+    const { freeQuota, readQuota, consumedQuota } = body;
+    return {
+      freeQuota,
+      readQuota,
+      consumedQuota,
+    };
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('get bucket read quota error', error);
+    return null;
+  }
 };
 
 export const getBucketFileList = async ({ bucketName }: any) => {
@@ -158,6 +194,10 @@ export const mirrorGroup = async (
 
 export const getCollectionInfo = async (bucketId: string) => {
   return await client.bucket.headBucketById(bucketId);
+};
+
+export const getCollectionInfoByName = async (bucketName: string) => {
+  return await client.bucket.headBucket(bucketName);
 };
 
 export const searchKey = async (key: string) => {

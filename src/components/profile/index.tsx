@@ -1,16 +1,17 @@
 import styled from '@emotion/styled';
 import { NavBar } from '../NavBar';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Box } from '@totejs/uikit';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import CollectionList from './collectionList';
 import PurchaseList from './purchaseList';
+import OtherListedList from './otherListedList';
 
 enum Type {
   Collections = 'collections',
   Purchase = 'purchase',
 }
-const navItems = [
+const _navItems = [
   {
     name: 'My Collections',
     key: Type.Collections,
@@ -21,11 +22,29 @@ const navItems = [
   },
 ];
 
-const ProfileList = () => {
+interface IProfileList {
+  realAddress: string;
+  self: boolean;
+}
+const ProfileList = (props: IProfileList) => {
   const [p] = useSearchParams();
   const tab = p.getAll('tab')[0];
 
   const navigator = useNavigate();
+  const { realAddress, self } = props;
+
+  const [navItems, setNavItems] = useState(_navItems);
+
+  useEffect(() => {
+    if (!self) {
+      const cp = JSON.parse(JSON.stringify(_navItems));
+      cp.splice(1, 1);
+      cp[0].name = 'Data List';
+      setNavItems(cp);
+    } else {
+      setNavItems(_navItems);
+    }
+  }, [realAddress]);
 
   const currentTab = tab ? tab : Type.Collections;
   const handleTabChange = useCallback((tab: any) => {
@@ -36,10 +55,17 @@ const ProfileList = () => {
     <Container>
       <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
       <Box h={20} />
-      {currentTab === Type.Collections ? (
-        <CollectionList></CollectionList>
+      {self ? (
+        currentTab === Type.Collections ? (
+          <CollectionList></CollectionList>
+        ) : (
+          <PurchaseList></PurchaseList>
+        )
       ) : (
-        <PurchaseList></PurchaseList>
+        <OtherListedList
+          realAddress={realAddress}
+          self={self}
+        ></OtherListedList>
       )}
     </Container>
   );

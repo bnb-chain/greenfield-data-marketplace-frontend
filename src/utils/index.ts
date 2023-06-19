@@ -3,6 +3,17 @@ import ReactDOM from 'react-dom';
 import BN from 'bn.js';
 import Identicon from 'identicon.js';
 import sha265 from 'sha256';
+import { toast } from '@totejs/uikit';
+
+import axios, { AxiosResponse } from 'axios';
+import { IRawSPInfo } from './type';
+import { getSpOffChainData } from './off-chain-auth/utils';
+import { getDomain } from './getDomain';
+import { generateGetObjectOptions } from './generateGetObjectOptions';
+import { IReturnOffChainAuthKeyPairAndUpload } from '@bnb-chain/greenfield-chain-sdk';
+import { getUtcZeroTimestamp } from './time';
+
+// import ProgressBarToast from '../components/ProgressBarToast';
 
 export const trimLongStr = (
   str: string,
@@ -113,4 +124,202 @@ export const parseFileSize = (size: number) => {
   index = Math.floor(Math.log(size) / Math.log(1024));
   const _size = size / Math.pow(1024, index);
   return _size.toFixed(2) + unitArr[index];
+};
+
+const getFileExtension = (filename: string): string | undefined => {
+  const dotIndex = filename.lastIndexOf('.');
+  if (dotIndex > 0 && dotIndex < filename.length - 1) {
+    return filename.substring(dotIndex + 1).toUpperCase();
+  } else {
+    return '';
+  }
+};
+
+export const contentTypeToExtension = (contentType = '', fileName?: string) => {
+  if (fileName?.endsWith('/')) return 'FOLDER';
+  switch (contentType) {
+    case 'image/jpeg':
+      return 'JPG';
+    case 'image/png':
+      return 'PNG';
+    case 'image/gif':
+      return 'GIF';
+    case 'application/pdf':
+      return 'PDF';
+    case 'application/msword':
+      return 'DOC';
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+      return 'DOCX';
+    case 'application/vnd.ms-excel':
+      return 'XLS';
+    case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+      return 'XLSX';
+    case 'text/plain':
+      return 'TXT';
+    case 'application/zip':
+      return 'ZIP';
+    case 'application/octet-stream':
+      return 'Document';
+    default:
+      if (fileName && fileName.length > 0) {
+        const fileExtension = getFileExtension(fileName);
+        return fileExtension ? fileExtension : contentType;
+      }
+      return contentType;
+  }
+};
+
+export const downloadWithProgress = async ({
+  bucketName,
+  objectName,
+  primarySp,
+  payloadSize,
+  address,
+}: {
+  bucketName: string;
+  objectName: string;
+  primarySp: IRawSPInfo;
+  payloadSize: number;
+  address: string;
+}) => {
+  try {
+    const domain = getDomain();
+    const { seedString } = await getSpOffChainData({
+      address,
+      spAddress: primarySp.operatorAddress,
+    });
+    const uploadOptions = await generateGetObjectOptions({
+      bucketName,
+      objectName,
+      endpoint: primarySp.endpoint,
+      userAddress: address,
+      domain,
+      seedString,
+    });
+    const { url, headers } = uploadOptions;
+    // const toastId = toast.info({
+    //   description: ``,
+    //   render: (props: any) => {
+    //     return (
+    //       <ProgressBarToast
+    //         progress={0}
+    //         fileName={objectName}
+    //         closeToast={() => {
+    //           toast.close(toastId);
+    //         }}
+    //       />
+    //     );
+    //   },
+    //   duration: -1,
+    // });
+    const result = await axios
+      .get(url, {
+        onDownloadProgress: (progressEvent) => {
+          const progress = Math.round(
+            (progressEvent.loaded / payloadSize) * 100,
+          );
+          // toast.update(toastId, {
+          //   description: ``,
+          //   render: () => {
+          //     return (
+          //       <ProgressBarToast
+          //         progress={progress}
+          //         fileName={objectName}
+          //         closeToast={() => {
+          //           toast.close(toastId);
+          //         }}
+          //       />
+          //     );
+          //   },
+          // });
+          console.log(progress);
+        },
+        headers: {
+          Authorization: headers.get('Authorization'),
+          'X-Gnfd-User-Address': headers.get('X-Gnfd-User-Address'),
+          'X-Gnfd-App-Domain': headers.get('X-Gnfd-App-Domain'),
+        },
+        responseType: 'blob',
+      })
+      .catch((e) => {
+        // toast.close(toastId);
+        throw e;
+      });
+    // toast.close(toastId);
+    return result;
+  } catch (error: any) {
+    throw error;
+  }
+};
+
+export const directlyDownload = (url: string) => {
+  if (!url) {
+    toast.error({
+      description: 'Download url not existed. Please check.',
+    });
+  }
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = '';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+export const truncateFileName = (fileName: string) => {
+  if (!fileName || fileName.length === 0) return '';
+  const maxFileNameLength = 25;
+  const fileExtension = fileName.slice(fileName.lastIndexOf('.'));
+  const fileNameWithoutExtension = fileName.slice(0, fileName.lastIndexOf('.'));
+  const truncatedFileNameLength = maxFileNameLength - fileExtension.length - 4;
+  if (fileName.length <= maxFileNameLength) {
+    return fileName;
+  }
+  return `${fileNameWithoutExtension.slice(
+    0,
+    truncatedFileNameLength,
+  )}...${fileNameWithoutExtension.slice(-4)}${fileExtension}`;
+};
+
+export const encodeObjectName = (obj: string) => {
+  return obj.split('/').map(encodeURIComponent).join('/');
+};
+
+export const viewFileByAxiosResponse = (result: AxiosResponse) => {
+  try {
+    const { data, headers: resultHeaders } = result;
+    const blob = new Blob([data], { type: resultHeaders['content-type'] });
+    const fileURL = URL.createObjectURL(blob);
+    window.open(fileURL);
+  } catch (error) {
+    console.error('view file error', error);
+  }
+};
+
+export const saveFileByAxiosResponse = (
+  result: AxiosResponse,
+  objectName: string,
+) => {
+  try {
+    const { data, headers: resultHeaders } = result;
+    const blob = new Blob([data], { type: resultHeaders['content-type'] });
+    const fileURL = URL.createObjectURL(blob);
+    const fileLink = document.createElement('a');
+    fileLink.href = fileURL;
+    fileLink.download = objectName as string;
+    fileLink.click();
+  } catch (error) {
+    console.error('save file error', error);
+  }
+};
+
+export const checkSpOffChainDataAvailable = (
+  spOffChainData: IReturnOffChainAuthKeyPairAndUpload,
+) => {
+  const curTime = getUtcZeroTimestamp();
+
+  return (
+    Object.keys(spOffChainData).length &&
+    spOffChainData.expirationTime > curTime
+  );
 };

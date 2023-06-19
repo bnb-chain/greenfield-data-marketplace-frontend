@@ -89,6 +89,10 @@ const Resource = () => {
     return status == 1 || status == -1;
   }, [status, address]);
 
+  const showDcellarBut = useMemo(() => {
+    return status == 0 || status == 2;
+  }, [status, address]);
+
   console.log(showBuy, status, address);
   const modalData = useModal();
 
@@ -211,16 +215,18 @@ const Resource = () => {
                 Buy
               </Button>
             )} */}
-            <Button
-              size={'sm'}
-              onClick={() => {
-                window.open(
-                  `https://dcellar-qa.fe.nodereal.cc/buckets/${bucketName}`,
-                );
-              }}
-            >
-              View in Dcellar
-            </Button>
+            {showDcellarBut && (
+              <Button
+                size={'sm'}
+                onClick={() => {
+                  window.open(
+                    `https://dcellar-qa.fe.nodereal.cc/buckets/${bucketName}`,
+                  );
+                }}
+              >
+                View in Dcellar
+              </Button>
+            )}
             {listed ? <BoughtNum>{salesVolume} Bought</BoughtNum> : null}
           </ActionGroup>
         </Info>
@@ -235,6 +241,8 @@ const Resource = () => {
           editFun={() => {
             setOpen(true);
           }}
+          name={name}
+          bucketName={bucketName}
         ></Overview>
       ) : (
         <List name={name} listed={listed}></List>

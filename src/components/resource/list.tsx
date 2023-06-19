@@ -4,7 +4,12 @@ import { Box, Button, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useAccount, useSwitchNetwork } from 'wagmi';
 import { getBucketFileList } from '../../utils/gfSDK';
-import { divide10Exp, formatDateUTC, parseFileSize } from '../../utils/';
+import {
+  contentTypeToExtension,
+  divide10Exp,
+  formatDateUTC,
+  parseFileSize,
+} from '../../utils/';
 import { ListModal } from '../modal/listModal';
 import { GF_CHAIN_ID } from '../../env';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
@@ -53,7 +58,7 @@ const ProfileList = (props: any) => {
         const {
           object_info: { content_type },
         } = data;
-        return <div>{content_type.split('/')[1].toLocaleUpperCase()}</div>;
+        return <div>{contentTypeToExtension(content_type)}</div>;
       },
     },
     {

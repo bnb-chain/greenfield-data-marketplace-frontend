@@ -87,13 +87,20 @@ const TotalVol = (props: ITotalVol) => {
   const { salesVolume } = useSalesVolume(id);
   return <div>{salesVolume}</div>;
 };
-const AllList = () => {
+
+interface IOtherListedList {
+  realAddress: string;
+  self: boolean;
+}
+
+const OtherListedList = (props: IOtherListedList) => {
+  const { realAddress, self } = props;
+
   const { handlePageChange, page } = usePagination();
 
   const navigator = useNavigate();
 
-  const { list, loading } = useGetListed();
-  const { address } = useAccount();
+  const { list, loading } = useGetListed(realAddress);
 
   const columns = [
     {
@@ -156,7 +163,7 @@ const AllList = () => {
     {
       header: 'Action',
       cell: (data: any) => {
-        return <ActionCom data={data} address={address}></ActionCom>;
+        return <ActionCom data={data} address={realAddress}></ActionCom>;
       },
     },
   ];
@@ -182,7 +189,7 @@ const AllList = () => {
   );
 };
 
-export default AllList;
+export default OtherListedList;
 
 const Container = styled.div`
   width: 1123px;

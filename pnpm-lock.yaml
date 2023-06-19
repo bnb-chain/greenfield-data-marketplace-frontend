@@ -94,6 +94,9 @@ dependencies:
   date-fns-tz:
     specifier: ^2.0.0
     version: 2.0.0(date-fns@2.30.0)
+  dayjs:
+    specifier: ^1.11.8
+    version: 1.11.8
   dotenv:
     specifier: ^10.0.0
     version: 10.0.0

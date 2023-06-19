@@ -78,6 +78,9 @@ const NavContainer = styled.div`
 `;
 
 const Nav = styled.nav<INavProps>`
+  font-weight: 700;
+  font-size: 24px;
+
   margin-right: 24px;
   position: relative;
   cursor: pointer;
@@ -116,6 +119,9 @@ const InlineContainer = styled.div`
 `;
 
 const InlineNav = styled.nav<INavProps>`
+  font-weight: 700;
+  font-size: 24px;
+
   margin-right: 24px;
   position: relative;
   cursor: pointer;

@@ -1,39 +1,12 @@
 import styled from '@emotion/styled';
-import { Button, Table } from '@totejs/uikit';
+import { Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
-import { useAccount, useSwitchNetwork } from 'wagmi';
-import { getBucketList } from '../../utils/gfSDK';
-import { GF_CHAIN_ID } from '../../env';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 import { divide10Exp, formatDateUTC, trimLongStr } from '../../utils/';
 import { useUserPurchased } from '../../hooks/useUserPurchased';
 import BN from 'bn.js';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
-
-const ActionCom = (obj: any) => {
-  const navigator = useNavigate();
-  const { data, address } = obj;
-  const { id, groupName, ownerAddress, type, price } = data;
-  const disableBuy = address === ownerAddress;
-  const { switchNetwork } = useSwitchNetwork();
-
-  return (
-    <div>
-      <Button
-        onClick={() => {
-          navigator(
-            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=description`,
-          );
-        }}
-        size={'sm'}
-        style={{ marginLeft: '6px' }}
-      >
-        View detail
-      </Button>
-    </div>
-  );
-};
+import { OwnActionCom } from '../OwnActionCom';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -98,7 +71,9 @@ const PurchaseList = () => {
     {
       header: 'Action',
       cell: (data: any) => {
-        return <ActionCom data={data} address={address}></ActionCom>;
+        return (
+          <OwnActionCom data={data} address={address as string}></OwnActionCom>
+        );
       },
     },
   ];

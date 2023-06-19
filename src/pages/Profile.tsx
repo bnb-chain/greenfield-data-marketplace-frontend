@@ -6,6 +6,10 @@ import ProfileList from '../components/profile/';
 import Identicon from 'identicon.js';
 import sha265 from 'sha256';
 import Logo from '../images/logo.png';
+import { trimLongStr } from '../utils';
+import { useSearchParams } from 'react-router-dom';
+import Web3 from 'web3';
+import { useMemo } from 'react';
 
 const Profile = () => {
   const { address } = useAccount();
@@ -13,6 +17,15 @@ const Profile = () => {
   const sha = sha265((address as string) || 'default');
   const dataBase = new Identicon(sha, 120).toString();
   const url = `data:image/png;base64,${dataBase}`;
+
+  const [p] = useSearchParams();
+  const otherAddress = p.getAll('address')[0];
+
+  const realAddress = useMemo(() => {
+    return otherAddress && Web3.utils.isAddress(otherAddress)
+      ? otherAddress
+      : address;
+  }, [address, otherAddress]);
 
   return (
     <Container>
@@ -22,11 +35,16 @@ const Profile = () => {
         </ImgCon>
         <Info gap={16} alignItems={'center'} justifyContent={'center'}>
           <Icon src={Logo} alt="" />
-          <Address>{address}</Address>
-          <Copy value={address} />
+          <Address>{trimLongStr(realAddress as string)}</Address>
+          <Copy value={realAddress} />
         </Info>
       </PersonInfo>
-      {address && <ProfileList></ProfileList>}
+      {realAddress && (
+        <ProfileList
+          self={realAddress === address}
+          realAddress={realAddress}
+        ></ProfileList>
+      )}
     </Container>
   );
 };
