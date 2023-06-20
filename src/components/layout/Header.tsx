@@ -1,8 +1,22 @@
-import { Button, Flex } from '@totejs/uikit';
+import {
+  Button,
+  Flex,
+  Menu,
+  MenuList,
+  MenuItem,
+  MenuButton,
+  useDisclosure,
+} from '@totejs/uikit';
 import styled from '@emotion/styled';
-import { ConnectKitButton } from 'connectkit';
-import { useCallback, useState } from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
+import { ConnectKitButton, useChains } from 'connectkit';
+import {
+  ForwardedRef,
+  ReactNode,
+  forwardRef,
+  useCallback,
+  useState,
+} from 'react';
+import { useAccount, useDisconnect, useSwitchNetwork, useNetwork } from 'wagmi';
 import { Copy } from '../Copy';
 import { trimLongStr } from '../../utils';
 import ProfileImage from '../svgIcon/ProfileImage';
@@ -12,11 +26,51 @@ import {
   WithdrawIcon,
   WalletIcon,
   PaperLibraryIcon,
+  MenuCloseIcon,
 } from '@totejs/icons';
 import { useNavigate } from 'react-router-dom';
 import { useRevoke } from '../../hooks/useRevoke';
 import { useHasRole } from '../../hooks/useHasRole';
 import LogoGroup from '../../images/logo-group.png';
+import { BSCLogo } from '../svgIcon/BSCLogo';
+import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
+
+const CustomMenuButton = forwardRef(
+  (props: { children: ReactNode }, ref: ForwardedRef<HTMLButtonElement>) => {
+    const { children, ...restProps } = props;
+
+    return (
+      <Button
+        ref={ref}
+        w={206}
+        h={34}
+        background={'rgba(255, 255, 255, 0.22);'}
+        variant="ghost"
+        justifyContent="space-between"
+        px={12}
+        fontWeight={600}
+        fontSize={14}
+        lineHeight={'17px'}
+        border={'none'}
+        mr={1}
+        borderRadius={8}
+        _hover={{
+          background: 'bg.top.normal',
+        }}
+        _expanded={{
+          '.close-icon': {
+            transform: 'rotate(-180deg)',
+          },
+        }}
+        {...restProps}
+      >
+        <BSCLogo></BSCLogo>
+        <Flex align={'center'}>{children}</Flex>
+        <MenuCloseIcon className="close-icon" transitionDuration="normal" />
+      </Button>
+    );
+  },
+);
 
 const Header = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false);
@@ -34,6 +88,11 @@ const Header = () => {
   const { hasRole, setHasRole } = useHasRole();
 
   const navigate = useNavigate();
+  const { isOpen, onClose, onToggle } = useDisclosure();
+  const { switchNetwork } = useSwitchNetwork();
+
+  const { chain } = useNetwork();
+
   return (
     <HeaderFlex
       justifyContent={'space-between'}
@@ -48,56 +107,92 @@ const Header = () => {
       >
         <img src={LogoGroup} alt="logo" width={188} height={38} />
       </ImageContainer>
-      <ButtonWrapper onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <ConnectKitButton.Custom>
-          {({ isConnected, show, address, ensName }) => {
-            return (
-              <StyledButton
+      <NetWorkCon alignItems={'center'} justifyContent={'center'} gap={65}>
+        {address && (
+          <Menu placement="bottom-end">
+            <MenuButton
+              onClick={(item) => {
+                console.log(item);
+                onToggle();
+              }}
+              as={CustomMenuButton}
+            >
+              {chain && chain.id === BSC_CHAIN_ID
+                ? 'BNB Smart Chain'
+                : 'BNB Greenfield'}
+            </MenuButton>
+            <MenuList w={206}>
+              <MenuItem
+                icon={<BSCLogo />}
                 onClick={() => {
-                  if (show && !isConnected) show();
-                }}
-                className={isConnected ? 'connected' : ''}
-              >
-                {isConnected
-                  ? ensName ?? (
-                      <>
-                        <ProfileWrapper gap={10}>
-                          <Profile>
-                            <ProfileImage width={32} height={32} />
-                          </Profile>
-                          <div>
-                            {address ? trimLongStr(address, 10, 6, 4) : ''}
-                          </div>
-                        </ProfileWrapper>
-                      </>
-                    )
-                  : 'Connect Wallet'}
-              </StyledButton>
-            );
-          }}
-        </ConnectKitButton.Custom>
-        {dropDownOpen && isConnected && !isConnecting && (
-          <DropDown>
-            <HeaderProfileBg width={300} height={96}></HeaderProfileBg>
-
-            <ImageWrapper>
-              <ProfileImage width={64} height={64} />
-            </ImageWrapper>
-
-            <AddressWrapper>
-              <Address gap={10} mb={24} height={24}>
-                <div>{address ? trimLongStr(address, 10, 6, 4) : ''}</div>
-                <Copy value={address} />
-              </Address>
-              <MenuElement
-                onClick={async (e: any) => {
-                  e.preventDefault();
-                  navigate('/profile?tab=collections');
+                  switchNetwork?.(BSC_CHAIN_ID);
+                  onClose();
                 }}
               >
-                <PaperLibraryIcon mr={8} width={24} height={24} /> My Profile
-              </MenuElement>
-              {/* <MenuElement
+                BNB Smart Chain
+              </MenuItem>
+              <MenuItem
+                icon={<BSCLogo />}
+                onClick={() => {
+                  switchNetwork?.(GF_CHAIN_ID);
+                  onClose();
+                }}
+              >
+                BNB Greenfield
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )}
+        <ButtonWrapper onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
+          <ConnectKitButton.Custom>
+            {({ isConnected, show, address, ensName }) => {
+              return (
+                <StyledButton
+                  onClick={() => {
+                    if (show && !isConnected) show();
+                  }}
+                  className={isConnected ? 'connected' : ''}
+                >
+                  {isConnected
+                    ? ensName ?? (
+                        <>
+                          <ProfileWrapper gap={10}>
+                            <Profile>
+                              <ProfileImage width={32} height={32} />
+                            </Profile>
+                            <div>
+                              {address ? trimLongStr(address, 10, 6, 4) : ''}
+                            </div>
+                          </ProfileWrapper>
+                        </>
+                      )
+                    : 'Connect Wallet'}
+                </StyledButton>
+              );
+            }}
+          </ConnectKitButton.Custom>
+          {dropDownOpen && isConnected && !isConnecting && (
+            <DropDown>
+              <HeaderProfileBg width={300} height={96}></HeaderProfileBg>
+
+              <ImageWrapper>
+                <ProfileImage width={64} height={64} />
+              </ImageWrapper>
+
+              <AddressWrapper>
+                <Address gap={10} mb={24} height={24}>
+                  <div>{address ? trimLongStr(address, 10, 6, 4) : ''}</div>
+                  <Copy value={address} />
+                </Address>
+                <MenuElement
+                  onClick={async (e: any) => {
+                    e.preventDefault();
+                    navigate('/profile?tab=collections');
+                  }}
+                >
+                  <PaperLibraryIcon mr={8} width={24} height={24} /> My Profile
+                </MenuElement>
+                {/* <MenuElement
                 onClick={async (e: any) => {
                   e.preventDefault();
                   navigate('/profile?tab=purchase');
@@ -105,34 +200,35 @@ const Header = () => {
               >
                 <WalletIcon mr={8} width={24} height={24} /> My Purchase
               </MenuElement> */}
-              {hasRole && (
-                <MenuElement
-                  onClick={() => {
-                    revoke().then(() => {
-                      setHasRole(true);
-                    });
+                {hasRole && (
+                  <MenuElement
+                    onClick={() => {
+                      revoke().then(() => {
+                        setHasRole(true);
+                      });
+                    }}
+                  >
+                    <WalletIcon mr={8} width={24} height={24} /> Revoke
+                  </MenuElement>
+                )}
+                <Disconnect
+                  onClick={async () => {
+                    await disconnect();
                   }}
                 >
-                  <WalletIcon mr={8} width={24} height={24} /> Revoke
-                </MenuElement>
-              )}
-              <Disconnect
-                onClick={async () => {
-                  await disconnect();
-                }}
-              >
-                <WithdrawIcon
-                  mr={8}
-                  width={24}
-                  height={24}
-                  style={{ transform: 'rotate(-90deg)' }}
-                />{' '}
-                Disconnect
-              </Disconnect>
-            </AddressWrapper>
-          </DropDown>
-        )}
-      </ButtonWrapper>
+                  <WithdrawIcon
+                    mr={8}
+                    width={24}
+                    height={24}
+                    style={{ transform: 'rotate(-90deg)' }}
+                  />{' '}
+                  Disconnect
+                </Disconnect>
+              </AddressWrapper>
+            </DropDown>
+          )}
+        </ButtonWrapper>
+      </NetWorkCon>
     </HeaderFlex>
   );
 };
@@ -186,7 +282,7 @@ const DropDown = styled.div`
   right: 0;
   border-radius: 12px;
   width: 300px;
-  height: 300px;
+  height: 330px;
   background: ${(props: any) => props.theme.colors.bg?.middle};
   box-shadow: ${(props: any) => props.theme.shadows.normal};
   z-index: 11;
@@ -267,3 +363,5 @@ const MenuElement = styled.div`
     background: ${(props: any) => props.theme.colors.bg.bottom};
   }
 `;
+
+const NetWorkCon = styled(Flex)``;

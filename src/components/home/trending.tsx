@@ -6,6 +6,7 @@ import { defaultImg, divide10Exp, trimLongStr } from '../../utils';
 import BN from 'bn.js';
 
 import { useTrendingList } from '../../hooks/useTrendingList';
+import { useGlobal } from '../../hooks/useGlobal';
 
 const TrendingList = () => {
   const { handlePageChange, page } = usePagination();
@@ -13,6 +14,8 @@ const TrendingList = () => {
   const navigator = useNavigate();
 
   const { list, loading } = useTrendingList();
+
+  const state = useGlobal();
 
   const columns = [
     {
@@ -25,12 +28,36 @@ const TrendingList = () => {
     {
       header: 'Data Collection',
       cell: (data: any) => {
-        const { name, url } = data;
+        const {
+          name,
+          url,
+          id,
+          metaData: { groupName },
+          ownerAddress,
+        } = data;
         return (
           <ImgContainer
             alignItems={'center'}
             justifyContent={'flex-start'}
             gap={6}
+            onClick={() => {
+              const item = {
+                path: '/',
+                name: 'Data MarketPlace',
+                query: 'tab=trending',
+              };
+              state.globalDispatch({
+                type: 'UPDATE_BREAD',
+                index: 0,
+                item,
+              });
+
+              navigator(
+                `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description&from=${encodeURIComponent(
+                  JSON.stringify([item]),
+                )}`,
+              );
+            }}
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
             {name}

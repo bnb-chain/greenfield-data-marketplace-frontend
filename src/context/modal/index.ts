@@ -70,6 +70,7 @@ export const ModalReducer = (initialState: any, action: any) => {
         ...initialState,
         initListStatus: action.initListStatus,
         initListResult: action.initListResult,
+        listData: action.listData || initialState.listData,
       };
     case 'OPEN_BUY':
       return {

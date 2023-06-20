@@ -17,6 +17,7 @@ import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
 import { OwnActionCom } from '../OwnActionCom';
 import { GoIcon } from '@totejs/icons';
+import { useGlobal } from '../../hooks/useGlobal';
 
 const ActionCom = (obj: any) => {
   const navigator = useNavigate();
@@ -24,6 +25,7 @@ const ActionCom = (obj: any) => {
   const { id, groupName, ownerAddress, type, price } = data;
 
   const { status } = useStatus(groupName, ownerAddress, address);
+  const state = useGlobal();
 
   const modalData = useModal();
   return (
@@ -58,8 +60,20 @@ const ActionCom = (obj: any) => {
           cursor={'pointer'}
           color={'#AEB4BC'}
           onClick={() => {
+            const item = {
+              path: '/',
+              name: 'Data MarketPlace',
+              query: 'tab=all',
+            };
+            state.globalDispatch({
+              type: 'UPDATE_BREAD',
+              index: 0,
+              item,
+            });
             navigator(
-              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description`,
+              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description&from=${encodeURIComponent(
+                JSON.stringify(item),
+              )}`,
             );
           }}
         />
@@ -90,10 +104,8 @@ const TotalVol = (props: ITotalVol) => {
 const AllList = () => {
   const { handlePageChange, page } = usePagination();
 
-  const navigator = useNavigate();
-
-  const { list, loading } = useGetListed();
   const { address } = useAccount();
+  const { list, loading, total } = useGetListed(address, page, 10);
 
   const columns = [
     {
@@ -167,11 +179,11 @@ const AllList = () => {
           20,
           list.length,
         )}  Collections (Total of ${list.length})`}
-        containerStyle={{ padding: 20 }}
+        containerStyle={{ padding: '4px 20px' }}
         pagination={{
           current: page,
-          pageSize: 20,
-          total: list.length,
+          pageSize: 10,
+          total: total,
           onChange: handlePageChange,
         }}
         columns={columns}

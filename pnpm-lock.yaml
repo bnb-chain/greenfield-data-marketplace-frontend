@@ -38,8 +38,8 @@ dependencies:
     specifier: ^2.13.0
     version: 2.13.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
   '@totejs/uikit':
-    specifier: ^2.43.0
-    version: 2.43.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^2.45.0
+    version: 2.45.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
   '@types/jest':
     specifier: ^27.5.2
     version: 27.5.2
@@ -3798,8 +3798,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@totejs/uikit@2.43.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-GC0wnYFlQ71QWaR6zTh0SdfB+0yADt72o1Ls3yfjdlA18jDm8eVbJXvKcmebEXoaMCjaKKQLjM6oG5fIs+T3wQ==}
+  /@totejs/uikit@2.45.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-r7V26wX3TpB3ZcmPCJcYwDRpIgPVkdB4IzM2TRgwGaXQt4nFIu8WXuWN64VqFI/cM90c47egJVe6/dNkK/ykDw==}
     peerDependencies:
       '@emotion/react': '>=11'
       '@emotion/styled': '>=11'

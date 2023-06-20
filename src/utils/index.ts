@@ -323,3 +323,31 @@ export const checkSpOffChainDataAvailable = (
     spOffChainData.expirationTime > curTime
   );
 };
+
+export const getRandomStr = (len: number) => {
+  len = len || 32;
+  const t = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+  const a = t.length;
+  let n = '';
+  for (let i = 0; i < len; i++) n += t.charAt(Math.floor(Math.random() * a));
+  return n;
+};
+
+export const getUrlParam = (paraName: string) => {
+  const url = document.location.toString();
+  const arrObj = url.split('?');
+  if (arrObj.length > 1) {
+    const arrPara = arrObj[1].split('&');
+    let arr;
+    for (let i = 0; i < arrPara.length; i++) {
+      arr = arrPara[i].split('=');
+
+      if (arr != null && arr[0] == paraName) {
+        return arr[1];
+      }
+    }
+    return '';
+  } else {
+    return '';
+  }
+};

@@ -1,14 +1,15 @@
 import { useCallback, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-export const usePagination = () => {
-  const navigate = useNavigate();
-
-  const queryPage = 1;
+export const usePagination = (queryKey = 'p') => {
+  const [p] = useSearchParams();
+  const queryPage = Number(p.get('page') || 1);
 
   const [page, setPage] = useState<number>(
     isNaN(queryPage) || queryPage < 1 ? 1 : queryPage,
   );
+  const [loading, setLoading] = useState(false);
+  const navigator = useNavigate();
 
   useEffect(() => {
     if (isNaN(queryPage)) {
@@ -20,11 +21,23 @@ export const usePagination = () => {
 
   const handlePageChange = useCallback(
     (page: number) => {
-      navigate(`detail`);
-      setPage(page);
+      setLoading(true);
+      const source = `${location.hash.replace('#', '')}`;
+      const hasQuery = source.indexOf('?') > -1;
+      const reg = /page=([\d]+)/g;
+      const hasPage = reg.test(source);
+      const url = hasPage
+        ? source.replace(/page=([\d]+)/g, `page=${page}`)
+        : hasQuery
+        ? `${source}&page=${page}`
+        : `${source}?page=${page}`;
+
+      navigator(`${url}`, {
+        replace: true,
+      });
     },
-    [navigate],
+    [queryKey, p],
   );
 
-  return { handlePageChange, page };
+  return { handlePageChange, page, loading };
 };

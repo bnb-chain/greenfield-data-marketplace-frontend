@@ -1,6 +1,6 @@
 import Header from './Header';
 import Footer from './Footer';
-import { ReactNode, useCallback } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Flex } from '@totejs/uikit';
 import { ListModal } from '../modal/listModal';
@@ -9,6 +9,8 @@ import { DelistModal } from '../modal/delistModal';
 import { ActionResult } from '../modal/actionResult';
 import { BuyIndex } from '../modal/buy/index';
 import { useModal } from '../../hooks/useModal';
+import { useGlobal } from '../../hooks/useGlobal';
+import { getUrlParam } from '../../utils';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const modalData = useModal();
@@ -37,6 +39,19 @@ export default function Layout({ children }: { children: ReactNode }) {
   const handleResultOpen = useCallback(() => {
     modalData.modalDispatch({ type: 'CLOSE_RESULT' });
   }, []);
+  const state = useGlobal();
+
+  useEffect(() => {
+    const from = decodeURIComponent(getUrlParam('from'));
+    try {
+      if (from) {
+        state.globalDispatch({
+          type: 'INIT_BREAD',
+          list: JSON.parse(from),
+        });
+      }
+    } catch (e) {}
+  }, []);
 
   return (
     <>
@@ -45,6 +60,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <Main>{children}</Main>
         <Footer />
       </Container>
+
       {openList && (
         <ListModal
           isOpen={openList}

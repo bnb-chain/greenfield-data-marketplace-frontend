@@ -13,7 +13,7 @@ import {
   selectSp,
 } from '../utils/gfSDK';
 import { GF_CHAIN_ID } from '../env';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import {
   checkSpOffChainDataAvailable,
@@ -30,6 +30,7 @@ import {
 import styled from '@emotion/styled';
 import { Flex, Tooltip, toast, useClipboard } from '@totejs/uikit';
 import { Copy } from './Copy';
+import { useGlobal } from '../hooks/useGlobal';
 
 interface IOwnActionCom {
   data: {
@@ -39,10 +40,11 @@ interface IOwnActionCom {
     type: string;
   };
   address: string;
+  breadInfo?: object;
 }
 export const OwnActionCom = (obj: IOwnActionCom) => {
   const navigator = useNavigate();
-  const { data, address } = obj;
+  const { data, address, breadInfo } = obj;
   const { id, groupName, ownerAddress, type } = data;
 
   const { name, bucketName, type: dataType } = parseGroupName(groupName);
@@ -64,6 +66,9 @@ export const OwnActionCom = (obj: IOwnActionCom) => {
   //         console.log(error);
   //       });
   //   }, []);
+
+  const state = useGlobal();
+  const [p] = useSearchParams();
 
   const [domain, setDomain] = useState('');
 
@@ -181,8 +186,24 @@ export const OwnActionCom = (obj: IOwnActionCom) => {
         cursor={'pointer'}
         color={'#AEB4BC'}
         onClick={() => {
+          let from = '';
+          if (breadInfo) {
+            const list = state.globalState.breadList;
+            const item = {
+              path: (breadInfo as any).path,
+              name: (breadInfo as any).name,
+              query: p.toString(),
+            };
+            state.globalDispatch({
+              type: 'ADD_BREAD',
+              item,
+            });
+
+            from = encodeURIComponent(JSON.stringify(list.concat([item])));
+          }
+          const _from = from ? `&from=${from}` : '';
           navigator(
-            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=description`,
+            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=description${_from}`,
           );
         }}
       />

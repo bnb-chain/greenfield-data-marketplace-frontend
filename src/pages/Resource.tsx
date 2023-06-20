@@ -1,5 +1,12 @@
 import styled from '@emotion/styled';
-import { Flex, Button, Box } from '@totejs/uikit';
+import {
+  Flex,
+  Button,
+  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from '@totejs/uikit';
 import { NavBar } from '../components/NavBar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Overview from '../components/resource/overview';
@@ -17,6 +24,7 @@ import {
   generateGroupName,
   trimLongStr,
   formatDateUTC,
+  parseFileSize,
 } from '../utils';
 import BN from 'bn.js';
 import { useCollectionItems } from '../hooks/useCollectionItems';
@@ -25,17 +33,12 @@ import { useListedDate } from '../hooks/useListedDate';
 import { useStatus } from '../hooks/useStatus';
 import { useModal } from '../hooks/useModal';
 import { PenIcon } from '@totejs/icons';
+import { useGlobal } from '../hooks/useGlobal';
 
 enum Type {
   Description = 'description',
   DataList = 'dataList',
 }
-const navItems = [
-  {
-    name: 'Description',
-    key: Type.Description,
-  },
-];
 
 const Resource = () => {
   const navigator = useNavigate();
@@ -46,8 +49,8 @@ const Resource = () => {
   const objectId = p.getAll('oid')[0];
   const ownerAddress = p.getAll('address')[0];
   const gName = p.getAll('gn')[0];
+  const from = p.getAll('from')[0];
 
-  const { switchNetwork } = useSwitchNetwork();
   const currentTab = tab ? tab : Type.Description;
   const [open, setOpen] = useState(false);
 
@@ -69,21 +72,29 @@ const Resource = () => {
     groupName: gName,
     update,
   });
-  console.log(groupId, baseInfo);
+  console.log(groupId, baseInfo, '-----ResourceInfo');
 
-  const { name, price, url, desc, listed, type, bucketName } = baseInfo;
+  const {
+    name,
+    price,
+    url,
+    desc,
+    listed,
+    type,
+    bucketName,
+    objectInfo,
+    bucketInfo,
+  } = baseInfo;
 
-  const resourceType = objectId || type === 'Data' ? '0' : '1';
-  console.log(resourceType, objectId, type);
   const { num } = useCollectionItems(name);
 
   const { salesVolume } = useSalesVolume(groupId);
 
-  const { listedDate } = useListedDate(groupId);
-
   const { status } = useStatus(gName, ownerAddress, address as string);
 
   const [showEdit, setShowEdit] = useState(false);
+
+  const [breadItems, setBreadItems] = useState<any>([]);
 
   const showBuy = useMemo(() => {
     return status == 1 || status == -1;
@@ -93,40 +104,112 @@ const Resource = () => {
     return status == 0 || status == 2;
   }, [status, address]);
 
+  const resourceType = useMemo(() => {
+    return objectId || type === 'Data' ? '0' : '1';
+  }, [objectId, type]);
+
   console.log(showBuy, status, address);
   const modalData = useModal();
 
+  const title = useMemo(() => {
+    return bucketName === name ? name : `${bucketName} #${name}`;
+  }, [name, bucketName]);
+
+  const state = useGlobal();
+
+  useEffect(() => {
+    const list = state.globalState.breadList;
+    if (list.length) {
+      setBreadItems(
+        list.concat([
+          {
+            name: title,
+            query: '',
+            path: '',
+          },
+        ]),
+      );
+    }
+  }, [state.globalState.breadList, title]);
+
   useEffect(() => {
     return () => {
-      navItems.length > 1 && navItems.pop();
+      state.globalDispatch({ type: 'RESET' });
     };
   }, []);
 
-  if (loading) return <Loader></Loader>;
+  console.log(title, bucketName, name);
+  const navItems = useMemo(() => {
+    const _navItems = [
+      {
+        name: 'Description',
+        key: Type.Description,
+      },
+    ];
+    if ((address === ownerAddress || status == 2) && resourceType === '1') {
+      _navItems.push({
+        name: 'DataList',
+        key: Type.DataList,
+      });
+    }
+    return _navItems;
+  }, [address, ownerAddress, status, resourceType]);
 
-  if ((address === ownerAddress || status == 2) && resourceType === '1') {
-    navItems[1] = {
-      name: 'DataList',
-      key: Type.DataList,
-    };
-  }
+  const CreateTime = useMemo(() => {
+    let obj;
+    if (resourceType === '0') {
+      obj = objectInfo;
+    } else {
+      obj = bucketInfo;
+    }
+    return obj?.createAt?.low;
+  }, [bucketInfo, objectInfo]);
+
+  const fileSize = useMemo(() => {
+    return objectInfo?.payloadSize?.low;
+  }, [objectInfo]);
+
+  if (loading) return <Loader></Loader>;
 
   return (
     <Container>
+      <MyBreadcrumb>
+        {breadItems.map((item: any, index: number) => {
+          return (
+            <MyBreadcrumbItem
+              isCurrentPage={index === breadItems.length - 1}
+              onClick={() => {
+                state.globalDispatch({
+                  type: 'DEL_BREAD',
+                  name: item.name,
+                });
+              }}
+            >
+              <BreadcrumbLink
+                fontSize="16px"
+                href={'/#' + item.path + (item.query ? '?' + item.query : '')}
+              >
+                {item.name}
+              </BreadcrumbLink>
+            </MyBreadcrumbItem>
+          );
+        })}
+      </MyBreadcrumb>
+
       <ResourceInfo gap={20}>
         <ImgCon
           onMouseMove={() => {
-            if (address === ownerAddress) {
+            if (address === ownerAddress && listed) {
               setShowEdit(true);
             }
           }}
           onMouseLeave={() => {
-            if (address === ownerAddress) {
+            if (address === ownerAddress && listed) {
               setShowEdit(false);
             }
           }}
           onClick={() => {
-            if (address === ownerAddress) {
+            if (address === ownerAddress && listed) {
               setOpen(true);
             }
           }}
@@ -144,7 +227,7 @@ const Resource = () => {
           justifyContent={'space-around'}
         >
           <NameCon gap={4} alignItems={'center'} justifyContent={'flex-start'}>
-            <Name>{name}</Name>
+            <Name>{title}</Name>
             {resourceType == '1' ? (
               <Tag alignItems={'center'} justifyContent={'center'}>
                 Data Collection
@@ -152,14 +235,17 @@ const Resource = () => {
             ) : null}
           </NameCon>
           {resourceType == '1' ? <ItemNum>{num} Items</ItemNum> : null}
-          <OwnCon>
+          <OwnCon alignItems={'center'}>
+            {resourceType == '0' && (
+              <FileSize> {parseFileSize(fileSize)} </FileSize>
+            )}
             Created by{' '}
             {address === ownerAddress ? (
               <span>You</span>
             ) : (
               <span>{trimLongStr(ownerAddress)}</span>
             )}{' '}
-            At {formatDateUTC(listedDate * 1000)}
+            At {formatDateUTC(CreateTime * 1000)}
           </OwnCon>
           {listed ? (
             <MarketInfo>{divide10Exp(new BN(price, 10), 18)} BNB</MarketInfo>
@@ -243,9 +329,10 @@ const Resource = () => {
           }}
           name={name}
           bucketName={bucketName}
+          listed={listed}
         ></Overview>
       ) : (
-        <List name={name} listed={listed}></List>
+        <List name={name} listed={listed} bucketName={bucketName}></List>
       )}
       {open && (
         <EditModal
@@ -270,9 +357,23 @@ const Resource = () => {
 export default Resource;
 
 const Container = styled.div`
-  margin-top: 60px;
+  padding-top: 60px;
 `;
-const ResourceInfo = styled(Flex)``;
+const ResourceInfo = styled(Flex)`
+  margin-top: 30px;
+`;
+
+const MyBreadcrumb = styled(Breadcrumb)`
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+
+  color: #ffffff;
+`;
+
+const MyBreadcrumbItem = styled(BreadcrumbItem)``;
 
 const ImgCon = styled.div`
   position: relative;
@@ -334,7 +435,7 @@ const ItemNum = styled.div`
   color: #ffffff;
 `;
 
-const OwnCon = styled.div`
+const OwnCon = styled(Flex)`
   font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 400;
@@ -344,6 +445,7 @@ const OwnCon = styled.div`
   color: #ffffff;
 
   span {
+    margin: 0 4px;
     color: #f0b90b;
   }
 `;
@@ -362,4 +464,15 @@ const BoughtNum = styled.div`
   line-height: 21px;
 
   color: #979797;
+`;
+
+const FileSize = styled.div`
+  margin-right: 6px;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 18px;
+
+  color: #ffffff;
 `;

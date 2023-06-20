@@ -50,6 +50,10 @@ const ActionCom = (obj: any) => {
             type,
           }}
           address={address}
+          breadInfo={{
+            name: 'Address',
+            path: '/profile',
+          }}
         ></OwnActionCom>
       )}
 
@@ -59,7 +63,7 @@ const ActionCom = (obj: any) => {
           color={'#AEB4BC'}
           onClick={() => {
             navigator(
-              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description`,
+              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description&from=otherAddress`,
             );
           }}
         />
@@ -97,10 +101,9 @@ const OtherListedList = (props: IOtherListedList) => {
   const { realAddress, self } = props;
 
   const { handlePageChange, page } = usePagination();
+  const pageSize = 10;
 
-  const navigator = useNavigate();
-
-  const { list, loading } = useGetListed(realAddress);
+  const { list, loading, total } = useGetListed(realAddress, page, pageSize);
 
   const columns = [
     {
@@ -171,14 +174,14 @@ const OtherListedList = (props: IOtherListedList) => {
     <Container>
       <Table
         headerContent={`Latest ${Math.min(
-          20,
+          pageSize,
           list.length,
         )}  Collections (Total of ${list.length})`}
-        containerStyle={{ padding: 20 }}
+        containerStyle={{ padding: '4px 20px' }}
         pagination={{
           current: page,
-          pageSize: 20,
-          total: list.length,
+          pageSize: pageSize,
+          total,
           onChange: handlePageChange,
         }}
         columns={columns}

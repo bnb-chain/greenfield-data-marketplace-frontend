@@ -17,7 +17,9 @@ const TotalVol = (props: any) => {
 const PurchaseList = () => {
   const { handlePageChange, page } = usePagination();
 
-  const { list, loading } = useUserPurchased();
+  const pageSize = 10;
+
+  const { list, loading, total } = useUserPurchased(page, pageSize);
   const { address } = useAccount();
 
   const columns = [
@@ -72,7 +74,14 @@ const PurchaseList = () => {
       header: 'Action',
       cell: (data: any) => {
         return (
-          <OwnActionCom data={data} address={address as string}></OwnActionCom>
+          <OwnActionCom
+            data={data}
+            address={address as string}
+            breadInfo={{
+              name: 'My Purchase',
+              path: '/profile',
+            }}
+          ></OwnActionCom>
         );
       },
     },
@@ -82,14 +91,14 @@ const PurchaseList = () => {
     <Container>
       <Table
         headerContent={`Latest ${Math.min(
-          20,
+          pageSize,
           list.length,
         )}  Collections (Total of ${list.length})`}
-        containerStyle={{ padding: 20 }}
+        containerStyle={{ padding: '4px 20px' }}
         pagination={{
           current: page,
-          pageSize: 20,
-          total: list.length,
+          pageSize: pageSize,
+          total,
           onChange: handlePageChange,
         }}
         columns={columns}

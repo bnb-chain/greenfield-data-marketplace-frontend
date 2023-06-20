@@ -4,7 +4,7 @@ import { usePagination } from '../../hooks/usePagination';
 import { useAccount, useSwitchNetwork } from 'wagmi';
 import { CreateGroup, getBucketList } from '../../utils/gfSDK';
 import { GF_CHAIN_ID } from '../../env';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import {
   defaultImg,
@@ -20,6 +20,7 @@ import { useModal } from '../../hooks/useModal';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useListedStatus } from '../../hooks/useListedStatus';
 import { BN } from 'bn.js';
+import { useGlobal } from '../../hooks/useGlobal';
 
 const PriceCon = (props: any) => {
   const { groupId } = props;
@@ -39,17 +40,21 @@ const TotalVol = (props: any) => {
 };
 
 const CollectionList = () => {
+  const pageSize = 10;
+
   const { handlePageChange, page } = usePagination();
 
   const { address } = useAccount();
-  const { list, loading } = useCollectionList();
-  console.log(list, '----useCollectionList');
+  const { list, loading, total } = useCollectionList(page, pageSize);
+
   const modalData = useModal();
 
   const { switchNetwork } = useSwitchNetwork();
   const navigator = useNavigate();
 
-  const { delist } = useDelist();
+  const state = useGlobal();
+
+  const [p] = useSearchParams();
 
   const columns = [
     {
@@ -141,10 +146,25 @@ const CollectionList = () => {
                   groupId,
                   bucket_info: { id },
                 } = data;
+
+                const list = state.globalState.breadList;
+                const item = {
+                  path: '/profile',
+                  name: 'My Collections',
+                  query: p.toString(),
+                };
+                state.globalDispatch({
+                  type: 'ADD_BREAD',
+                  item,
+                });
+                console.log(
+                  encodeURIComponent(JSON.stringify(list.concat([item]))),
+                );
+
                 navigator(
-                  `/resource?&bid=${id}&address=${address}&tab=description${
-                    groupId ? '&gid=' + groupId : ''
-                  }`,
+                  `/resource?&bid=${id}&address=${address}&tab=description&from=${encodeURIComponent(
+                    JSON.stringify(list.concat([item])),
+                  )}${groupId ? '&gid=' + groupId : ''}`,
                 );
               }}
               size={'sm'}
@@ -161,14 +181,14 @@ const CollectionList = () => {
     <Container>
       <Table
         headerContent={`Latest ${Math.min(
-          20,
+          pageSize,
           list.length,
         )}  Collections (Total of ${list.length})`}
-        containerStyle={{ padding: 20 }}
+        containerStyle={{ padding: '4px 20px' }}
         pagination={{
           current: page,
-          pageSize: 20,
-          total: list.length,
+          pageSize: pageSize,
+          total: total,
           onChange: handlePageChange,
         }}
         columns={columns}

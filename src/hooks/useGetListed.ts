@@ -7,9 +7,10 @@ import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { headGroupNFT } from '../utils/gfSDK';
 import { parseGroupName } from '../utils';
 
-export const useGetListed = (realAddress?: string) => {
+export const useGetListed = (realAddress?: string, page = 0, pageSize = 10) => {
   const [list, setList] = useState(<any>[]);
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
 
   const { address: walletAddress } = useAccount();
 
@@ -18,11 +19,12 @@ export const useGetListed = (realAddress?: string) => {
   }, [walletAddress, realAddress]);
 
   const getList = useCallback(async () => {
+    setLoading(true);
     const list = await MarketPlaceContract(false)
-      .methods.getListed(0, 20)
+      .methods.getListed(page, pageSize)
       .call();
-    const { _ids, _dates } = list;
-    console.log(list);
+    const { _ids, _dates, _totalLength } = list;
+    console.log(list, '----------getListed');
     if (Array.isArray(_ids)) {
       const t = _ids.map((item: any) => {
         return headGroupNFT(item);
@@ -53,14 +55,15 @@ export const useGetListed = (realAddress?: string) => {
         })
         .filter((item) => item);
       setList(result);
+      setTotal(_totalLength);
       console.log(result, '-----getList');
     } else {
       setList([]);
     }
     setLoading(false);
-  }, [address]);
+  }, [address, page, pageSize]);
   useEffect(() => {
     getList();
-  }, [address]);
-  return { loading, list };
+  }, [address, page, pageSize]);
+  return { loading, list, total };
 };

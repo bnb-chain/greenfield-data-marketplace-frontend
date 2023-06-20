@@ -50,9 +50,6 @@ export const ListProcess = (props: ListProcessProps) => {
   const defaultHasRole = hasRole;
 
   console.log(hasRole, '--------hasRole');
-  const init = useCallback(async () => {
-    await delay(1);
-  }, []);
 
   const gfHash = useMemo(() => {
     const d: any = stateModal.modalState?.initListResult;
@@ -66,7 +63,6 @@ export const ListProcess = (props: ListProcessProps) => {
     if (stateModal.modalState.initListStatus) {
       setStep(1);
       setLoading(false);
-      init();
       setTitle(hasRole ? 'Finalize on BSC' : 'Approve on BSC');
     }
   }, [stateModal.modalState.initListStatus]);
@@ -81,7 +77,7 @@ export const ListProcess = (props: ListProcessProps) => {
       title={modalTitle}
       isOpen={isOpen}
       onClose={() => handleOpen(false)}
-      margin={0}
+      margin={'auto'}
     >
       <ModalCloseButton
         color={'bg.card'}
@@ -96,7 +92,13 @@ export const ListProcess = (props: ListProcessProps) => {
           <ProgressStep>
             <ProgressName active={step == 1} alignItems={'center'}>
               Initiate on Greenfield
-              {status == 1 && <SendIcon />}
+              {status == 1 && (
+                <SendIcon
+                  onClick={() => {
+                    window.open(`https://greenfieldscan.com/tx/${gfHash}`);
+                  }}
+                />
+              )}
             </ProgressName>
             {step == 0 ? (
               <MoreIconCon>
@@ -182,11 +184,11 @@ export const ListProcess = (props: ListProcessProps) => {
                     stateModal.modalState.listData as any,
                   );
                   const { status, transactionHash } = listResult as any;
-                  const success = status && transactionHash;
-                  tmp = {
-                    variant: success ? 'success' : 'error',
-                    description: success ? 'List successful' : 'List failed',
-                  };
+                  // const success = status && transactionHash;
+                  // tmp = {
+                  //   variant: success ? 'success' : 'error',
+                  //   description: success ? 'List successful' : 'List failed',
+                  // };
 
                   if (transactionHash) {
                     batchUpdate(() => {
@@ -204,12 +206,11 @@ export const ListProcess = (props: ListProcessProps) => {
                     variant: 'error',
                     description: e.message ? e.message : 'List failed',
                   };
+                  stateModal.modalDispatch({
+                    type: 'OPEN_RESULT',
+                    result: tmp,
+                  });
                 }
-
-                stateModal.modalDispatch({
-                  type: 'OPEN_RESULT',
-                  result: tmp,
-                });
               }}
             >
               List to BSC Testnet
@@ -248,6 +249,13 @@ export const ListProcess = (props: ListProcessProps) => {
 const Container = styled(Modal)`
   border-radius: 12px;
   box-shadow: ${(props: any) => props.theme.colors.shadows?.normal};
+
+  .ui-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .ui-modal-content {
     padding: 48px 24px;
     width: 568px;

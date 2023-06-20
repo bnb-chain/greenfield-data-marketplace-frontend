@@ -10,6 +10,7 @@ import { useAccount } from 'wagmi';
 
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { useModal } from './useModal';
+import { getRandomStr } from '../utils';
 
 export const useList = () => {
   const [simulateInfo, setSimulateInfo] = useState<ISimulateGasFee>();
@@ -29,7 +30,28 @@ export const useList = () => {
       //     initListResult: {},
       //   });
       // }, 3000);
-
+      const { groupName } = obj;
+      const groupResult = await getGroupInfoByName(
+        groupName,
+        address as string,
+      );
+      const { groupInfo } = groupResult;
+      console.log(groupInfo, groupResult, '------groupInfo');
+      // groupname has created
+      if (groupInfo) {
+        // obj.groupName = `${groupName}-${getRandomStr(6)}`;
+        stateModal.modalDispatch({
+          type: 'UPDATE_LIST_STATUS',
+          initListStatus: 1,
+          initListResult: {},
+          // listData: Object.assign(stateModal.modalState.listData, {
+          //   groupName: `${groupName}-${getRandomStr(6)}`,
+          //   extra: obj.extra,
+          // }),
+        });
+        return;
+      }
+      let tmp = {};
       try {
         const { groupName, extra } = obj;
 
@@ -83,14 +105,23 @@ export const useList = () => {
             initListResult: res,
           });
         } else {
-          stateModal.modalDispatch({ type: 'OPEN_LIST_ERROR' });
+          tmp = {
+            variant: 'error',
+            description: 'Mirror failed',
+          };
         }
         return res;
-      } catch (e) {
+      } catch (e: any) {
         console.log(e, '----InitiateList Error');
-        stateModal.modalDispatch({ type: 'OPEN_LIST_ERROR' });
-        return false;
+        tmp = {
+          variant: 'error',
+          description: e.message ? e.message : 'Mirror failed',
+        };
       }
+      stateModal.modalDispatch({
+        type: 'OPEN_RESULT',
+        result: tmp,
+      });
     },
     [connector],
   );
@@ -203,7 +234,7 @@ export const useList = () => {
       let { extra } = groupInfo as any;
       extra = JSON.parse(extra);
       const { price } = extra;
-
+      console.log(id, price, '-------list info');
       const result = await MarketPlaceContract()
         .methods.list(id, price)
         .send({ from: address });

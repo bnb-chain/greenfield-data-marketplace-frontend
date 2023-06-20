@@ -11,10 +11,11 @@ interface IOverView {
   editFun: () => void;
   name: string;
   bucketName?: string;
+  listed?: boolean;
 }
 
 const Overview = (props: IOverView) => {
-  const { desc, showEdit, editFun, name, bucketName } = props;
+  const { desc, showEdit, editFun, name, bucketName, listed } = props;
   const [domain, setDomain] = useState('');
 
   const downloadUrl = useMemo(() => {
@@ -36,7 +37,7 @@ const Overview = (props: IOverView) => {
       <DescBox w={996} alignItems={'center'} justifyItems={'center'}>
         {desc ||
           'DescriptionDecentralized Artificial Intelligence (DAI) is a type of AI system that utilizes Blockchain technology to store and process data. In a DAI system, decision-making processes are decentralized and based on consensus among multiple nodes instead of being controlled by a single central authority. This approach provides a more secure, transparent, and trustworthy alternative to traditional AI systems.'}
-        {showEdit && (
+        {showEdit && listed && (
           <PenCon
             onClick={() => {
               editFun?.();

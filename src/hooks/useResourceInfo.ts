@@ -6,6 +6,7 @@ import {
   headGroupNFT,
   getObjectInfo,
   getObjectInfoByName,
+  getCollectionInfoByName,
 } from '../utils/gfSDK';
 import { useListedStatus } from './useListedStatus';
 
@@ -35,8 +36,7 @@ export const useResourceInfo = ({
   const getBaseInfo = useCallback(async () => {
     const info: any = {};
 
-    let bucketInfoRes: any;
-    console.log(objectId, '-------objectId111');
+    let bucketInfo: any;
     let objectName = '';
     let bucketName = '';
     if (groupName) {
@@ -46,13 +46,7 @@ export const useResourceInfo = ({
         bucketName = _;
       }
     }
-    let objectInfo: any;
-    if (objectId) {
-      console.log(objectId, '------objectInfo22');
-      objectInfo = await getObjectInfo(objectId);
 
-      objectName = objectInfo.object_name;
-    }
     console.log(
       groupId,
       bucketId,
@@ -60,76 +54,116 @@ export const useResourceInfo = ({
       address,
       groupName,
       update,
-      '------useResourceInfo',
+      '------useResourceInfo params',
     );
-    if (bucketId && !groupName) {
-      bucketInfoRes = await getCollectionInfo(bucketId);
-      console.log(bucketInfoRes, '------bucketInfoRes');
-      const {
-        bucketInfo: { bucketName },
-      } = bucketInfoRes;
-      console.log(bucketInfoRes);
-      if (bucketName) {
-        groupName = generateGroupName(bucketName);
+    if (bucketId || bucketName) {
+      let result;
+      if (bucketId) {
+        result = await getCollectionInfo(bucketId);
+      } else {
+        result = await getCollectionInfoByName(bucketName);
+      }
+      bucketInfo = result.bucketInfo;
+      const { bucketName: _bucketName } = bucketInfo;
+      if (_bucketName) {
+        groupName = generateGroupName(_bucketName);
+        bucketName = bucketInfo.bucketName;
       }
     }
 
-    // owner collection & list
-    if (groupName) {
-      if (groupId) {
-        const _promise = groupId
-          ? checkListed(groupId as string)
-          : Promise.resolve(false);
-
-        Promise.all([_promise, getGroupInfoByName(groupName, address)])
-          .then(async (result: any) => {
-            const [listed, groupResult] = result;
-            const {
-              groupInfo: { extra, owner },
-            } = groupResult;
-            const { price, url, desc } = JSON.parse(extra);
-            const { name, type, bucketName } = parseGroupName(
-              groupName as string,
-            );
-
-            const objectInfo = {};
-            if (objectName && bucketName) {
-              console.log(objectName, bucketName, '-----objectName,bucketName');
-              const obj = await getObjectInfoByName(bucketName, objectName);
-              console.log(obj, '----objectInfo');
-            }
-            setBaseInfo({
-              name,
-              type,
-              price,
-              url,
-              desc,
-              owner,
-              listed,
-              groupName,
-              extra,
-              bucketName,
-            });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+    let objectInfo: any;
+    if (objectId || (objectName && bucketName)) {
+      let result;
+      if (objectId) {
+        result = await getObjectInfo(objectId);
       } else {
-        const {
-          bucketInfo: { bucketName, owner },
-        } = bucketInfoRes;
-        setBaseInfo({
-          name: bucketName,
-          listed: false,
-          owner,
-        });
-        setLoading(false);
+        result = await getObjectInfoByName(bucketName, objectName);
       }
+
+      objectInfo = result.objectInfo;
+      objectName = objectInfo.objectName;
+      bucketName = objectInfo.bucketName;
+
+      groupName = generateGroupName(bucketName, objectName);
+    }
+
+    if (groupName && !groupId) {
+      const { groupInfo } = await getGroupInfoByName(groupName, address);
+      groupId = groupInfo?.id;
+      console.log(groupInfo, '----groupInfo');
+    }
+
+    if (groupName && groupId) {
+      const { name, bucketName, type } = parseGroupName(groupName);
+      let result;
+      if (type === 'Collection') {
+        result = await getCollectionInfoByName(bucketName);
+        bucketInfo = result.bucketInfo;
+      } else {
+        result = await getObjectInfoByName(bucketName, name);
+        objectInfo = result.objectInfo;
+      }
+    }
+
+    console.log(
+      groupId,
+      groupName,
+      bucketName,
+      objectName,
+      objectInfo,
+      bucketInfo,
+      '------info',
+    );
+    // owner collection & list
+    if (groupName && groupId) {
+      const _promise = groupId
+        ? checkListed(groupId as string)
+        : Promise.resolve(false);
+
+      Promise.all([_promise, getGroupInfoByName(groupName, address)])
+        .then(async (result: any) => {
+          console.log(result, '------result');
+          const [listed, groupResult] = result;
+          const {
+            groupInfo: { extra, owner },
+          } = groupResult;
+          const { price, url, desc } = JSON.parse(extra);
+
+          setBaseInfo({
+            name: objectName || bucketName,
+            type: objectName ? 'Data' : 'Collection',
+            price,
+            url,
+            desc,
+            owner,
+            listed,
+            groupName,
+            extra,
+            bucketName,
+            objectInfo,
+            bucketInfo,
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setBaseInfo({
+        name: objectName || bucketName,
+        bucketName,
+        listed: false,
+        owner: address,
+        objectInfo,
+        bucketInfo,
+        groupName,
+      });
+      setLoading(false);
     }
 
     console.log(bucketId, info);
   }, [groupId, address, bucketId, objectId, update]);
   useEffect(() => {
+    setLoading(true);
     getBaseInfo();
     // const _promise = groupId
     //   ? Promise.resolve(false)

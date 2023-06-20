@@ -7,18 +7,21 @@ import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { headGroupNFT } from '../utils/gfSDK';
 import { parseGroupName } from '../utils';
 
-export const useUserPurchased = () => {
+export const useUserPurchased = (page: number, pageSize = 10) => {
   const [list, setList] = useState(<any>[]);
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
 
   const { address } = useAccount();
 
   useEffect(() => {
+    setLoading(true);
     MarketPlaceContract(false)
-      .methods.getUserPurchased(address, 0, 20)
+      .methods.getUserPurchased(address, page, pageSize)
       .call({ from: address })
       .then(async (result: any) => {
-        const { _ids, _dates } = result;
+        const { _ids, _dates, _totalLength } = result;
+
         if (Array.isArray(_ids)) {
           const t = _ids.map((item: any) => {
             return headGroupNFT(item);
@@ -46,11 +49,12 @@ export const useUserPurchased = () => {
             .filter((item) => item);
           console.log(result, '---getUserPurchased');
           setList(result);
+          setTotal(_totalLength);
         }
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [address]);
-  return { loading, list };
+  }, [address, page, pageSize]);
+  return { loading, list, total };
 };

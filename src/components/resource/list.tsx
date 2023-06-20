@@ -18,7 +18,8 @@ import { useModal } from '../../hooks/useModal';
 import { useDelist } from '../../hooks/useDelist';
 import { toast } from '@totejs/uikit';
 import { BN } from 'bn.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useGlobal } from '../../hooks/useGlobal';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -27,7 +28,7 @@ const TotalVol = (props: any) => {
 };
 
 const ProfileList = (props: any) => {
-  const { name } = props;
+  const { name, bucketName } = props;
 
   const { list, loading } = useCollectionItems(name);
 
@@ -40,7 +41,10 @@ const ProfileList = (props: any) => {
 
   const navigate = useNavigate();
 
-  console.log(list);
+  const [p] = useSearchParams();
+
+  const state = useGlobal();
+
   const columns = [
     {
       header: 'Data',
@@ -130,8 +134,23 @@ const ProfileList = (props: any) => {
 
             <Button
               onClick={() => {
+                const list = state.globalState.breadList;
+                const item = {
+                  path: '/resource',
+                  name: bucketName || 'Collection',
+                  query: p.toString(),
+                };
+                state.globalDispatch({
+                  type: 'ADD_BREAD',
+                  item,
+                });
+                console.log(
+                  encodeURIComponent(JSON.stringify(list.concat([item]))),
+                );
                 navigate(
-                  `/resource?oid=${id}&address=${address}&tab=description`,
+                  `/resource?oid=${id}&address=${address}&tab=description&from=${encodeURIComponent(
+                    JSON.stringify(list.concat([item])),
+                  )}`,
                 );
               }}
               size={'sm'}
