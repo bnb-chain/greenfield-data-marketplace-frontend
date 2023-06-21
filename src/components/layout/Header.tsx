@@ -8,7 +8,7 @@ import {
   useDisclosure,
 } from '@totejs/uikit';
 import styled from '@emotion/styled';
-import { ConnectKitButton, useChains } from 'connectkit';
+import { ConnectKitButton } from 'connectkit';
 import {
   ForwardedRef,
   ReactNode,
@@ -22,7 +22,7 @@ import { trimLongStr } from '../../utils';
 import ProfileImage from '../svgIcon/ProfileImage';
 import { HeaderProfileBg } from '../svgIcon/HeaderProfileBg';
 import {
-  BookmarkIcon,
+  // BookmarkIcon,
   WithdrawIcon,
   WalletIcon,
   PaperLibraryIcon,
@@ -74,7 +74,7 @@ const CustomMenuButton = forwardRef(
 
 const Header = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false);
-  const { address, isConnected, isConnecting } = useAccount();
+  const { address, isConnecting } = useAccount();
   const { disconnect } = useDisconnect();
   const onMouseEnter = useCallback(() => {
     setDropDownOpen(true);
@@ -88,7 +88,7 @@ const Header = () => {
   const { hasRole, setHasRole } = useHasRole();
 
   const navigate = useNavigate();
-  const { isOpen, onClose, onToggle } = useDisclosure();
+  const { onClose, onToggle } = useDisclosure();
   const { switchNetwork } = useSwitchNetwork();
 
   const { chain } = useNetwork();
@@ -97,7 +97,7 @@ const Header = () => {
     <HeaderFlex
       justifyContent={'space-between'}
       alignItems={'center'}
-      padding={'8px 24px'}
+      padding={'8px 24px 0'}
       height={62}
     >
       <ImageContainer
@@ -147,86 +147,94 @@ const Header = () => {
           <ConnectKitButton.Custom>
             {({ isConnected, show, address, ensName }) => {
               return (
-                <StyledButton
-                  onClick={() => {
-                    if (show && !isConnected) show();
-                  }}
-                  className={isConnected ? 'connected' : ''}
-                >
-                  {isConnected
-                    ? ensName ?? (
-                        <>
-                          <ProfileWrapper gap={10}>
-                            <Profile>
-                              <ProfileImage width={32} height={32} />
-                            </Profile>
-                            <div>
-                              {address ? trimLongStr(address, 10, 6, 4) : ''}
-                            </div>
-                          </ProfileWrapper>
-                        </>
-                      )
-                    : 'Connect Wallet'}
-                </StyledButton>
+                <>
+                  <StyledButton
+                    onClick={() => {
+                      if (show && !isConnected) show();
+                    }}
+                    className={isConnected ? 'connected' : ''}
+                  >
+                    {isConnected
+                      ? ensName ?? (
+                          <>
+                            <ProfileWrapper gap={10}>
+                              <Profile>
+                                <ProfileImage width={32} height={32} />
+                              </Profile>
+                              <div>
+                                {address ? trimLongStr(address, 10, 6, 4) : ''}
+                              </div>
+                            </ProfileWrapper>
+                          </>
+                        )
+                      : 'Connect Wallet'}
+                  </StyledButton>
+                  {dropDownOpen && isConnected && !isConnecting && (
+                    <DropDown>
+                      <HeaderProfileBg
+                        width={300}
+                        height={96}
+                      ></HeaderProfileBg>
+
+                      <ImageWrapper>
+                        <ProfileImage width={64} height={64} />
+                      </ImageWrapper>
+
+                      <AddressWrapper>
+                        <Address gap={10} mb={24} height={24}>
+                          <div>
+                            {address ? trimLongStr(address, 10, 6, 4) : ''}
+                          </div>
+                          <Copy value={address} />
+                        </Address>
+                        <MenuElement
+                          onClick={async (e: any) => {
+                            e.preventDefault();
+                            navigate('/profile?tab=collections');
+                          }}
+                        >
+                          <PaperLibraryIcon mr={8} width={24} height={24} /> My
+                          Profile
+                        </MenuElement>
+                        {/* <MenuElement
+                      onClick={async (e: any) => {
+                        e.preventDefault();
+                        navigate('/profile?tab=purchase');
+                      }}
+                    >
+                      <WalletIcon mr={8} width={24} height={24} /> My Purchase
+                    </MenuElement> */}
+                        {hasRole && (
+                          <MenuElement
+                            onClick={() => {
+                              revoke().then(() => {
+                                setHasRole(true);
+                              });
+                            }}
+                          >
+                            <WalletIcon mr={8} width={24} height={24} /> Revoke
+                          </MenuElement>
+                        )}
+                        <Disconnect
+                          onClick={async () => {
+                            await disconnect();
+                          }}
+                        >
+                          <WithdrawIcon
+                            mr={8}
+                            width={24}
+                            height={24}
+                            style={{ transform: 'rotate(-90deg)' }}
+                          />{' '}
+                          Disconnect
+                        </Disconnect>
+                      </AddressWrapper>
+                    </DropDown>
+                  )}
+                </>
               );
             }}
           </ConnectKitButton.Custom>
-          {dropDownOpen && isConnected && !isConnecting && (
-            <DropDown>
-              <HeaderProfileBg width={300} height={96}></HeaderProfileBg>
-
-              <ImageWrapper>
-                <ProfileImage width={64} height={64} />
-              </ImageWrapper>
-
-              <AddressWrapper>
-                <Address gap={10} mb={24} height={24}>
-                  <div>{address ? trimLongStr(address, 10, 6, 4) : ''}</div>
-                  <Copy value={address} />
-                </Address>
-                <MenuElement
-                  onClick={async (e: any) => {
-                    e.preventDefault();
-                    navigate('/profile?tab=collections');
-                  }}
-                >
-                  <PaperLibraryIcon mr={8} width={24} height={24} /> My Profile
-                </MenuElement>
-                {/* <MenuElement
-                onClick={async (e: any) => {
-                  e.preventDefault();
-                  navigate('/profile?tab=purchase');
-                }}
-              >
-                <WalletIcon mr={8} width={24} height={24} /> My Purchase
-              </MenuElement> */}
-                {hasRole && (
-                  <MenuElement
-                    onClick={() => {
-                      revoke().then(() => {
-                        setHasRole(true);
-                      });
-                    }}
-                  >
-                    <WalletIcon mr={8} width={24} height={24} /> Revoke
-                  </MenuElement>
-                )}
-                <Disconnect
-                  onClick={async () => {
-                    await disconnect();
-                  }}
-                >
-                  <WithdrawIcon
-                    mr={8}
-                    width={24}
-                    height={24}
-                    style={{ transform: 'rotate(-90deg)' }}
-                  />{' '}
-                  Disconnect
-                </Disconnect>
-              </AddressWrapper>
-            </DropDown>
-          )}
         </ButtonWrapper>
       </NetWorkCon>
     </HeaderFlex>
@@ -274,12 +282,14 @@ const StyledButton = styled(Button)`
 
 const ButtonWrapper = styled.div`
   position: relative;
+  padding-bottom: 8px;
 `;
 
 const DropDown = styled.div`
   position: absolute;
   top: calc(100% - 4px);
   right: 0;
+  margin-top: 4px;
   border-radius: 12px;
   width: 300px;
   height: 330px;
