@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.0",
-    "@bnb-chain/greenfield-chain-sdk": "0.2.1-alpha.12",
+    "@bnb-chain/greenfield-chain-sdk": "0.2.1-alpha.14",
     "@dopex-io/web3-multicall": "^0.1.9",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
@@ -15,7 +15,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@totejs/icons": "^2.13.0",
-    "@totejs/uikit": "^2.45.0",
+    "@totejs/uikit": "^2.45.1",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.34",
     "@types/react": "^18.2.7",

@@ -5,8 +5,8 @@ dependencies:
     specifier: ^7.16.0
     version: 7.22.1
   '@bnb-chain/greenfield-chain-sdk':
-    specifier: 0.2.1-alpha.12
-    version: 0.2.1-alpha.12
+    specifier: 0.2.1-alpha.14
+    version: 0.2.1-alpha.14
   '@dopex-io/web3-multicall':
     specifier: ^0.1.9
     version: 0.1.9(web3@1.10.0)
@@ -38,8 +38,8 @@ dependencies:
     specifier: ^2.13.0
     version: 2.13.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
   '@totejs/uikit':
-    specifier: ^2.45.0
-    version: 2.45.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^2.45.1
+    version: 2.45.1(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
   '@types/jest':
     specifier: ^27.5.2
     version: 27.5.2
@@ -1765,8 +1765,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: false
 
-  /@bnb-chain/greenfield-chain-sdk@0.2.1-alpha.12:
-    resolution: {integrity: sha512-0PjHfybuanQPxAdoeukuyRyM3bc0iLBZbMyrRykulMXZ5zo4KNydLE+znb3mB7Yx+zYvDtpC9o+aH/VM/5bX3w==}
+  /@bnb-chain/greenfield-chain-sdk@0.2.1-alpha.14:
+    resolution: {integrity: sha512-2KPeRIRckvyHwR9lz0btKG6HnnHOlAPvHr3vPd3VoIZ/yDopwxtgaiaJqtC8/DhMV77km130mgGepIeDBf+Ieg==}
     engines: {npm: please use pnpm, yarn: please use pnpm}
     dependencies:
       '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.11
@@ -3798,8 +3798,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@totejs/uikit@2.45.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-r7V26wX3TpB3ZcmPCJcYwDRpIgPVkdB4IzM2TRgwGaXQt4nFIu8WXuWN64VqFI/cM90c47egJVe6/dNkK/ykDw==}
+  /@totejs/uikit@2.45.1(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-iJCZFUfhIVg8H3iyQPsbC16t1CaaDIA9lYGmeG068EVenG38ltfy4b1T+UNPHE5mEkI2e8R3T6zx0oF/Ksd5bQ==}
     peerDependencies:
       '@emotion/react': '>=11'
       '@emotion/styled': '>=11'

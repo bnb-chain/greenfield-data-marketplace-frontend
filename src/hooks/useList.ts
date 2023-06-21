@@ -3,14 +3,20 @@ import {
   getGroupInfoByName,
   mirrorGroup,
   multiTx,
+  putBucketPolicy,
+  putObjectPolicy,
 } from '../utils/gfSDK';
-import { ISimulateGasFee } from '@bnb-chain/greenfield-chain-sdk';
+import {
+  ISimulateGasFee,
+  PermissionTypes,
+  TimestampTypes,
+} from '@bnb-chain/greenfield-chain-sdk';
 import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { useModal } from './useModal';
-import { getRandomStr } from '../utils';
+import { parseGroupName } from '../utils';
 
 export const useList = () => {
   const [simulateInfo, setSimulateInfo] = useState<ISimulateGasFee>();
@@ -23,13 +29,6 @@ export const useList = () => {
     async (obj: { groupName: string; extra: string }) => {
       console.log(obj, '----InitiateList params');
 
-      // setTimeout(() => {
-      //   stateModal.modalDispatch({
-      //     type: 'UPDATE_LIST_STATUS',
-      //     initListStatus: 1,
-      //     initListResult: {},
-      //   });
-      // }, 3000);
       const { groupName } = obj;
       const groupResult = await getGroupInfoByName(
         groupName,
@@ -39,15 +38,10 @@ export const useList = () => {
       console.log(groupInfo, groupResult, '------groupInfo');
       // groupname has created
       if (groupInfo) {
-        // obj.groupName = `${groupName}-${getRandomStr(6)}`;
         stateModal.modalDispatch({
           type: 'UPDATE_LIST_STATUS',
           initListStatus: 1,
           initListResult: {},
-          // listData: Object.assign(stateModal.modalState.listData, {
-          //   groupName: `${groupName}-${getRandomStr(6)}`,
-          //   extra: obj.extra,
-          // }),
         });
         return;
       }
@@ -68,9 +62,43 @@ export const useList = () => {
           address as string,
         );
 
+        let policyTx;
+        const { name, bucketName, type } = parseGroupName(groupName);
+
+        if (type === 'Collection') {
+          const statement: PermissionTypes.Statement = {
+            effect: PermissionTypes.Effect.EFFECT_ALLOW,
+            actions: [PermissionTypes.ActionType.ACTION_GET_OBJECT],
+            resources: [''],
+          };
+          policyTx = await putBucketPolicy(bucketName, {
+            operator: address,
+            statements: [statement],
+            principal: {
+              type: PermissionTypes.PrincipalType.PRINCIPAL_TYPE_GNFD_ACCOUNT,
+              value: '0x0000000000000000000000000000000000000001',
+            },
+          });
+        } else {
+          const statement: PermissionTypes.Statement = {
+            effect: PermissionTypes.Effect.EFFECT_ALLOW,
+            actions: [PermissionTypes.ActionType.ACTION_GET_OBJECT],
+            resources: [''],
+          };
+          policyTx = await putObjectPolicy(bucketName, name, {
+            operator: address,
+            statements: [statement],
+            principal: {
+              type: PermissionTypes.PrincipalType.PRINCIPAL_TYPE_GNFD_ACCOUNT,
+              value: '0x0000000000000000000000000000000000000001',
+            },
+          });
+        }
+
         const { simulate, broadcast } = await multiTx([
           createGroupTx,
           mirrorGroupTx,
+          policyTx,
         ]);
 
         const simulateMultiTxInfo = await simulate({
@@ -126,101 +154,6 @@ export const useList = () => {
     [connector],
   );
 
-  const GenGroup = useCallback(
-    async (obj: { groupName: string; extra: string }) => {
-      const { groupName, extra } = obj;
-      console.log(
-        {
-          creator: address as string,
-          groupName: groupName,
-          members: [address as string],
-          extra,
-        },
-        '------crateGroupInfo',
-      );
-      const { simulate, broadcast } = await CreateGroup({
-        creator: address as string,
-        groupName: groupName,
-        members: [address as string],
-        extra,
-      });
-      const simulateGroupInfo = await simulate({
-        denom: 'BNB',
-      });
-      setSimulateInfo(simulateGroupInfo);
-      console.log(simulateGroupInfo, '-------simulateGroupInfo');
-      const res = await broadcast({
-        denom: 'BNB',
-        gasLimit: Number(simulateGroupInfo.gasLimit),
-        gasPrice: simulateGroupInfo.gasPrice,
-        payer: address as string,
-        granter: '',
-        signTypedDataCallback: async (addr: string, message: string) => {
-          console.log(connector);
-          const provider = await connector?.getProvider();
-          return await provider?.request({
-            method: 'eth_signTypedData_v4',
-            params: [addr, message],
-          });
-        },
-      });
-
-      if (res.code === 0) {
-        console.log(res, '-----create group result');
-        alert('create group success');
-      }
-      return res;
-    },
-    [connector],
-  );
-
-  const Mirror = useCallback(
-    async (obj: { groupName: string; extra: string }) => {
-      const { groupName } = obj;
-      const { groupInfo } = await getGroupInfoByName(
-        groupName,
-        address as string,
-      );
-      console.log(groupInfo, '-----group info on chain');
-
-      if (!groupInfo) return;
-
-      const mirrorGroupTx = await mirrorGroup(
-        groupName,
-        groupInfo.id,
-        address as string,
-      );
-
-      const simulateInfo = await mirrorGroupTx.simulate({
-        denom: 'BNB',
-      });
-
-      console.log(simulateInfo, '-----mirrorGroup simulateInfo');
-
-      const res = await mirrorGroupTx.broadcast({
-        denom: 'BNB',
-        gasLimit: Number(simulateInfo.gasLimit),
-        gasPrice: simulateInfo.gasPrice,
-        payer: address as string,
-        granter: '',
-        signTypedDataCallback: async (addr: string, message: string) => {
-          const provider = await connector?.getProvider();
-          return await provider?.request({
-            method: 'eth_signTypedData_v4',
-            params: [addr, message],
-          });
-        },
-      });
-
-      if (res.code === 0) {
-        console.log(res, '-----mirrorGroup result');
-        alert('mirror group success');
-      }
-      return res;
-    },
-    [connector],
-  );
-
   const List = useCallback(
     async (obj: { groupName: string; extra: string }) => {
       const { groupName } = obj;
@@ -248,8 +181,6 @@ export const useList = () => {
   return {
     InitiateList,
     simulateInfo,
-    GenGroup,
-    Mirror,
     List,
   };
 };

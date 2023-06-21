@@ -112,6 +112,18 @@ export const CreateGroup = async (params: MsgCreateGroup) => {
   return await client.group.createGroup(params);
 };
 
+export const putObjectPolicy = async (
+  bucketName: string,
+  ObjectName: string,
+  srcMsg: any,
+) => {
+  return await client.object.putObjectPolicy(bucketName, ObjectName, srcMsg);
+};
+
+export const putBucketPolicy = async (bucketName: string, srcMsg: any) => {
+  return await client.bucket.putBucketPolicy(bucketName, srcMsg);
+};
+
 export const getGroupInfoByName = async (
   groupName: string,
   groupOwner: string,

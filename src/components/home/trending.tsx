@@ -101,20 +101,12 @@ const TrendingList = () => {
   return (
     <Container>
       <Table
-        headerContent={`Latest ${Math.min(
-          20,
-          list.length,
-        )}  Collections (Total of ${list.length})`}
-        containerStyle={{ padding: 20 }}
-        pagination={{
-          current: page,
-          pageSize: 20,
-          total: list.length,
-          onChange: handlePageChange,
-        }}
+        containerStyle={{ padding: '4px 16px', background: '#1E2026' }}
         columns={columns}
         data={list}
         loading={loading}
+        hoverBg={'#14151A'}
+        withContainer={true}
       />
     </Container>
   );

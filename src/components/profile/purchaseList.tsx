@@ -18,7 +18,6 @@ const PurchaseList = () => {
   const { handlePageChange, page } = usePagination();
 
   const pageSize = 10;
-
   const { list, loading, total } = useUserPurchased(page, pageSize);
   const { address } = useAccount();
 

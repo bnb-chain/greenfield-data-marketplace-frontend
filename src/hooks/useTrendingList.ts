@@ -55,6 +55,8 @@ export const useTrendingList = () => {
           });
           console.log(result, '---useTrendingList');
           setList(result);
+        } else {
+          setLoading(false);
         }
       })
       .finally(() => {

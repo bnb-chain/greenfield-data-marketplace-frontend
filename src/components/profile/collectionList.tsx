@@ -2,20 +2,11 @@ import styled from '@emotion/styled';
 import { Button, Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useAccount, useSwitchNetwork } from 'wagmi';
-import { CreateGroup, getBucketList } from '../../utils/gfSDK';
 import { GF_CHAIN_ID } from '../../env';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
-import {
-  defaultImg,
-  divide10Exp,
-  formatDateUTC,
-  generateGroupName,
-} from '../../utils/';
+import { defaultImg, divide10Exp, formatDateUTC } from '../../utils/';
 
 import { useCollectionList } from '../../hooks/useCollectionList';
-import { useDelist } from '../../hooks/useDelist';
-import { toast } from '@totejs/uikit';
 import { useModal } from '../../hooks/useModal';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useListedStatus } from '../../hooks/useListedStatus';
@@ -46,7 +37,7 @@ const CollectionList = () => {
 
   const { address } = useAccount();
   const { list, loading, total } = useCollectionList(page, pageSize);
-
+  console.log(list, '-----list');
   const modalData = useModal();
 
   const { switchNetwork } = useSwitchNetwork();
@@ -105,7 +96,6 @@ const CollectionList = () => {
       header: 'Action',
       cell: (data: any) => {
         const { bucket_info, listed, groupId } = data;
-        console.log(data);
         return (
           <div>
             <Button

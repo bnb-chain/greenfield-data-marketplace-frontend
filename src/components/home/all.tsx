@@ -6,12 +6,11 @@ import {
   formatDateUTC,
   trimLongStr,
   divide10Exp,
-  delay,
   defaultImg,
 } from '../../utils';
 import { useGetListed } from '../../hooks/useGetListed';
 import BN from 'bn.js';
-import { useAccount, useSwitchNetwork } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useStatus } from '../../hooks/useStatus';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
@@ -22,7 +21,7 @@ import { useGlobal } from '../../hooks/useGlobal';
 const ActionCom = (obj: any) => {
   const navigator = useNavigate();
   const { data, address } = obj;
-  const { id, groupName, ownerAddress, type, price } = data;
+  const { id, groupName, ownerAddress, type } = data;
 
   const { status } = useStatus(groupName, ownerAddress, address);
   const state = useGlobal();

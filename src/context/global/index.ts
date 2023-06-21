@@ -1,4 +1,5 @@
 import React from 'react';
+import { getUrlParam } from '../../utils';
 
 export const initialState: any = {
   breadList: [
@@ -16,6 +17,12 @@ interface IBread {
   name: string;
 }
 export const defaultState: any = JSON.parse(JSON.stringify(initialState));
+
+try {
+  const from = decodeURIComponent(getUrlParam('from'));
+  initialState.breadList = JSON.parse(from);
+  console.log(initialState, '-------------initialState');
+} catch (e) {}
 
 export interface GlobalState {
   globalState: {

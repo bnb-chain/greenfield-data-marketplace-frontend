@@ -6,12 +6,10 @@ import {
   formatDateUTC,
   trimLongStr,
   divide10Exp,
-  delay,
   defaultImg,
 } from '../../utils';
-import { useGetListed } from '../../hooks/useGetListed';
+import { useUserListed } from '../../hooks/useUserListed';
 import BN from 'bn.js';
-import { useAccount, useSwitchNetwork } from 'wagmi';
 import { useStatus } from '../../hooks/useStatus';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
@@ -21,7 +19,7 @@ import { GoIcon } from '@totejs/icons';
 const ActionCom = (obj: any) => {
   const navigator = useNavigate();
   const { data, address } = obj;
-  const { id, groupName, ownerAddress, type, price } = data;
+  const { id, groupName, ownerAddress, type } = data;
 
   const { status } = useStatus(groupName, ownerAddress, address);
 
@@ -98,12 +96,12 @@ interface IOtherListedList {
 }
 
 const OtherListedList = (props: IOtherListedList) => {
-  const { realAddress, self } = props;
+  const { realAddress } = props;
 
   const { handlePageChange, page } = usePagination();
   const pageSize = 10;
 
-  const { list, loading, total } = useGetListed(realAddress, page, pageSize);
+  const { list, loading, total } = useUserListed(realAddress, page, pageSize);
 
   const columns = [
     {

@@ -119,6 +119,7 @@ const Resource = () => {
 
   useEffect(() => {
     const list = state.globalState.breadList;
+    console.log(list, '----------setBreadItems');
     if (list.length) {
       setBreadItems(
         list.concat([
@@ -131,12 +132,6 @@ const Resource = () => {
       );
     }
   }, [state.globalState.breadList, title]);
-
-  useEffect(() => {
-    return () => {
-      state.globalDispatch({ type: 'RESET' });
-    };
-  }, []);
 
   console.log(title, bucketName, name);
   const navItems = useMemo(() => {
@@ -189,7 +184,7 @@ const Resource = () => {
                 fontSize="16px"
                 href={'/#' + item.path + (item.query ? '?' + item.query : '')}
               >
-                {item.name}
+                {item?.name?.replace('+', ' ')}
               </BreadcrumbLink>
             </MyBreadcrumbItem>
           );

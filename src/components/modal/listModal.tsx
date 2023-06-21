@@ -26,6 +26,7 @@ import {
   delay,
   formatDateUTC,
   generateGroupName,
+  parseFileSize,
 } from '../../utils';
 import Web3 from 'web3';
 import { useApprove } from '../../hooks/useApprove';
@@ -126,7 +127,7 @@ export const ListModal = (props: ListModalProps) => {
             </ResourceNameCon>
             {object_name ? (
               <FileInfo gap={12}>
-                <span>{detail.payload_size} </span>
+                <span>{parseFileSize(detail.payload_size)} </span>
                 <div>
                   Collection <span>{bucket_name}</span>
                 </div>

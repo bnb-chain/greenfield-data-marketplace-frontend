@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "es2015",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -22,10 +18,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "baseUrl": ".",
+    "baseUrl": "."
   },
-  "include": [
-     "**/*.ts", "**/*.tsx","*.ts","*.tsx"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", "*.ts", "*.tsx"],
   "exclude": ["node_modules"]
 }

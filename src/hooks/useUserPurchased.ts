@@ -17,11 +17,10 @@ export const useUserPurchased = (page: number, pageSize = 10) => {
   useEffect(() => {
     setLoading(true);
     MarketPlaceContract(false)
-      .methods.getUserPurchased(address, page, pageSize)
+      .methods.getUserPurchased(address, (page - 1) * pageSize, pageSize)
       .call({ from: address })
       .then(async (result: any) => {
         const { _ids, _dates, _totalLength } = result;
-
         if (Array.isArray(_ids)) {
           const t = _ids.map((item: any) => {
             return headGroupNFT(item);
@@ -50,6 +49,8 @@ export const useUserPurchased = (page: number, pageSize = 10) => {
           console.log(result, '---getUserPurchased');
           setList(result);
           setTotal(_totalLength);
+        } else {
+          setLoading(false);
         }
       })
       .finally(() => {

@@ -21,7 +21,7 @@ export const useGetListed = (realAddress?: string, page = 0, pageSize = 10) => {
   const getList = useCallback(async () => {
     setLoading(true);
     const list = await MarketPlaceContract(false)
-      .methods.getListed(page, pageSize)
+      .methods.getListed((page - 1) * pageSize, pageSize)
       .call();
     const { _ids, _dates, _totalLength } = list;
     console.log(list, '----------getListed');

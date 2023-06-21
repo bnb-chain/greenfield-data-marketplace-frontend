@@ -11,6 +11,7 @@ import Layout from './components/layout';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Resource from './pages/Resource';
+import Folder from './pages/Folder';
 import { theme } from './theme';
 import { Route, Routes, HashRouter } from 'react-router-dom';
 import { ModalProvider } from './context/modal';
@@ -19,6 +20,8 @@ import { GlobalProvider } from './context/global';
 import './base/global.css';
 
 import * as env from './env';
+
+import RouteGuard from './router/index';
 
 const routes = [
   {
@@ -32,6 +35,10 @@ const routes = [
   {
     path: '/resource',
     element: <Resource></Resource>,
+  },
+  {
+    path: '/folder',
+    element: <Folder></Folder>,
   },
 ];
 
@@ -131,7 +138,12 @@ function App() {
                 <Layout>
                   <Routes>
                     {routes.map((item: any) => {
-                      return <Route path={item.path} element={item.element} />;
+                      return (
+                        <Route
+                          path={item.path}
+                          element={<RouteGuard>{item.element}</RouteGuard>}
+                        />
+                      );
                     })}
                   </Routes>
                 </Layout>

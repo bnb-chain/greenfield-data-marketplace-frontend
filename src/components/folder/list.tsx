@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useAccount, useSwitchNetwork } from 'wagmi';
@@ -12,7 +12,7 @@ import {
 } from '../../utils/';
 import { ListModal } from '../modal/listModal';
 import { GF_CHAIN_ID } from '../../env';
-import { useCollectionItems } from '../../hooks/useCollectionItems';
+import { useCollectionItems, cache } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
 import { useDelist } from '../../hooks/useDelist';
@@ -28,8 +28,8 @@ const TotalVol = (props: any) => {
   return <div>{salesVolume}</div>;
 };
 
-const ProfileList = (props: any) => {
-  const { name, bucketName } = props;
+const List = (props: any) => {
+  const { name, bucketName, folderGroup, folder } = props;
 
   const { list, loading } = useCollectionItems(name);
 
@@ -50,6 +50,17 @@ const ProfileList = (props: any) => {
 
   const navigator = useNavigate();
 
+  const folderList = useMemo(() => {
+    const tree = cache[name];
+    if (tree) {
+      const result = tree.getDepItem(folderGroup);
+      const tt = result ? result : [];
+      return tt;
+    }
+    return [];
+  }, [list, folderGroup]);
+
+  console.log(folderList, folderGroup, '0---------folderList');
   const columns = [
     {
       header: 'Data',
@@ -123,8 +134,8 @@ const ProfileList = (props: any) => {
               onClick={() => {
                 const list = state.globalState.breadList;
                 const item = {
-                  path: '/resource',
-                  name: bucketName,
+                  path: '/folder',
+                  name: folder,
                   query: p.toString(),
                 };
                 state.globalDispatch({
@@ -137,7 +148,9 @@ const ProfileList = (props: any) => {
                 );
 
                 navigator(
-                  `/folder?bid=${bucketId}&f=${name}&address=${ownerAddress}&from=${from}`,
+                  `/folder?bid=${bucketId}&address=${ownerAddress}&f=${
+                    folderGroup + '-' + name
+                  }&from=${from}`,
                 );
               }}
             />
@@ -174,8 +187,8 @@ const ProfileList = (props: any) => {
               onClick={() => {
                 const list = state.globalState.breadList;
                 const item = {
-                  path: '/resource',
-                  name: bucketName || 'Collection',
+                  path: '/folder',
+                  name: folder || 'Collection',
                   query: p.toString(),
                 };
                 state.globalDispatch({
@@ -205,26 +218,28 @@ const ProfileList = (props: any) => {
     <Container>
       <Box h={10} />
       <Table
-        headerContent={`Latest ${Math.min(20, list.length)}  Data (Total of ${
-          list.length
-        })`}
+        headerContent={`Latest ${Math.min(
+          20,
+          folderList.length,
+        )}  Data (Total of ${folderList.length})`}
         containerStyle={{ padding: 20 }}
         pagination={{
           current: page,
           pageSize: 20,
-          total: list.length,
+          total: folderList.length,
           onChange: handlePageChange,
         }}
         columns={columns}
-        data={list}
+        data={folderList}
         loading={loading}
       />
     </Container>
   );
 };
 
-export default ProfileList;
+export default List;
 
 const Container = styled.div`
+  margin-top: 60px;
   width: 996px;
 `;
