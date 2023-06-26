@@ -11,7 +11,7 @@ import { NavBar } from '../components/NavBar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Overview from '../components/resource/overview';
 import List from '../components/folder/list';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { EditModal } from '../components/modal/editModal';
 import { GF_CHAIN_ID } from '../env';
 import { useAccount, useSwitchNetwork } from 'wagmi';
@@ -99,11 +99,12 @@ const Folder = () => {
                 });
               }}
             >
-              <BreadcrumbLink
-                fontSize="16px"
-                href={'/#' + item.path + (item.query ? '?' + item.query : '')}
-              >
-                {item?.name?.replace('+', ' ')}
+              <BreadcrumbLink fontSize="16px">
+                <Link
+                  to={`${item.path}` + (item.query ? '?' + item.query : '')}
+                >
+                  {item?.name?.replace('+', ' ')}
+                </Link>
               </BreadcrumbLink>
             </MyBreadcrumbItem>
           );

@@ -68,8 +68,8 @@ export const useList = () => {
         };
 
         const principal = {
-          type: PermissionTypes.PrincipalType.PRINCIPAL_TYPE_GNFD_ACCOUNT,
-          value: '0x0000000000000000000000000000000000000001',
+          type: PermissionTypes.PrincipalType.PRINCIPAL_TYPE_GNFD_GROUP,
+          value: groupName,
         };
         if (type === 'Collection') {
           policyTx = await putBucketPolicy(bucketName, {

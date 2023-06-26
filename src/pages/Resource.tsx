@@ -183,11 +183,12 @@ const Resource = () => {
                 });
               }}
             >
-              <BreadcrumbLink
-                fontSize="16px"
-                href={'/#' + item.path + (item.query ? '?' + item.query : '')}
-              >
-                {item?.name?.replace('+', ' ')}
+              <BreadcrumbLink fontSize="16px">
+                <Link
+                  to={`${item.path}` + (item.query ? '?' + item.query : '')}
+                >
+                  {item?.name?.replace('+', ' ')}
+                </Link>
               </BreadcrumbLink>
             </MyBreadcrumbItem>
           );
