@@ -1,18 +1,14 @@
 import { Modal, Flex, ModalCloseButton, Button } from '@totejs/uikit';
 import styled from '@emotion/styled';
 import { ProgressSuccessIcon } from '../svgIcon/ProgressSuccess';
-import { useNavigate } from 'react-router-dom';
+
 import { MoreIcon, SendIcon } from '@totejs/icons';
 import { useModal } from '../../hooks/useModal';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader } from '../Loader';
-import { batchUpdate, delay } from '../../utils';
-import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
-import {
-  BSC_CHAIN_ID,
-  GROUP_HUB_CONTRACT_ADDRESS,
-  MARKETPLACE_CONTRACT_ADDRESS,
-} from '../../env';
+import { batchUpdate } from '../../utils';
+import { useNetwork, useSwitchNetwork } from 'wagmi';
+import { BSC_CHAIN_ID } from '../../env';
 import { useList } from '../../hooks/useList';
 import { useApprove } from '../../hooks/useApprove';
 import { useHasRole } from '../../hooks/useHasRole';
@@ -29,7 +25,6 @@ export const ListProcess = (props: ListProcessProps) => {
   const [step, setStep] = useState(0);
   const [title, setTitle] = useState('Initiate Listing');
   const { switchNetwork } = useSwitchNetwork();
-  const { address } = useAccount();
 
   const { List } = useList();
   const stateModal = useModal();
@@ -180,12 +175,7 @@ export const ListProcess = (props: ListProcessProps) => {
                   const listResult: any = await List(
                     stateModal.modalState.listData as any,
                   );
-                  const { status, transactionHash } = listResult as any;
-                  // const success = status && transactionHash;
-                  // tmp = {
-                  //   variant: success ? 'success' : 'error',
-                  //   description: success ? 'List successful' : 'List failed',
-                  // };
+                  const { transactionHash } = listResult as any;
 
                   if (transactionHash) {
                     batchUpdate(() => {
@@ -281,23 +271,6 @@ const ProgressContainer = styled(Flex)`
   position: relative;
   margin: 0 auto 8px;
   justify-content: space-between;
-`;
-
-const SuccessCon = styled(Flex)`
-  width: 400px;
-  justify-content: space-between;
-  margin: 0 auto 8px;
-`;
-
-const SuccessBut = styled(Button)`
-  border: 1px solid #5f6368;
-  font-size: 12px;
-  width: 160px;
-  height: 36px;
-
-  color: #1e2026;
-
-  text-wrap: nowrap;
 `;
 
 const ProgressStep = styled(Flex)`

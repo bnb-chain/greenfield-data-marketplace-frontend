@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { useAccount } from 'wagmi';
-import { checkAddressInGroup } from '../utils/gfSDK';
 import { useStatus } from './useStatus';
 import { useChainBalance } from './useChainBalance';
-import { CROSS_CHAIN_FEE, INITIATE_LIST_FEE } from '../env';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import BN from 'bn.js';
 import { useRelayFee } from './useRelayFee';

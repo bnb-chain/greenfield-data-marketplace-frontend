@@ -299,7 +299,6 @@ const StyledButton = styled(Button)`
 
 const ButtonWrapper = styled.div`
   position: relative;
-  padding-bottom: 8px;
 `;
 
 const DropDown = styled.div`
