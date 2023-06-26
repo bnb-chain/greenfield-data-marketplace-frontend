@@ -46,16 +46,6 @@ export const useResourceInfo = ({
         bucketName = _;
       }
     }
-
-    console.log(
-      groupId,
-      bucketId,
-      objectId,
-      address,
-      groupName,
-      update,
-      '------useResourceInfo params',
-    );
     if (bucketId || bucketName) {
       let result;
       if (bucketId) {
@@ -90,7 +80,6 @@ export const useResourceInfo = ({
     if (groupName && !groupId) {
       const { groupInfo } = await getGroupInfoByName(groupName, address);
       groupId = groupInfo?.id;
-      console.log(groupInfo, '----groupInfo');
     }
 
     if (groupName && groupId) {
@@ -105,15 +94,6 @@ export const useResourceInfo = ({
       }
     }
 
-    console.log(
-      groupId,
-      groupName,
-      bucketName,
-      objectName,
-      objectInfo,
-      bucketInfo,
-      '------info',
-    );
     // owner collection & list
     if (groupName && groupId) {
       const _promise = groupId
@@ -122,7 +102,6 @@ export const useResourceInfo = ({
 
       Promise.all([_promise, getGroupInfoByName(groupName, address)])
         .then(async (result: any) => {
-          console.log(result, '------result');
           const [listed, groupResult] = result;
           const {
             groupInfo: { extra, owner },
@@ -159,8 +138,6 @@ export const useResourceInfo = ({
       });
       setLoading(false);
     }
-
-    console.log(bucketId, info);
   }, [groupId, address, bucketId, objectId, update]);
   useEffect(() => {
     setLoading(true);

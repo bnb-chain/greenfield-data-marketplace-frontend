@@ -41,34 +41,20 @@ enum Type {
 }
 
 const Folder = () => {
-  const navigator = useNavigate();
   const [p] = useSearchParams();
   const bucketId = p.getAll('bid')[0];
   const ownerAddress = p.getAll('address')[0];
   const folderGroup = p.getAll('f')[0];
 
-  const { address } = useAccount();
-
-  const [update, setUpdate] = useState(false);
+  const [update] = useState(false);
 
   const { loading, baseInfo } = useResourceInfo({
     bucketId,
     address: ownerAddress,
     update,
   });
-  console.log(baseInfo, '-----ResourceInfo');
 
-  const {
-    name,
-    price,
-    url,
-    desc,
-    listed,
-    type,
-    bucketName,
-    objectInfo,
-    bucketInfo,
-  } = baseInfo;
+  const { name, listed, bucketName } = baseInfo;
 
   const [breadItems, setBreadItems] = useState<any>([]);
 
@@ -96,8 +82,6 @@ const Folder = () => {
       );
     }
   }, [state.globalState.breadList, title]);
-
-  console.log(title, bucketName, name);
 
   if (loading) return <Loader></Loader>;
 

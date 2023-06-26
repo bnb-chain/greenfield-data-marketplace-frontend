@@ -21,7 +21,6 @@ export const useCollectionItems = (bucketName: string) => {
     if (bucketName && address) {
       getBucketFileList({ bucketName })
         .then((result: any) => {
-          console.log(bucketName, result);
           const { body, code } = result;
 
           if (code == 0) {

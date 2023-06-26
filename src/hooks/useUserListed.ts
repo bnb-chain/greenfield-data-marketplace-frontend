@@ -13,7 +13,6 @@ export const useUserListed = (address: string, page: number, pageSize = 10) => {
       .methods.getUserListed(address, (page - 1) * pageSize, pageSize)
       .call()
       .then(async (res: any) => {
-        console.log(res, '---getUserListed');
         const { _ids, _totalLength, _dates } = res;
         const t = _ids.map((item: any) => {
           return headGroupNFT(item);
@@ -25,7 +24,6 @@ export const useUserListed = (address: string, page: number, pageSize = 10) => {
             const {
               metaData: { attributes, groupName },
             } = item;
-            console.log(item);
             const [owner, , , , extra] = attributes;
             const { type, name } = parseGroupName(groupName);
             const { price, url } = JSON.parse(extra.value);

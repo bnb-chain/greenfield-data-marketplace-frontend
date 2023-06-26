@@ -20,6 +20,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     openDelist,
     openResult,
     result,
+    callBack,
   } = modalData.modalState;
 
   const handleListOpen = useCallback(() => {
@@ -50,7 +51,6 @@ export default function Layout({ children }: { children: ReactNode }) {
         <ListModal
           isOpen={openList}
           handleOpen={() => {
-            console.log('ssssss');
             handleListOpen();
           }}
           detail={initInfo}
@@ -78,6 +78,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         handleOpen={() => {
           handleResultOpen();
         }}
+        callBack={callBack}
         {...result}
       ></ActionResult>
     </>
@@ -88,6 +89,7 @@ const Main = styled.main`
   display: flex;
   flex: 1 1 0%;
   justify-content: center;
+  margin-top: 62px;
 `;
 
 const Container = styled(Flex)`

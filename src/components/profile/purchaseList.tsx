@@ -1,12 +1,18 @@
 import styled from '@emotion/styled';
-import { Table } from '@totejs/uikit';
+import { Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useAccount } from 'wagmi';
-import { divide10Exp, formatDateUTC, trimLongStr } from '../../utils/';
+import {
+  defaultImg,
+  divide10Exp,
+  formatDateUTC,
+  trimLongStr,
+} from '../../utils/';
 import { useUserPurchased } from '../../hooks/useUserPurchased';
 import BN from 'bn.js';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { OwnActionCom } from '../OwnActionCom';
+import { Link } from 'react-router-dom';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -25,8 +31,17 @@ const PurchaseList = () => {
     {
       header: 'Data',
       cell: (data: any) => {
-        const { name } = data;
-        return <div>{name}</div>;
+        const { name, url } = data;
+        return (
+          <ImgContainer
+            alignItems={'center'}
+            justifyContent={'flex-start'}
+            gap={6}
+          >
+            <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
+            {name}
+          </ImgContainer>
+        );
       },
     },
     {
@@ -37,7 +52,7 @@ const PurchaseList = () => {
       },
     },
     {
-      header: 'Price',
+      header: 'Purchased Price',
       width: 160,
       cell: (data: any) => {
         const { price } = data;
@@ -66,7 +81,11 @@ const PurchaseList = () => {
       width: 120,
       cell: (data: any) => {
         const { ownerAddress } = data;
-        return <div>{trimLongStr(ownerAddress)}</div>;
+        return (
+          <MyLink to={`/profile?address=${ownerAddress}`}>
+            {trimLongStr(ownerAddress)}
+          </MyLink>
+        );
       },
     },
     {
@@ -85,7 +104,6 @@ const PurchaseList = () => {
       },
     },
   ];
-  console.log(list);
   return (
     <Container>
       <Table
@@ -112,4 +130,18 @@ export default PurchaseList;
 
 const Container = styled.div`
   width: 1123px;
+`;
+
+const ImgContainer = styled(Flex)``;
+
+const ImgCon = styled.img`
+  width: 40px;
+  height: 40px;
+
+  background: #d9d9d9;
+  border-radius: 8px;
+`;
+
+const MyLink = styled(Link)`
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
 `;

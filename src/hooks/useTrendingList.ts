@@ -30,7 +30,6 @@ export const useTrendingList = () => {
 
           let result = await Promise.all(t);
           result = result.map((item: any, index) => {
-            console.log(item);
             const {
               metaData: { attributes, groupName },
             } = item;
@@ -53,7 +52,6 @@ export const useTrendingList = () => {
               rank: index + 1,
             };
           });
-          console.log(result, '---useTrendingList');
           setList(result);
         } else {
           setLoading(false);

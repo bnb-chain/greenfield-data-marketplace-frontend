@@ -213,15 +213,6 @@ export const getCollectionInfoByName = async (bucketName: string) => {
 };
 
 export const searchKey = async (key: string) => {
-  console.log(
-    key,
-    'dm_',
-    JSON.stringify({
-      sourceType: 'SOURCE_TYPE_ORIGIN',
-      limit: 0,
-      offset: 20,
-    }),
-  );
   try {
     return await client.sp.listGroup(key, 'dm_', {
       sourceType: 'SOURCE_TYPE_ORIGIN',

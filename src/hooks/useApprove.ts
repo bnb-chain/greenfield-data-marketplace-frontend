@@ -13,7 +13,6 @@ export const useApprove = () => {
         .methods.grant(MARKETPLACE_CONTRACT_ADDRESS, 4, 0xffffffff)
         .send({ from: address })
         .then((result: any) => {
-          console.log(result, '-----Approve result');
           res(result);
         })
         .catch((err: any) => {

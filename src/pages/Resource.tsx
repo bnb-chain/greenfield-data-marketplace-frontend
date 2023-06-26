@@ -11,7 +11,7 @@ import { NavBar } from '../components/NavBar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Overview from '../components/resource/overview';
 import List from '../components/resource/list';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { EditModal } from '../components/modal/editModal';
 import { GF_CHAIN_ID } from '../env';
 import { useAccount, useSwitchNetwork } from 'wagmi';
@@ -32,8 +32,9 @@ import { useSalesVolume } from '../hooks/useSalesVolume';
 import { useListedDate } from '../hooks/useListedDate';
 import { useStatus } from '../hooks/useStatus';
 import { useModal } from '../hooks/useModal';
-import { PenIcon } from '@totejs/icons';
+import { PenIcon, SendIcon } from '@totejs/icons';
 import { useGlobal } from '../hooks/useGlobal';
+import { useBNBPrice } from '../hooks/useBNBPrice';
 
 enum Type {
   Description = 'description',
@@ -72,7 +73,6 @@ const Resource = () => {
     groupName: gName,
     update,
   });
-  console.log(groupId, baseInfo, '-----ResourceInfo');
 
   const {
     name,
@@ -101,14 +101,13 @@ const Resource = () => {
   }, [status, address]);
 
   const showDcellarBut = useMemo(() => {
-    return status == 0 || status == 2;
+    return status > -1;
   }, [status, address]);
 
   const resourceType = useMemo(() => {
     return objectId || type === 'Data' ? '0' : '1';
   }, [objectId, type]);
 
-  console.log(showBuy, status, address);
   const modalData = useModal();
 
   const title = useMemo(() => {
@@ -117,9 +116,10 @@ const Resource = () => {
 
   const state = useGlobal();
 
+  const { price: bnbPrice } = useBNBPrice();
+
   useEffect(() => {
     const list = state.globalState.breadList;
-    console.log(list, '----------setBreadItems');
     if (list.length) {
       setBreadItems(
         list.concat([
@@ -133,7 +133,6 @@ const Resource = () => {
     }
   }, [state.globalState.breadList, title]);
 
-  console.log(title, bucketName, name);
   const navItems = useMemo(() => {
     const _navItems = [
       {
@@ -143,7 +142,7 @@ const Resource = () => {
     ];
     if ((address === ownerAddress || status == 2) && resourceType === '1') {
       _navItems.push({
-        name: 'DataList',
+        name: 'Data List',
         key: Type.DataList,
       });
     }
@@ -163,6 +162,10 @@ const Resource = () => {
   const fileSize = useMemo(() => {
     return objectInfo?.payloadSize?.low;
   }, [objectInfo]);
+
+  const isOwn = useMemo(() => {
+    return address === ownerAddress;
+  }, [address, ownerAddress]);
 
   if (loading) return <Loader></Loader>;
 
@@ -194,17 +197,17 @@ const Resource = () => {
       <ResourceInfo gap={20}>
         <ImgCon
           onMouseMove={() => {
-            if (address === ownerAddress && listed) {
+            if (isOwn && listed) {
               setShowEdit(true);
             }
           }}
           onMouseLeave={() => {
-            if (address === ownerAddress && listed) {
+            if (isOwn && listed) {
               setShowEdit(false);
             }
           }}
           onClick={() => {
-            if (address === ownerAddress && listed) {
+            if (isOwn && listed) {
               setOpen(true);
             }
           }}
@@ -223,13 +226,31 @@ const Resource = () => {
         >
           <NameCon gap={4} alignItems={'center'} justifyContent={'flex-start'}>
             <Name>{title}</Name>
-            {resourceType == '1' ? (
+            <SendIcon
+              width={20}
+              height={20}
+              cursor={'pointer'}
+              marginLeft={6}
+              onClick={() => {
+                const o = resourceType == '1' ? bucketInfo : objectInfo;
+                const { id } = o;
+                window.open(
+                  `${process.env.REACT_APP_EXPLORER_URL}${
+                    resourceType == '1' ? 'bucket' : 'object'
+                  }/0x${Number(id).toString(16).padStart(64, '0')}`,
+                );
+              }}
+            />
+          </NameCon>
+          {resourceType == '1' && (
+            <CollInfo gap={8}>
+              <ItemNum>{num} Items</ItemNum>
               <Tag alignItems={'center'} justifyContent={'center'}>
                 Data Collection
               </Tag>
-            ) : null}
-          </NameCon>
-          {resourceType == '1' ? <ItemNum>{num} Items</ItemNum> : null}
+            </CollInfo>
+          )}
+
           <OwnCon alignItems={'center'}>
             {resourceType == '0' && (
               <FileSize> {parseFileSize(fileSize)} </FileSize>
@@ -238,14 +259,24 @@ const Resource = () => {
             {address === ownerAddress ? (
               <span>You</span>
             ) : (
-              <span>{trimLongStr(ownerAddress)}</span>
+              <Link to={`/profile?address=${ownerAddress}`}>
+                <span>{trimLongStr(ownerAddress)}</span>
+              </Link>
             )}{' '}
             At {formatDateUTC(CreateTime * 1000)}
           </OwnCon>
           {listed ? (
-            <MarketInfo>{divide10Exp(new BN(price, 10), 18)} BNB</MarketInfo>
+            <MarketInfo alignItems={'center'} gap="8">
+              {divide10Exp(new BN(price, 10), 18)} BNB
+              <Price>
+                $
+                {Number(divide10Exp(new BN(price, 10), 18).toString()) *
+                  bnbPrice}
+              </Price>
+              <BoughtNum>{salesVolume} Bought</BoughtNum>
+            </MarketInfo>
           ) : null}
-          <ActionGroup gap={10}>
+          <ActionGroup gap={10} alignItems={'center'}>
             {address === ownerAddress && !listed && (
               <Button
                 size={'sm'}
@@ -283,19 +314,6 @@ const Resource = () => {
                 );
               }}
             </ConnectKitButton.Custom>
-            {/* {showBuy && (
-              <Button
-                size={'sm'}
-                onClick={() => {
-                  modalData.modalDispatch({
-                    type: 'OPEN_BUY',
-                    buyData: baseInfo,
-                  });
-                }}
-              >
-                Buy
-              </Button>
-            )} */}
             {showDcellarBut && (
               <Button
                 size={'sm'}
@@ -304,11 +322,11 @@ const Resource = () => {
                     `https://dcellar-qa.fe.nodereal.cc/buckets/${bucketName}`,
                   );
                 }}
+                variant="ghost"
               >
                 View in Dcellar
               </Button>
             )}
-            {listed ? <BoughtNum>{salesVolume} Bought</BoughtNum> : null}
           </ActionGroup>
         </Info>
       </ResourceInfo>
@@ -325,6 +343,7 @@ const Resource = () => {
           name={name}
           bucketName={bucketName}
           listed={listed}
+          showEndpoints={isOwn}
         ></Overview>
       ) : (
         <List name={name} listed={listed} bucketName={bucketName}></List>
@@ -401,6 +420,8 @@ const Info = styled(Flex)``;
 
 const NameCon = styled(Flex)``;
 
+const CollInfo = styled(Flex)``;
+
 const Name = styled.div`
   font-family: 'Poppins';
   font-style: normal;
@@ -446,6 +467,12 @@ const OwnCon = styled(Flex)`
 `;
 
 const MarketInfo = styled(Flex)`
+  font-size: 32px;
+  color: #f0b90b;
+`;
+
+const Price = styled.div`
+  font-size: 20px;
   color: #f0b90b;
 `;
 

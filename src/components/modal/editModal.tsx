@@ -9,21 +9,11 @@ import {
   ModalCloseButton,
   Button,
 } from '@totejs/uikit';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
-import {
-  GF_CHAIN_ID,
-  LIST_ESTIMATE_FEE_ON_BSC,
-  LIST_FEE_ON_GF,
-} from '../../env';
+import { GF_CHAIN_ID } from '../../env';
 import { useChainBalance } from '../../hooks/useChainBalance';
-import { useList } from '../../hooks/useList';
-
-import { useApprove } from '../../hooks/useApprove';
-import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useModal } from '../../hooks/useModal';
-import { updateGroupInfo } from '../../utils/gfSDK';
-import { generateGroupName } from '../../utils';
 import { useEdit } from '../../hooks/useEdit';
 import { Loader } from '../Loader';
 
@@ -183,18 +173,12 @@ export const EditModal = (props: ListModalProps) => {
               onClick={async () => {
                 try {
                   setLoading(true);
-                  const result = await edit(
-                    address as string,
-                    groupName,
-                    extraStr,
-                  );
-                  console.log(result);
+                  await edit(address as string, groupName, extraStr);
                   toast.success({
                     description: 'edit success',
                     duration: 3000,
                   });
                 } catch (error) {
-                  console.log(error);
                   toast.error({ description: 'edit success', duration: 3000 });
                 }
                 setLoading(false);

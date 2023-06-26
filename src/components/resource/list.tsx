@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { Box, Button, Table } from '@totejs/uikit';
+import { Box, Button, Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useAccount, useSwitchNetwork } from 'wagmi';
 import { getBucketFileList } from '../../utils/gfSDK';
 import {
   contentTypeToExtension,
+  defaultImg,
   divide10Exp,
   formatDateUTC,
   parseFileSize,
@@ -25,7 +26,7 @@ import { GoIcon } from '@totejs/icons';
 const TotalVol = (props: any) => {
   const { groupId } = props;
   const { salesVolume } = useSalesVolume(groupId);
-  return <div>{salesVolume}</div>;
+  return <div>{Number(salesVolume) || '-'}</div>;
 };
 
 const ProfileList = (props: any) => {
@@ -53,11 +54,50 @@ const ProfileList = (props: any) => {
   const columns = [
     {
       header: 'Data',
+      width: '200px',
       cell: (data: any) => {
+        const { object_info } = data;
         const object_name = data.children
           ? data.name
           : data?.object_info?.object_name;
-        return <div>{object_name}</div>;
+
+        return (
+          <ImgContainer
+            alignItems={'center'}
+            justifyContent={'flex-start'}
+            gap={6}
+            onClick={() => {
+              const list = state.globalState.breadList;
+              const item = {
+                path: '/resource',
+                name: bucketName || 'Collection',
+                query: p.toString(),
+              };
+              state.globalDispatch({
+                type: 'ADD_BREAD',
+                item,
+              });
+
+              const from = encodeURIComponent(
+                JSON.stringify(list.concat([item])),
+              );
+
+              if (!object_info) {
+                navigator(
+                  `/folder?bid=${bucketId}&f=${name}&address=${ownerAddress}&from=${from}`,
+                );
+              } else {
+                const { id } = object_info;
+                navigate(
+                  `/resource?oid=${id}&address=${address}&tab=description&from=${from}`,
+                );
+              }
+            }}
+          >
+            <ImgCon src={defaultImg(object_name, 40)}></ImgCon>
+            {object_name}
+          </ImgContainer>
+        );
       },
     },
     {
@@ -101,7 +141,7 @@ const ProfileList = (props: any) => {
       cell: (data: any) => {
         const { price } = data;
         const balance = divide10Exp(new BN(price, 10), 18);
-        return <div>{balance} BNB</div>;
+        return <div>{Number(balance) ? `${balance} BNB` : '-'}</div>;
       },
     },
     {
@@ -142,7 +182,7 @@ const ProfileList = (props: any) => {
               }}
             />
           );
-        const { owner, id } = object_info;
+        const { owner } = object_info;
         return (
           <div>
             {owner === address && (
@@ -156,7 +196,6 @@ const ProfileList = (props: any) => {
                       initInfo: object_info,
                     });
                   } else {
-                    console.log(groupId);
                     try {
                       await delist(groupId);
                       toast.success({ description: 'buy successful' });
@@ -169,33 +208,6 @@ const ProfileList = (props: any) => {
                 {!listed ? 'List' : 'Delist'}
               </Button>
             )}
-
-            <Button
-              onClick={() => {
-                const list = state.globalState.breadList;
-                const item = {
-                  path: '/resource',
-                  name: bucketName || 'Collection',
-                  query: p.toString(),
-                };
-                state.globalDispatch({
-                  type: 'ADD_BREAD',
-                  item,
-                });
-                console.log(
-                  encodeURIComponent(JSON.stringify(list.concat([item]))),
-                );
-                navigate(
-                  `/resource?oid=${id}&address=${address}&tab=description&from=${encodeURIComponent(
-                    JSON.stringify(list.concat([item])),
-                  )}`,
-                );
-              }}
-              size={'sm'}
-              style={{ marginLeft: '6px' }}
-            >
-              View detail
-            </Button>
           </div>
         );
       },
@@ -227,4 +239,17 @@ export default ProfileList;
 
 const Container = styled.div`
   width: 996px;
+`;
+
+const ImgContainer = styled(Flex)`
+  cursor: pointer;
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
+`;
+
+const ImgCon = styled.img`
+  width: 40px;
+  height: 40px;
+
+  background: #d9d9d9;
+  border-radius: 8px;
 `;

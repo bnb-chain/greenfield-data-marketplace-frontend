@@ -9,25 +9,30 @@ import { searchKey } from '../utils/gfSDK';
 import { parseGroupName } from '../utils';
 import { multiCallFun } from '../base/contract/multiCall';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
-import { useAccount } from 'wagmi';
 import Web3 from 'web3';
 
 const Group = (props: any) => {
   const {
     group: { group_name },
   } = props;
-  const { name, type } = parseGroupName(group_name);
+  const { name } = parseGroupName(group_name);
   return <div>{name}</div>;
 };
 
-const Search = () => {
+interface ISearch {
+  width?: string;
+  height?: string;
+}
+
+const Search = (props: ISearch) => {
+  let { width, height } = props;
+  width = width || '420px';
+  height = height || '56px';
   const [searchValue, setSearchValue] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
-
-  const { address } = useAccount();
 
   const handleSearchChange = useCallback((v: string) => {
     setSearchValue(v);
@@ -40,7 +45,6 @@ const Search = () => {
     if (searchValue) {
       setShow(true);
       setList([]);
-      console.log(searchValue, '-----searchValue');
       setLoading(true);
       if (Web3.utils.isAddress(searchValue)) {
         setList([searchValue as never]);
@@ -58,7 +62,6 @@ const Search = () => {
           );
           const list: any = res
             .map((item: string, index: number) => {
-              console.log(item, item.length);
               if (item.length > 1) {
                 return groups[index];
               }
@@ -89,7 +92,6 @@ const Search = () => {
   };
   const filteredData = useMemo(() => {
     if (searchValue) {
-      console.log(searchValue, '-----filteredData');
       const collectionList = {
         title: 'Collection',
         list: [],
@@ -150,7 +152,7 @@ const Search = () => {
     };
   }, []);
   return (
-    <Container id="searchRoot">
+    <Container id="searchRoot" style={{ width }}>
       <Flex
         position="relative"
         border={'1px solid readable.border'}
@@ -169,6 +171,7 @@ const Search = () => {
             onConfirm={handleSearchChange}
             onReset={() => setSearchValue('')}
             hideBg
+            style={{ width, height }}
           />
         </Box>
         {show && (
@@ -177,7 +180,7 @@ const Search = () => {
             position={'absolute'}
             left={0}
             top={'calc(100% + 4px)'}
-            width={'420px'}
+            width={width}
           >
             <ScrollSelect
               searchValue={searchValue}
@@ -195,7 +198,6 @@ const Search = () => {
 export default Search;
 
 const Input = styled(SearchInput)`
-  width: 420px;
   height: 56px;
 `;
 

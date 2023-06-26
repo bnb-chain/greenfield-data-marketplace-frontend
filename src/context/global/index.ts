@@ -9,6 +9,7 @@ export const initialState: any = {
       query: 'tab=all',
     },
   ],
+  showSearch: false,
 };
 
 interface IBread {
@@ -21,12 +22,12 @@ export const defaultState: any = JSON.parse(JSON.stringify(initialState));
 try {
   const from = decodeURIComponent(getUrlParam('from'));
   initialState.breadList = JSON.parse(from);
-  console.log(initialState, '-------------initialState');
 } catch (e) {}
 
 export interface GlobalState {
   globalState: {
     breadList: IBread[];
+    showSearch: boolean;
   };
   globalDispatch: React.Dispatch<any>;
 }
@@ -35,7 +36,6 @@ export const GlobalContext = React.createContext<GlobalState>(null as any);
 GlobalContext.displayName = 'GlobalContext';
 
 export const GlobalReducer = (initialState: any, action: any) => {
-  console.log(initialState, action);
   const cp = JSON.parse(JSON.stringify(initialState));
   switch (action.type) {
     case 'ADD_BREAD':
@@ -61,12 +61,16 @@ export const GlobalReducer = (initialState: any, action: any) => {
       return {
         ...cp,
       };
+    case 'SEARCH_STATUS':
+      cp.showSearch = action.showSearch;
+      return {
+        ...cp,
+      };
     case 'RESET':
       return {
         ...defaultState,
       };
     default:
-      console.log(initialState, '-----------initialState');
       return initialState;
   }
 };

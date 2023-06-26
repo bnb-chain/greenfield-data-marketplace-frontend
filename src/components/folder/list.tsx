@@ -60,7 +60,6 @@ const List = (props: any) => {
     return [];
   }, [list, folderGroup]);
 
-  console.log(folderList, folderGroup, '0---------folderList');
   const columns = [
     {
       header: 'Data',
@@ -169,7 +168,6 @@ const List = (props: any) => {
                       initInfo: object_info,
                     });
                   } else {
-                    console.log(groupId);
                     try {
                       await delist(groupId);
                       toast.success({ description: 'buy successful' });
@@ -195,9 +193,6 @@ const List = (props: any) => {
                   type: 'ADD_BREAD',
                   item,
                 });
-                console.log(
-                  encodeURIComponent(JSON.stringify(list.concat([item]))),
-                );
                 navigate(
                   `/resource?oid=${id}&address=${address}&tab=description&from=${encodeURIComponent(
                     JSON.stringify(list.concat([item])),

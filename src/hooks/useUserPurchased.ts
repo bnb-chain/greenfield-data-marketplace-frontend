@@ -34,19 +34,21 @@ export const useUserPurchased = (page: number, pageSize = 10) => {
               } = item;
               const [owner, , , , extra] = attributes;
               const { type, name } = parseGroupName(groupName);
+
+              const _extra = JSON.parse(extra.value);
               return {
                 ...item,
                 name,
                 groupName,
                 type,
                 ownerAddress: owner.value,
-                price: JSON.parse(extra.value).price,
+                price: _extra.price,
+                url: _extra.url,
                 id: _ids[index],
                 listTime: _dates[index],
               };
             })
             .filter((item) => item);
-          console.log(result, '---getUserPurchased');
           setList(result);
           setTotal(_totalLength);
         } else {

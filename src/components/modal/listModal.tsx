@@ -8,6 +8,7 @@ import {
   ModalFooter,
   ModalCloseButton,
   Button,
+  Textarea,
 } from '@totejs/uikit';
 import { useCallback, useMemo, useState } from 'react';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
@@ -27,6 +28,7 @@ import {
   formatDateUTC,
   generateGroupName,
   parseFileSize,
+  roundFun,
 } from '../../utils';
 import Web3 from 'web3';
 import { useApprove } from '../../hooks/useApprove';
@@ -34,6 +36,7 @@ import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useModal } from '../../hooks/useModal';
 import { useHasRole } from '../../hooks/useHasRole';
 import { useChains } from 'connectkit';
+import Logo from '../../images/logo.png';
 
 interface ListModalProps {
   isOpen: boolean;
@@ -109,7 +112,7 @@ export const ListModal = (props: ListModalProps) => {
       closeOnOverlayClick={false}
     >
       <ModalCloseButton />
-      <Header> {object_name ? 'List Data' : 'List an collection'}</Header>
+      <Header>Listing Data</Header>
       <CustomBody>
         <Box h={10}></Box>
         <InfoCon gap={26} justifyContent={'center'} alignItems={'center'}>
@@ -134,7 +137,7 @@ export const ListModal = (props: ListModalProps) => {
               </FileInfo>
             ) : (
               <ResourceNum gap={4}>
-                {num} Items created at
+                {num} Items <span style={{ color: '#979797' }}>created at</span>
                 {create_at ? (
                   <CreateTime>{formatDateUTC(create_at * 1000)}</CreateTime>
                 ) : null}
@@ -153,20 +156,26 @@ export const ListModal = (props: ListModalProps) => {
             type="number"
             isInvalid={waringPrice}
           ></Input>
+          <BNBCon gap={10} alignItems={'center'}>
+            <img src={Logo} alt="" width="24" height="24" />
+            BNB
+          </BNBCon>
         </InputCon>
         <Box h={10}></Box>
         <ItemTittle alignItems={'center'} justifyContent={'space-between'}>
           Description
-          <span>Markdown syntax is supported. 0 of 1000 characters used.</span>
+          <span>
+            Markdown syntax is supported. {desc.length} of 1000 characters used.
+          </span>
         </ItemTittle>
         <Box h={10}></Box>
         <InputCon>
-          <Input
+          <Textarea
             value={desc}
             onChange={onChangeDesc}
             placeholder="Please enter an description..."
             maxLength={1000}
-          ></Input>
+          />
         </InputCon>
         <Box h={10}></Box>
         <ItemTittle alignItems={'center'} justifyContent={'space-between'}>
@@ -186,13 +195,15 @@ export const ListModal = (props: ListModalProps) => {
           <BottomInfo>
             <Item alignItems={'center'} justifyContent={'space-between'}>
               <ItemSubTittle>
-                Gas fee to initiate{' '}
+                Gas fee on Greenfield{' '}
                 <ColoredWarningIcon size="sm" color="#AEB4BC" />
               </ItemSubTittle>
               <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
                 <Fee>{LIST_FEE_ON_GF} BNB</Fee>
                 {GF_FEE_SUFF ? (
-                  <Balance>Greenfield Balance: {GfBalanceVal} BNB </Balance>
+                  <Balance>
+                    Greenfield Balance: {roundFun(GfBalanceVal, 8)} BNB{' '}
+                  </Balance>
                 ) : (
                   <BalanceWarn
                     gap={5}
@@ -208,13 +219,15 @@ export const ListModal = (props: ListModalProps) => {
             <LineBox h={0.1}></LineBox>
             <Item alignItems={'center'} justifyContent={'space-between'}>
               <ItemSubTittle>
-                Estimate Gas fee to Complete{' '}
+                Estimate gas fee on BSC{' '}
                 <ColoredWarningIcon size="sm" color="#AEB4BC" />
               </ItemSubTittle>
               <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
                 <Fee>{LIST_ESTIMATE_FEE_ON_BSC} BNB</Fee>
                 {BSC_FEE_SUFF ? (
-                  <Balance>BSC Balance: {BscBalanceVal} BNB </Balance>
+                  <Balance>
+                    BSC Balance: {roundFun(BscBalanceVal, 8)} BNB{' '}
+                  </Balance>
                 ) : (
                   <BalanceWarn>
                     <ColoredWarningIcon size="sm" color="#ff6058" />{' '}
@@ -304,7 +317,7 @@ const Header = styled(ModalHeader)`
 `;
 
 const CustomBody = styled(ModalBody)`
-  height: 475px;
+  height: 530px;
 `;
 const ItemInfo = styled.div``;
 
@@ -357,10 +370,10 @@ const Tag = styled(Flex)`
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 28px;
 
-  width: 73px;
+  width: 85px;
   height: 16px;
 
   background: #d9d9d9;
@@ -395,7 +408,9 @@ const FileInfo = styled(Flex)`
 `;
 
 const InputCon = styled.div`
-  .ui-input {
+  position: relative;
+  .ui-input,
+  .ui-textarea {
     background: #ffffff;
     /* readable/border */
 
@@ -404,6 +419,17 @@ const InputCon = styled.div`
     color: #aeb4bc;
   }
 `;
+
+const BNBCon = styled(Flex)`
+  position: absolute;
+  top: 8px;
+  right: 10px;
+
+  font-size: 14px;
+  font-weight: 700;
+  color: #5f6368;
+`;
+
 const FeeCon = styled(Flex)`
   padding: 16px;
 

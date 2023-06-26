@@ -9,6 +9,7 @@ import BN from 'bn.js';
 import { useRelayFee } from './useRelayFee';
 import { divide10Exp } from '../utils';
 import { useModal } from './useModal';
+import { useNavigate } from 'react-router-dom';
 
 export const useBuy = (
   groupName: string,
@@ -25,6 +26,8 @@ export const useBuy = (
   const { relayFee } = useRelayFee();
 
   const state = useModal();
+
+  const navigator = useNavigate();
 
   const buy = useCallback(
     async (groupId: number) => {
@@ -46,6 +49,9 @@ export const useBuy = (
             tmp = {
               variant: success ? 'success' : 'error',
               description: success ? 'Buy successful' : 'Buy failed',
+              callBack: () => {
+                navigator('/profile?tab=purchase');
+              },
             };
           } catch (e: any) {
             tmp = {

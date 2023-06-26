@@ -1,32 +1,40 @@
 import styled from '@emotion/styled';
-import { Button, Flex, Table } from '@totejs/uikit';
-import { usePagination } from '../../hooks/usePagination';
-import { useNavigate } from 'react-router-dom';
-import { defaultImg, divide10Exp, trimLongStr } from '../../utils';
+import { Flex, Table } from '@totejs/uikit';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  contentTypeToExtension,
+  defaultImg,
+  divide10Exp,
+  trimLongStr,
+} from '../../utils';
 import BN from 'bn.js';
 
 import { useTrendingList } from '../../hooks/useTrendingList';
 import { useGlobal } from '../../hooks/useGlobal';
 
-const TrendingList = () => {
-  const { handlePageChange, page } = usePagination();
+import { CollectionLogo } from '../svgIcon/CollectionLogo';
+import { useAccount } from 'wagmi';
+import { ActionCom } from '../ActionCom';
 
+const TrendingList = () => {
   const navigator = useNavigate();
 
   const { list, loading } = useTrendingList();
 
   const state = useGlobal();
+  const { address } = useAccount();
 
   const columns = [
     {
       header: '#',
+      width: 20,
       cell: (data: any) => {
         const { rank } = data;
         return <div>{rank}</div>;
       },
     },
     {
-      header: 'Data Collection',
+      header: 'Data',
       cell: (data: any) => {
         const {
           name,
@@ -34,6 +42,7 @@ const TrendingList = () => {
           id,
           metaData: { groupName },
           ownerAddress,
+          type,
         } = data;
         return (
           <ImgContainer
@@ -61,6 +70,11 @@ const TrendingList = () => {
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
             {name}
+            {type === 'Collection' && (
+              <CollectionLogo
+                style={{ width: '10px', height: '10px' }}
+              ></CollectionLogo>
+            )}
           </ImgContainer>
         );
       },
@@ -69,8 +83,12 @@ const TrendingList = () => {
       header: 'Type',
       width: 160,
       cell: (data: any) => {
-        const { type } = data;
-        return <div>{type}</div>;
+        const { type, name } = data;
+        return (
+          <div>
+            {type === 'Collection' ? type : contentTypeToExtension(name, name)}
+          </div>
+        );
       },
     },
     {
@@ -94,7 +112,17 @@ const TrendingList = () => {
       header: 'Creator',
       cell: (data: any) => {
         const { ownerAddress } = data;
-        return <div>{trimLongStr(ownerAddress)}</div>;
+        return (
+          <MyLink to={`/profile?address=${ownerAddress}`}>
+            {trimLongStr(ownerAddress)}
+          </MyLink>
+        );
+      },
+    },
+    {
+      header: 'Action',
+      cell: (data: any) => {
+        return <ActionCom data={data} address={address}></ActionCom>;
       },
     },
   ];
@@ -118,7 +146,10 @@ const Container = styled.div`
   width: 1123px;
 `;
 
-const ImgContainer = styled(Flex)``;
+const ImgContainer = styled(Flex)`
+  cursor: pointer;
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
+`;
 
 const ImgCon = styled.img`
   width: 40px;
@@ -126,4 +157,8 @@ const ImgCon = styled.img`
 
   background: #d9d9d9;
   border-radius: 8px;
+`;
+
+const MyLink = styled(Link)`
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
 `;

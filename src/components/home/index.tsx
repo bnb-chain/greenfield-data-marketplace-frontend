@@ -26,7 +26,7 @@ const HomeList = () => {
   const tab = p.getAll('tab')[0];
 
   const navigator = useNavigate();
-  const currentTab = tab ? tab : Type.All;
+  const currentTab = tab ? tab : Type.Trending;
   const handleTabChange = useCallback((tab: any) => {
     navigator(`/?tab=${tab}`);
   }, []);

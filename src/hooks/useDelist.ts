@@ -10,7 +10,6 @@ export const useDelist = () => {
 
   const delist = useCallback(
     async (groupId: string) => {
-      console.log(groupId);
       return await MarketPlaceContract()
         .methods.delist(groupId)
         .send({ from: address });

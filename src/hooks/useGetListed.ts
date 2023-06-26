@@ -24,7 +24,6 @@ export const useGetListed = (realAddress?: string, page = 0, pageSize = 10) => {
       .methods.getListed((page - 1) * pageSize, pageSize)
       .call();
     const { _ids, _dates, _totalLength } = list;
-    console.log(list, '----------getListed');
     if (Array.isArray(_ids)) {
       const t = _ids.map((item: any) => {
         return headGroupNFT(item);
@@ -36,7 +35,6 @@ export const useGetListed = (realAddress?: string, page = 0, pageSize = 10) => {
           const {
             metaData: { attributes, groupName },
           } = item;
-          console.log(item);
           const [owner, , , , extra] = attributes;
           const { type, name } = parseGroupName(groupName);
           const { price, url } = JSON.parse(extra.value);
@@ -56,7 +54,6 @@ export const useGetListed = (realAddress?: string, page = 0, pageSize = 10) => {
         .filter((item) => item);
       setList(result);
       setTotal(_totalLength);
-      console.log(result, '-----getList');
     } else {
       setList([]);
     }

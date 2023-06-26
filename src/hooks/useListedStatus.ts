@@ -15,7 +15,6 @@ export const useListedStatus = (groupId?: string) => {
         const result = await MarketPlaceContract(false)
           .methods.prices(groupId)
           .call({ from: address });
-        console.log(groupId, result, '-----prices');
         if (result > 0) {
           setPrice(result);
           setListStatus(true);

@@ -14,6 +14,7 @@ import {
   ReactNode,
   forwardRef,
   useCallback,
+  useMemo,
   useState,
 } from 'react';
 import { useAccount, useDisconnect, useSwitchNetwork, useNetwork } from 'wagmi';
@@ -28,12 +29,14 @@ import {
   PaperLibraryIcon,
   MenuCloseIcon,
 } from '@totejs/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRevoke } from '../../hooks/useRevoke';
 import { useHasRole } from '../../hooks/useHasRole';
 import LogoGroup from '../../images/logo-group.png';
 import { BSCLogo } from '../svgIcon/BSCLogo';
 import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
+import { useGlobal } from '../../hooks/useGlobal';
+import Search from '../../components/Search';
 
 const CustomMenuButton = forwardRef(
   (props: { children: ReactNode }, ref: ForwardedRef<HTMLButtonElement>) => {
@@ -93,26 +96,37 @@ const Header = () => {
 
   const { chain } = useNetwork();
 
+  const state = useGlobal();
+
+  const location = useLocation();
+
+  const showSearch = useMemo(() => {
+    return state.globalState.showSearch || location.pathname != '/';
+  }, [state.globalState.showSearch, location]);
+
   return (
     <HeaderFlex
       justifyContent={'space-between'}
       alignItems={'center'}
-      padding={'8px 24px 0'}
-      height={62}
+      padding={'0px 24px 0'}
+      height={64}
     >
       <ImageContainer
         onClick={() => {
           navigate('/');
         }}
+        gap={4}
+        alignItems={'center'}
       >
         <img src={LogoGroup} alt="logo" width={188} height={38} />
+        devnet
       </ImageContainer>
-      <NetWorkCon alignItems={'center'} justifyContent={'center'} gap={65}>
+      {showSearch && <Search width="360px" height="44px"></Search>}
+      <NetWorkCon alignItems={'center'} justifyContent={'center'} gap={40}>
         {address && (
           <Menu placement="bottom-end">
             <MenuButton
-              onClick={(item) => {
-                console.log(item);
+              onClick={() => {
                 onToggle();
               }}
               as={CustomMenuButton}
@@ -244,10 +258,13 @@ const Header = () => {
 export default Header;
 
 const HeaderFlex = styled(Flex)`
+  position: fixed;
+  width: 100%;
+  z-index: 10;
   background-color: #000000;
   border-bottom: 1px #2f3034 solid;
 `;
-const ImageContainer = styled.div`
+const ImageContainer = styled(Flex)`
   position: relative;
   cursor: pointer;
   img {

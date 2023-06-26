@@ -1,96 +1,21 @@
 import styled from '@emotion/styled';
-import { Button, Flex, Table } from '@totejs/uikit';
+import { Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   formatDateUTC,
   trimLongStr,
   divide10Exp,
   defaultImg,
+  contentTypeToExtension,
 } from '../../utils';
 import { useGetListed } from '../../hooks/useGetListed';
 import BN from 'bn.js';
 import { useAccount } from 'wagmi';
-import { useStatus } from '../../hooks/useStatus';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
-import { useModal } from '../../hooks/useModal';
-import { OwnActionCom } from '../OwnActionCom';
-import { GoIcon } from '@totejs/icons';
 import { useGlobal } from '../../hooks/useGlobal';
-
-const ActionCom = (obj: any) => {
-  const navigator = useNavigate();
-  const { data, address } = obj;
-  const { id, groupName, ownerAddress, type } = data;
-
-  const { status } = useStatus(groupName, ownerAddress, address);
-  const state = useGlobal();
-
-  const modalData = useModal();
-  return (
-    <ButtonCon gap={6}>
-      {status == 1 && (
-        <Button
-          size={'sm'}
-          onClick={async () => {
-            modalData.modalDispatch({
-              type: 'OPEN_BUY',
-              buyData: data,
-            });
-          }}
-        >
-          Buy
-        </Button>
-      )}
-      {(status == 0 || status == 2) && (
-        <OwnActionCom
-          data={{
-            id,
-            groupName,
-            ownerAddress,
-            type,
-          }}
-          address={address}
-        ></OwnActionCom>
-      )}
-
-      {status === -1 && (
-        <GoIcon
-          cursor={'pointer'}
-          color={'#AEB4BC'}
-          onClick={() => {
-            const item = {
-              path: '/',
-              name: 'Data MarketPlace',
-              query: 'tab=all',
-            };
-            state.globalDispatch({
-              type: 'UPDATE_BREAD',
-              index: 0,
-              item,
-            });
-            navigator(
-              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description&from=${encodeURIComponent(
-                JSON.stringify(item),
-              )}`,
-            );
-          }}
-        />
-      )}
-
-      {/* <Button
-        onClick={() => {
-          navigator(
-            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description`,
-          );
-        }}
-        size={'sm'}
-      >
-        View detail
-      </Button> */}
-    </ButtonCon>
-  );
-};
+import { CollectionLogo } from '../svgIcon/CollectionLogo';
+import { ActionCom } from '../ActionCom';
 
 interface ITotalVol {
   id: string;
@@ -102,24 +27,56 @@ const TotalVol = (props: ITotalVol) => {
 };
 const AllList = () => {
   const { handlePageChange, page } = usePagination();
-
+  const navigator = useNavigate();
   const { address } = useAccount();
   const { list, loading, total } = useGetListed(address, page, 10);
+
+  const state = useGlobal();
 
   const columns = [
     {
       header: 'Data',
+      width: 200,
       cell: (data: any) => {
-        const { name, url } = data;
-
+        const {
+          name,
+          url,
+          id,
+          metaData: { groupName },
+          ownerAddress,
+          type,
+        } = data;
         return (
           <ImgContainer
             alignItems={'center'}
             justifyContent={'flex-start'}
             gap={6}
+            onClick={() => {
+              const item = {
+                path: '/',
+                name: 'Data MarketPlace',
+                query: 'tab=trending',
+              };
+              state.globalDispatch({
+                type: 'UPDATE_BREAD',
+                index: 0,
+                item,
+              });
+
+              navigator(
+                `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description&from=${encodeURIComponent(
+                  JSON.stringify([item]),
+                )}`,
+              );
+            }}
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
             {name}
+            {type === 'Collection' && (
+              <CollectionLogo
+                style={{ width: '10px', height: '10px' }}
+              ></CollectionLogo>
+            )}
           </ImgContainer>
         );
       },
@@ -127,8 +84,12 @@ const AllList = () => {
     {
       header: 'Type',
       cell: (data: any) => {
-        const { type } = data;
-        return <div>{type}</div>;
+        const { type, name } = data;
+        return (
+          <div>
+            {type === 'Collection' ? type : contentTypeToExtension(name, name)}
+          </div>
+        );
       },
     },
     {
@@ -161,7 +122,11 @@ const AllList = () => {
       width: 120,
       cell: (data: any) => {
         const { ownerAddress } = data;
-        return <div>{trimLongStr(ownerAddress)}</div>;
+        return (
+          <MyLink to={`/profile?address=${ownerAddress}`}>
+            {trimLongStr(ownerAddress)}
+          </MyLink>
+        );
       },
     },
     {
@@ -199,7 +164,10 @@ const Container = styled.div`
   width: 1123px;
 `;
 
-const ImgContainer = styled(Flex)``;
+const ImgContainer = styled(Flex)`
+  cursor: pointer;
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
+`;
 
 const ImgCon = styled.img`
   width: 40px;
@@ -209,4 +177,6 @@ const ImgCon = styled.img`
   border-radius: 8px;
 `;
 
-const ButtonCon = styled(Flex)``;
+const MyLink = styled(Link)`
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
+`;

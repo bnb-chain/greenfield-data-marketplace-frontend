@@ -37,7 +37,7 @@ const CollectionList = () => {
 
   const { address } = useAccount();
   const { list, loading, total } = useCollectionList(page, pageSize);
-  console.log(list, '-----list');
+
   const modalData = useModal();
 
   const { switchNetwork } = useSwitchNetwork();
@@ -108,9 +108,6 @@ const CollectionList = () => {
                     initInfo: bucket_info,
                   });
                 } else {
-                  console.log(groupId);
-                  // try {
-                  // await delist(groupId);
                   const { bucket_name, create_at, owner } = bucket_info;
                   modalData.modalDispatch({
                     type: 'OPEN_DELIST',
@@ -121,10 +118,6 @@ const CollectionList = () => {
                       owner,
                     },
                   });
-                  //   toast.success({ description: 'buy successful' });
-                  // } catch (e) {
-                  //   toast.error({ description: 'buy failed' });
-                  // }
                 }
               }}
             >
@@ -147,9 +140,6 @@ const CollectionList = () => {
                   type: 'ADD_BREAD',
                   item,
                 });
-                console.log(
-                  encodeURIComponent(JSON.stringify(list.concat([item]))),
-                );
 
                 navigator(
                   `/resource?&bid=${id}&address=${address}&tab=description&from=${encodeURIComponent(

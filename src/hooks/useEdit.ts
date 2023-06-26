@@ -17,15 +17,6 @@ export const useEdit = (address: string, groupName: string, extra: string) => {
 
   const Init = useCallback(
     async (address: string, groupName: string, extra: string) => {
-      console.log(
-        {
-          operator: address,
-          groupOwner: address,
-          groupName,
-          Extra: extra,
-        },
-        '------edit info',
-      );
       try {
         setSimLoading(true);
         const { simulate, broadcast } = await updateGroupInfo(
@@ -37,8 +28,6 @@ export const useEdit = (address: string, groupName: string, extra: string) => {
           denom: 'BNB',
         });
         setSimulateInfo(simulateEditInfo);
-
-        console.log(simulateEditInfo, '-------simulateEditInfo');
       } catch (e) {
         console.log(e);
       }
@@ -71,7 +60,6 @@ export const useEdit = (address: string, groupName: string, extra: string) => {
         payer: address as string,
         granter: '',
         signTypedDataCallback: async (addr: string, message: string) => {
-          console.log(connector);
           const provider = await connector?.getProvider();
           return await provider?.request({
             method: 'eth_signTypedData_v4',
@@ -80,9 +68,6 @@ export const useEdit = (address: string, groupName: string, extra: string) => {
         },
       });
 
-      if (res.code === 0) {
-        console.log(res, '-----edit group result');
-      }
       return res;
     },
     [connector],

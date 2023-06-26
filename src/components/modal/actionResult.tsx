@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Button, StateModal } from '@totejs/uikit';
 
 export const ActionResult = (props: any) => {
-  const { isOpen, handleOpen, variant, description } = props;
+  const { isOpen, handleOpen, variant, description, callBack } = props;
   return (
     <Container
       variant={variant}
@@ -10,7 +10,13 @@ export const ActionResult = (props: any) => {
       onClose={handleOpen}
       description={description || 'buy error'}
     >
-      <Button width={'100%'} onClick={handleOpen}>
+      <Button
+        width={'100%'}
+        onClick={() => {
+          callBack?.();
+          handleOpen();
+        }}
+      >
         Got it
       </Button>
     </Container>

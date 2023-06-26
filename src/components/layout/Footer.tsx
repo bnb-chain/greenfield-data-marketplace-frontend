@@ -4,9 +4,7 @@ const Footer = () => {
   return (
     <FooterCon>
       <Flex justifyContent={'center'}>
-        <CopyRight>
-          © {new Date().getFullYear()} NodeReal. All rights reserved.
-        </CopyRight>
+        <CopyRight></CopyRight>
       </Flex>
     </FooterCon>
   );

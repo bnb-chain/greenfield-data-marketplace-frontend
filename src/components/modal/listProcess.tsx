@@ -49,8 +49,6 @@ export const ListProcess = (props: ListProcessProps) => {
 
   const defaultHasRole = hasRole;
 
-  console.log(hasRole, '--------hasRole');
-
   const gfHash = useMemo(() => {
     const d: any = stateModal.modalState?.initListResult;
     if (d) {
@@ -59,7 +57,6 @@ export const ListProcess = (props: ListProcessProps) => {
   }, [stateModal.modalState?.initListResult]);
 
   useEffect(() => {
-    console.log(stateModal.modalState.initListStatus);
     if (stateModal.modalState.initListStatus) {
       setStep(1);
       setLoading(false);
@@ -94,8 +91,11 @@ export const ListProcess = (props: ListProcessProps) => {
               Initiate on Greenfield
               {status == 1 && (
                 <SendIcon
+                  cursor={'pointer'}
                   onClick={() => {
-                    window.open(`https://greenfieldscan.com/tx/${gfHash}`);
+                    window.open(
+                      `${process.env.REACT_APP_EXPLORER_URL}tx/${gfHash}`,
+                    );
                   }}
                 />
               )}
@@ -138,6 +138,7 @@ export const ListProcess = (props: ListProcessProps) => {
               Finalize on BSC
               {status == 1 && (
                 <SendIcon
+                  cursor={'pointer'}
                   onClick={() => {
                     window.open(`https://testnet.bscscan.com/tx/${bscHash}`);
                   }}
@@ -173,10 +174,6 @@ export const ListProcess = (props: ListProcessProps) => {
               onClick={async () => {
                 setTitle('Finalize Listing');
                 setStep(2);
-                console.log(
-                  stateModal.modalState.listData,
-                  '--------stateModal.modalState.listData',
-                );
                 setLoading(true);
                 let tmp = {};
                 try {

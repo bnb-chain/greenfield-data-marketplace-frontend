@@ -92,6 +92,14 @@ export const generateGroupName = (bucketName: string, objName?: string) => {
   }
 };
 
+export const generateResourceName = (bucketName: string, objName?: string) => {
+  if (objName) {
+    return `grn:o::${bucketName}/${objName}`;
+  } else {
+    return `grn:b::${bucketName}`;
+  }
+};
+
 export const parseGroupName = (groupName: string) => {
   let name = groupName;
   let type = 'Collection';
@@ -119,7 +127,7 @@ export const defaultImg = (name: string, width: number) => {
 };
 
 export const parseFileSize = (size: number) => {
-  const unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const unitArr = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   let index = 0;
   index = Math.floor(Math.log(size) / Math.log(1024));
   const _size = size / Math.pow(1024, index);
@@ -350,4 +358,8 @@ export const getUrlParam = (paraName: string) => {
   } else {
     return '';
   }
+};
+
+export const roundFun = (value: string | number, n: number) => {
+  return Math.round(Number(value) * Math.pow(10, n)) / Math.pow(10, n);
 };

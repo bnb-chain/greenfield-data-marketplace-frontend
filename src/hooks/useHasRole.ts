@@ -21,7 +21,6 @@ export const useHasRole = () => {
         )
         .call({ from: address })
         .then((result: any) => {
-          console.log(result, '----useHasRole');
           setHasRole(result);
         })
         .catch((err: any) => {

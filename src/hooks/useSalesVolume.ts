@@ -15,7 +15,6 @@ export const useSalesVolume = (groupId: string) => {
         .methods.salesVolume(groupId)
         .call({ from: address })
         .then((result: any) => {
-          console.log(result, '---useSalesVolume');
           setSalesVolume(result);
         });
     }

@@ -17,7 +17,6 @@ export const useSalesVolumeList = () => {
       .call({ from: address })
       .then((result: any) => {
         setList(result);
-        console.log(result);
       })
       .finally(() => {
         setLoading(false);

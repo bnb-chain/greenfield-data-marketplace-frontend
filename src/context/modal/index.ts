@@ -14,6 +14,8 @@ export const initialState: any = {
   result: {},
   initListStatus: 0,
   initListResult: {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  callBack: () => {},
 };
 
 export const defaultState: any = JSON.parse(JSON.stringify(initialState));
@@ -33,6 +35,7 @@ export interface ModalState {
     delistData: object;
     openResult: boolean;
     result: object;
+    callBack: () => void;
   };
   modalDispatch: React.Dispatch<any>;
 }
@@ -41,7 +44,6 @@ export const ModalContext = React.createContext<ModalState>(null as any);
 ModalContext.displayName = 'ModalContext';
 
 export const ModalReducer = (initialState: any, action: any) => {
-  console.log(initialState, action);
   switch (action.type) {
     case 'OPEN_LIST':
       return {
@@ -111,6 +113,7 @@ export const ModalReducer = (initialState: any, action: any) => {
         openDelist: false,
         openResult: true,
         result: action.result,
+        callBack: action.callBack,
       };
     case 'CLOSE_RESULT':
       return {
@@ -120,7 +123,6 @@ export const ModalReducer = (initialState: any, action: any) => {
     case 'RESET':
       return defaultState;
     default:
-      console.log(initialState, '-----------initialState');
       return initialState;
   }
 };

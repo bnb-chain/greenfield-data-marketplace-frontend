@@ -17,6 +17,7 @@ import {
   divide10Exp,
   formatDateUTC,
   parseGroupName,
+  roundFun,
 } from '../../../utils';
 import { useChainBalance } from '../../../hooks/useChainBalance';
 import { ColoredWaitingIcon } from '@totejs/icons';
@@ -79,7 +80,10 @@ export const BuyModal = (props: any) => {
             flex={1}
           >
             <LeftInfo>
-              <ResourceNameCon alignItems={'center'} flexDirection={'column'}>
+              <ResourceNameCon
+                alignItems={'flex-start'}
+                flexDirection={'column'}
+              >
                 {name}
                 {type === 'Collection' ? (
                   <Tag justifyContent={'center'} alignItems={'center'}>
@@ -122,8 +126,8 @@ export const BuyModal = (props: any) => {
             <ItemVal> {TotalPrice} BNB </ItemVal>
           </ItemCon>
           <ItemCon alignItems={'flex-end'} justifyContent={'space-between'}>
-            <ItemTitle>Balance on BSC Testnet</ItemTitle>
-            <ItemVal> {BscBalanceVal} BNB </ItemVal>
+            <ItemTitle>balance on BSC</ItemTitle>
+            <ItemVal> {roundFun(BscBalanceVal, 4)} BNB </ItemVal>
           </ItemCon>
         </BuyInfo>
       </CustomBody>

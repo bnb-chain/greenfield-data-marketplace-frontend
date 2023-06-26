@@ -9,14 +9,13 @@ import {
 import {
   ISimulateGasFee,
   PermissionTypes,
-  TimestampTypes,
 } from '@bnb-chain/greenfield-chain-sdk';
 import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { useModal } from './useModal';
-import { parseGroupName } from '../utils';
+import { generateResourceName, parseGroupName } from '../utils';
 
 export const useList = () => {
   const [simulateInfo, setSimulateInfo] = useState<ISimulateGasFee>();
@@ -27,15 +26,12 @@ export const useList = () => {
 
   const InitiateList = useCallback(
     async (obj: { groupName: string; extra: string }) => {
-      console.log(obj, '----InitiateList params');
-
       const { groupName } = obj;
       const groupResult = await getGroupInfoByName(
         groupName,
         address as string,
       );
       const { groupInfo } = groupResult;
-      console.log(groupInfo, groupResult, '------groupInfo');
       // groupname has created
       if (groupInfo) {
         stateModal.modalDispatch({
@@ -65,33 +61,27 @@ export const useList = () => {
         let policyTx;
         const { name, bucketName, type } = parseGroupName(groupName);
 
+        const statement: PermissionTypes.Statement = {
+          effect: PermissionTypes.Effect.EFFECT_ALLOW,
+          actions: [PermissionTypes.ActionType.ACTION_GET_OBJECT],
+          resources: [generateResourceName(bucketName, name)],
+        };
+
+        const principal = {
+          type: PermissionTypes.PrincipalType.PRINCIPAL_TYPE_GNFD_ACCOUNT,
+          value: '0x0000000000000000000000000000000000000001',
+        };
         if (type === 'Collection') {
-          const statement: PermissionTypes.Statement = {
-            effect: PermissionTypes.Effect.EFFECT_ALLOW,
-            actions: [PermissionTypes.ActionType.ACTION_GET_OBJECT],
-            resources: [''],
-          };
           policyTx = await putBucketPolicy(bucketName, {
             operator: address,
             statements: [statement],
-            principal: {
-              type: PermissionTypes.PrincipalType.PRINCIPAL_TYPE_GNFD_ACCOUNT,
-              value: '0x0000000000000000000000000000000000000001',
-            },
+            principal,
           });
         } else {
-          const statement: PermissionTypes.Statement = {
-            effect: PermissionTypes.Effect.EFFECT_ALLOW,
-            actions: [PermissionTypes.ActionType.ACTION_GET_OBJECT],
-            resources: [''],
-          };
           policyTx = await putObjectPolicy(bucketName, name, {
             operator: address,
             statements: [statement],
-            principal: {
-              type: PermissionTypes.PrincipalType.PRINCIPAL_TYPE_GNFD_ACCOUNT,
-              value: '0x0000000000000000000000000000000000000001',
-            },
+            principal,
           });
         }
 
@@ -107,8 +97,6 @@ export const useList = () => {
 
         setSimulateInfo(simulateMultiTxInfo);
 
-        console.log(simulateMultiTxInfo, '-------simulateMultiTxInfo');
-
         const res = await broadcast({
           denom: 'BNB',
           gasLimit: Number(simulateMultiTxInfo.gasLimit) * 2,
@@ -116,7 +104,6 @@ export const useList = () => {
           payer: address as string,
           granter: '',
           signTypedDataCallback: async (addr: string, message: string) => {
-            console.log(connector);
             const provider = await connector?.getProvider();
             return await provider?.request({
               method: 'eth_signTypedData_v4',
@@ -126,7 +113,6 @@ export const useList = () => {
         });
 
         if (res.code === 0) {
-          console.log(res, '-----InitiateList result');
           stateModal.modalDispatch({
             type: 'UPDATE_LIST_STATUS',
             initListStatus: 1,
@@ -140,7 +126,6 @@ export const useList = () => {
         }
         return res;
       } catch (e: any) {
-        console.log(e, '----InitiateList Error');
         tmp = {
           variant: 'error',
           description: e.message ? e.message : 'Mirror failed',
@@ -167,12 +152,10 @@ export const useList = () => {
       let { extra } = groupInfo as any;
       extra = JSON.parse(extra);
       const { price } = extra;
-      console.log(id, price, '-------list info');
       const result = await MarketPlaceContract()
         .methods.list(id, price)
         .send({ from: address });
 
-      console.log(result, '-----list result');
       return result;
     },
     [],
