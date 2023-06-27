@@ -58,7 +58,7 @@ export const BuyModal = (props: any) => {
   }, [relayFee]);
 
   const TotalPrice = useMemo(() => {
-    return Number(priceBNB) + Number(earing) + Number(relayFeeBNB);
+    return roundFun(Number(priceBNB) + Number(earing) + Number(relayFeeBNB), 6);
   }, [earing, priceBNB, relayFeeBNB]);
 
   const BSC_FEE_SUFF = useMemo(() => {

@@ -35,6 +35,7 @@ import { useModal } from '../hooks/useModal';
 import { PenIcon, SendIcon } from '@totejs/icons';
 import { useGlobal } from '../hooks/useGlobal';
 import { useBNBPrice } from '../hooks/useBNBPrice';
+import { NoData } from '../components/NoData';
 
 enum Type {
   Description = 'description',
@@ -65,7 +66,7 @@ const Resource = () => {
 
   const [update, setUpdate] = useState(false);
 
-  const { loading, baseInfo } = useResourceInfo({
+  const { loading, baseInfo, noData } = useResourceInfo({
     groupId,
     bucketId,
     objectId,
@@ -156,7 +157,7 @@ const Resource = () => {
     } else {
       obj = bucketInfo;
     }
-    return obj?.createAt?.low;
+    return obj?.createAt?.low || 0;
   }, [bucketInfo, objectInfo]);
 
   const fileSize = useMemo(() => {
@@ -168,6 +169,19 @@ const Resource = () => {
   }, [address, ownerAddress]);
 
   if (loading) return <Loader></Loader>;
+
+  if (noData)
+    return (
+      <NoDataCon
+        alignItems={'center'}
+        justifyContent={'center'}
+        flexDirection={'column'}
+      >
+        <NoData size={280}></NoData>
+        <NoDataTitle>No Data</NoDataTitle>
+        <NoDataSub>No data available</NoDataSub>
+      </NoDataCon>
+    );
 
   return (
     <Container>
@@ -498,4 +512,15 @@ const FileSize = styled.div`
   line-height: 18px;
 
   color: #ffffff;
+`;
+
+const NoDataCon = styled(Flex)``;
+
+const NoDataTitle = styled.div`
+  font-size: 32px;
+  font-weight: 600;
+`;
+
+const NoDataSub = styled.div`
+  font-size: 20px;
 `;

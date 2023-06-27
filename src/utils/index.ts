@@ -361,5 +361,5 @@ export const getUrlParam = (paraName: string) => {
 };
 
 export const roundFun = (value: string | number, n: number) => {
-  return Math.round(Number(value) * Math.pow(10, n)) / Math.pow(10, n);
+  return Math.ceil(Number(value) * Math.pow(10, n)) / Math.pow(10, n);
 };

@@ -35,6 +35,7 @@ const TrendingList = () => {
     },
     {
       header: 'Data',
+      width: 200,
       cell: (data: any) => {
         const {
           name,

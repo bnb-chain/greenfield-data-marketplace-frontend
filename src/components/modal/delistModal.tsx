@@ -12,7 +12,7 @@ import styled from '@emotion/styled';
 import { useMemo, useState } from 'react';
 import { useNetwork, useSwitchNetwork } from 'wagmi';
 import { BSC_CHAIN_ID, LIST_ESTIMATE_FEE_ON_BSC } from '../../env';
-import { defaultImg, formatDateUTC } from '../../utils';
+import { defaultImg, formatDateUTC, roundFun } from '../../utils';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useChainBalance } from '../../hooks/useChainBalance';
 import { useHasRole } from '../../hooks/useHasRole';
@@ -93,7 +93,7 @@ export const DelistModal = (props: any) => {
           </ItemCon>
           <ItemCon alignItems={'flex-end'} justifyContent={'space-between'}>
             <ItemTitle>Balance on BSC Testnet</ItemTitle>
-            <ItemVal> {BscBalanceVal} BNB </ItemVal>
+            <ItemVal> {roundFun(BscBalanceVal, 8)} BNB </ItemVal>
           </ItemCon>
         </BuyInfo>
       </CustomBody>

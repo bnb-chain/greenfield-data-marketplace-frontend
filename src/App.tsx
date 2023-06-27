@@ -23,7 +23,14 @@ import * as env from './env';
 
 import RouteGuard from './router/index';
 
-const routes = [
+export interface IRoute {
+  children?: Array<IRoute>;
+  element?: React.ReactNode;
+  index?: boolean;
+  path?: string;
+}
+
+const routes: Array<IRoute> = [
   {
     path: '/',
     element: <Home></Home>,
@@ -137,7 +144,7 @@ function App() {
               <HashRouter>
                 <Layout>
                   <Routes>
-                    {routes.map((item: any) => {
+                    {routes.map((item: IRoute) => {
                       return (
                         <Route
                           path={item.path}

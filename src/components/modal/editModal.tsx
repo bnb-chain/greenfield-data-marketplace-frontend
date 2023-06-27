@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { ColoredWarningIcon } from '@totejs/icons';
-import { Box, Flex, Input, toast } from '@totejs/uikit';
+import { Box, Flex, Input, toast, Textarea } from '@totejs/uikit';
 import {
   Modal,
   ModalHeader,
@@ -16,6 +16,7 @@ import { useChainBalance } from '../../hooks/useChainBalance';
 import { useModal } from '../../hooks/useModal';
 import { useEdit } from '../../hooks/useEdit';
 import { Loader } from '../Loader';
+import { roundFun } from '../../utils';
 
 interface ListModalProps {
   isOpen: boolean;
@@ -108,16 +109,18 @@ export const EditModal = (props: ListModalProps) => {
         <Box h={32}></Box>
         <ItemTittle alignItems={'center'} justifyContent={'space-between'}>
           Description
-          <span>Markdown syntax is supported. 0 of 1000 characters used.</span>
+          <span>
+            Markdown syntax is supported. {desc.length} of 1000 characters used.
+          </span>
         </ItemTittle>
         <Box h={10}></Box>
         <InputCon>
-          <Input
+          <Textarea
             value={desc}
             onChange={onChangeDesc}
             placeholder="Please enter an description..."
             maxLength={1000}
-          ></Input>
+          />
         </InputCon>
         <Box h={10}></Box>
         <ItemTittle alignItems={'center'} justifyContent={'space-between'}>
@@ -137,8 +140,7 @@ export const EditModal = (props: ListModalProps) => {
           <BottomInfo>
             <Item alignItems={'center'} justifyContent={'space-between'}>
               <ItemSubTittle>
-                Gas fee to initiate{' '}
-                <ColoredWarningIcon size="sm" color="#AEB4BC" />
+                Gas fee to edit <ColoredWarningIcon size="sm" color="#AEB4BC" />
               </ItemSubTittle>
               <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
                 {simLoading ? (
@@ -147,7 +149,9 @@ export const EditModal = (props: ListModalProps) => {
                   <>
                     <Fee>{simulateInfo?.gasFee || '-'} BNB</Fee>
                     {GF_FEE_SUFF ? (
-                      <Balance>Greenfield Balance: {GfBalanceVal} BNB </Balance>
+                      <Balance>
+                        Greenfield Balance: {roundFun(GfBalanceVal, 8)} BNB{' '}
+                      </Balance>
                     ) : (
                       <BalanceWarn
                         gap={5}
@@ -232,7 +236,7 @@ const LoaderCon = styled(Loader)`
 `;
 
 const CustomBody = styled(ModalBody)`
-  height: 325px;
+  height: 380px;
 `;
 
 const ItemTittle = styled(Flex)`
@@ -276,7 +280,8 @@ const Tag = styled(Flex)`
 `;
 
 const InputCon = styled.div`
-  .ui-input {
+  .ui-input,
+  .ui-textarea {
     background: #ffffff;
     /* readable/border */
 
