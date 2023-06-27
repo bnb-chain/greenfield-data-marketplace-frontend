@@ -1,44 +1,11 @@
 import styled from '@emotion/styled';
-import {
-  Flex,
-  Button,
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-} from '@totejs/uikit';
-import { NavBar } from '../components/NavBar';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import Overview from '../components/resource/overview';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@totejs/uikit';
+import { useEffect, useMemo, useState } from 'react';
 import List from '../components/folder/list';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { EditModal } from '../components/modal/editModal';
-import { GF_CHAIN_ID } from '../env';
-import { useAccount, useSwitchNetwork } from 'wagmi';
-import { ConnectKitButton } from 'connectkit';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useResourceInfo } from '../hooks/useResourceInfo';
 import { Loader } from '../components/Loader';
-import {
-  defaultImg,
-  divide10Exp,
-  generateGroupName,
-  trimLongStr,
-  formatDateUTC,
-  parseFileSize,
-} from '../utils';
-import BN from 'bn.js';
-import { useCollectionItems } from '../hooks/useCollectionItems';
-import { useSalesVolume } from '../hooks/useSalesVolume';
-import { useListedDate } from '../hooks/useListedDate';
-import { useStatus } from '../hooks/useStatus';
-import { useModal } from '../hooks/useModal';
-import { PenIcon } from '@totejs/icons';
 import { useGlobal } from '../hooks/useGlobal';
-
-enum Type {
-  Description = 'description',
-  DataList = 'dataList',
-}
 
 const Folder = () => {
   const [p] = useSearchParams();

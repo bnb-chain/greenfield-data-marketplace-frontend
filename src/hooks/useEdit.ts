@@ -1,10 +1,4 @@
-import {
-  CreateGroup,
-  getGroupInfoByName,
-  mirrorGroup,
-  multiTx,
-  updateGroupInfo,
-} from '../utils/gfSDK';
+import { updateGroupInfo } from '../utils/gfSDK';
 import { ISimulateGasFee } from '@bnb-chain/greenfield-chain-sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -19,11 +13,7 @@ export const useEdit = (address: string, groupName: string, extra: string) => {
     async (address: string, groupName: string, extra: string) => {
       try {
         setSimLoading(true);
-        const { simulate, broadcast } = await updateGroupInfo(
-          address,
-          groupName,
-          extra,
-        );
+        const { simulate } = await updateGroupInfo(address, groupName, extra);
         const simulateEditInfo = await simulate({
           denom: 'BNB',
         });

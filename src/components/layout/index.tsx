@@ -1,6 +1,6 @@
 import Header from './Header';
 import Footer from './Footer';
-import { ReactNode, useCallback, useEffect } from 'react';
+import { ReactNode, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Flex } from '@totejs/uikit';
 import { ListModal } from '../modal/listModal';

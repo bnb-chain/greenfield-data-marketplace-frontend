@@ -13,15 +13,13 @@ import Overview from '../components/resource/overview';
 import List from '../components/resource/list';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { EditModal } from '../components/modal/editModal';
-import { GF_CHAIN_ID } from '../env';
-import { useAccount, useSwitchNetwork } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 import { useResourceInfo } from '../hooks/useResourceInfo';
 import { Loader } from '../components/Loader';
 import {
   defaultImg,
   divide10Exp,
-  generateGroupName,
   trimLongStr,
   formatDateUTC,
   parseFileSize,
@@ -29,7 +27,6 @@ import {
 import BN from 'bn.js';
 import { useCollectionItems } from '../hooks/useCollectionItems';
 import { useSalesVolume } from '../hooks/useSalesVolume';
-import { useListedDate } from '../hooks/useListedDate';
 import { useStatus } from '../hooks/useStatus';
 import { useModal } from '../hooks/useModal';
 import { PenIcon, SendIcon } from '@totejs/icons';
@@ -51,7 +48,6 @@ const Resource = () => {
   const objectId = p.getAll('oid')[0];
   const ownerAddress = p.getAll('address')[0];
   const gName = p.getAll('gn')[0];
-  const from = p.getAll('from')[0];
 
   const currentTab = tab ? tab : Type.Description;
   const [open, setOpen] = useState(false);
@@ -85,9 +81,10 @@ const Resource = () => {
     bucketName,
     objectInfo,
     bucketInfo,
+    bucketListed,
   } = baseInfo;
 
-  const { num } = useCollectionItems(name);
+  const { num } = useCollectionItems(name, listed);
 
   const { salesVolume } = useSalesVolume(groupId);
 
@@ -292,7 +289,7 @@ const Resource = () => {
             </MarketInfo>
           ) : null}
           <ActionGroup gap={10} alignItems={'center'}>
-            {address === ownerAddress && !listed && (
+            {address === ownerAddress && !listed && !bucketListed && (
               <Button
                 size={'sm'}
                 onClick={async () => {
@@ -307,7 +304,7 @@ const Resource = () => {
             )}
 
             <ConnectKitButton.Custom>
-              {({ isConnected, show, address, ensName }) => {
+              {({ isConnected, show }) => {
                 return (
                   showBuy && (
                     <Button

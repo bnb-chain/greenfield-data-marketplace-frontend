@@ -11,31 +11,24 @@ import {
   Textarea,
 } from '@totejs/uikit';
 import { useCallback, useMemo, useState } from 'react';
-import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
+import { useNetwork, useSwitchNetwork } from 'wagmi';
 import {
-  BSC_CHAIN_ID,
   GF_CHAIN_ID,
-  GROUP_HUB_CONTRACT_ADDRESS,
   LIST_ESTIMATE_FEE_ON_BSC,
   LIST_FEE_ON_GF,
-  MARKETPLACE_CONTRACT_ADDRESS,
 } from '../../env';
 import { useChainBalance } from '../../hooks/useChainBalance';
 import { useList } from '../../hooks/useList';
 import {
   defaultImg,
-  delay,
   formatDateUTC,
   generateGroupName,
   parseFileSize,
   roundFun,
 } from '../../utils';
 import Web3 from 'web3';
-import { useApprove } from '../../hooks/useApprove';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useModal } from '../../hooks/useModal';
-import { useHasRole } from '../../hooks/useHasRole';
-import { useChains } from 'connectkit';
 import Logo from '../../images/logo.png';
 
 interface ListModalProps {
@@ -46,7 +39,6 @@ interface ListModalProps {
 
 export const ListModal = (props: ListModalProps) => {
   const { InitiateList } = useList();
-  const { Approve } = useApprove();
 
   const { isOpen, handleOpen, detail } = props;
 
@@ -60,11 +52,11 @@ export const ListModal = (props: ListModalProps) => {
 
   const { chain } = useNetwork();
 
-  const { bucket_name, id, create_at, object_name } = detail;
+  const { bucket_name, create_at, object_name } = detail;
 
   const name = object_name || bucket_name;
 
-  const { num } = useCollectionItems(bucket_name);
+  const { num } = useCollectionItems(bucket_name, false);
 
   const onChangePrice = (event: any) => {
     setWarningPrice(false);
@@ -76,12 +68,6 @@ export const ListModal = (props: ListModalProps) => {
   const onChangeImgUrl = (event: any) => {
     setImgUrl(event.target.value);
   };
-
-  const resourceType = sessionStorage.getItem('resource_type');
-
-  const earing = useMemo(() => {
-    return Number(price) * 0.99;
-  }, [price]);
 
   const GF_FEE_SUFF = useMemo(() => {
     return GfBalanceVal >= LIST_FEE_ON_GF;
@@ -319,7 +305,6 @@ const Header = styled(ModalHeader)`
 const CustomBody = styled(ModalBody)`
   height: 530px;
 `;
-const ItemInfo = styled.div``;
 
 const ItemTittle = styled(Flex)`
   font-family: 'Poppins';

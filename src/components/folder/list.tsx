@@ -1,17 +1,14 @@
 import styled from '@emotion/styled';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Box, Button, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
-import { useAccount, useSwitchNetwork } from 'wagmi';
-import { getBucketFileList } from '../../utils/gfSDK';
+import { useAccount } from 'wagmi';
 import {
   contentTypeToExtension,
   divide10Exp,
   formatDateUTC,
   parseFileSize,
 } from '../../utils/';
-import { ListModal } from '../modal/listModal';
-import { GF_CHAIN_ID } from '../../env';
 import { useCollectionItems, cache } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
@@ -29,9 +26,17 @@ const TotalVol = (props: any) => {
 };
 
 const List = (props: any) => {
-  const { name, bucketName, folderGroup, folder } = props;
+  const [p] = useSearchParams();
+  const bucketId = p.getAll('bid')[0];
+  const ownerAddress = p.getAll('address')[0];
+  const collectionListed = p.getAll('collectionListed')[0];
 
-  const { list, loading } = useCollectionItems(name);
+  const { name, folderGroup, folder } = props;
+
+  const { list, loading } = useCollectionItems(
+    name,
+    collectionListed == 'true',
+  );
 
   const { handlePageChange, page } = usePagination();
 
@@ -41,10 +46,6 @@ const List = (props: any) => {
   const { address } = useAccount();
 
   const navigate = useNavigate();
-
-  const [p] = useSearchParams();
-  const bucketId = p.getAll('bid')[0];
-  const ownerAddress = p.getAll('address')[0];
 
   const state = useGlobal();
 
@@ -157,7 +158,7 @@ const List = (props: any) => {
         const { owner, id } = object_info;
         return (
           <div>
-            {owner === address && (
+            {owner === address && collectionListed != 'true' && (
               <Button
                 size={'sm'}
                 onClick={async () => {

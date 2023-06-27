@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import { BuyModal } from './buyModal';
 import { BuyProcess } from './buyProcess';
 import { useModal } from '../../../hooks/useModal';

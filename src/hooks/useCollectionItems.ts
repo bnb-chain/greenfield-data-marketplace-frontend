@@ -3,11 +3,14 @@ import { useAccount } from 'wagmi';
 import { getBucketFileList, getGroupInfoByName } from '../utils/gfSDK';
 import { generateGroupName } from '../utils';
 import { useListedStatus } from './useListedStatus';
-import { Tree, str2tree, tree2str } from '../utils/tree';
+import { Tree } from '../utils/tree';
 
 export const cache: { [str: string]: any } = {};
 
-export const useCollectionItems = (bucketName: string) => {
+export const useCollectionItems = (
+  bucketName: string,
+  collectionListed: boolean,
+) => {
   // 0 owner
   // 1 Waiting for purchase
   // 2 purchase
@@ -59,17 +62,20 @@ export const useCollectionItems = (bucketName: string) => {
                 _objInfo[objectId] = item;
                 return item;
               } else {
-                const { id } = groupInfo;
-                const result = await checkListed(id);
+                if (!collectionListed) {
+                  const { id } = groupInfo;
+                  const result = await checkListed(id);
 
-                const t = {
-                  ...item,
-                  groupId: id,
-                  listed: !!result,
-                  price: result,
-                };
-                _objInfo[objectId] = t;
-                return t;
+                  const t = {
+                    ...item,
+                    groupId: id,
+                    listed: !!result,
+                    price: result,
+                  };
+                  _objInfo[objectId] = t;
+                  return t;
+                }
+                return item;
               }
             });
             Promise.all(t)
@@ -85,7 +91,7 @@ export const useCollectionItems = (bucketName: string) => {
 
                 setList(tree.list);
               })
-              .catch((error) => {
+              .catch(() => {
                 setList([]);
               })
               .finally(() => {

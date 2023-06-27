@@ -26,12 +26,12 @@ export const DelistModal = (props: any) => {
 
   const { delistData }: { delistData: any } = modalData.modalState;
 
-  const { object_name, create_at, bucket_name, owner, groupId } = delistData;
+  const { object_name, create_at, bucket_name, groupId } = delistData;
 
   const name = object_name || bucket_name;
   const type = object_name ? 'Data' : 'Collection';
 
-  const { num } = useCollectionItems(name);
+  const { num } = useCollectionItems(name, false);
 
   const { BscBalanceVal } = useChainBalance();
 

@@ -10,17 +10,9 @@ import {
 } from '@totejs/uikit';
 import { useModal } from '../../../hooks/useModal';
 import styled from '@emotion/styled';
-import { useCollectionItems } from '../../../hooks/useCollectionItems';
 import { useMemo } from 'react';
-import {
-  defaultImg,
-  divide10Exp,
-  formatDateUTC,
-  parseGroupName,
-  roundFun,
-} from '../../../utils';
+import { defaultImg, divide10Exp, roundFun } from '../../../utils';
 import { useChainBalance } from '../../../hooks/useChainBalance';
-import { ColoredWaitingIcon } from '@totejs/icons';
 import { BN } from 'bn.js';
 import { useBuy } from '../../../hooks/useBuy';
 import { useNetwork, useSwitchNetwork } from 'wagmi';
@@ -32,9 +24,7 @@ export const BuyModal = (props: any) => {
 
   const { buyData }: { buyData: any } = modalData.modalState;
 
-  const { name, id, listTime, price, type, groupName, ownerAddress } = buyData;
-
-  const { num } = useCollectionItems(name);
+  const { name, id, price, type, groupName, ownerAddress } = buyData;
 
   const { buy, relayFee } = useBuy(groupName, ownerAddress, price);
 
@@ -225,13 +215,6 @@ const ResourceNameCon = styled(Flex)`
   color: #5f6368;
 `;
 
-const CreateTime = styled.div`
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 28px;
-`;
 const Tag = styled(Flex)`
   font-family: 'Poppins';
   font-style: normal;
@@ -245,32 +228,6 @@ const Tag = styled(Flex)`
   background: #d9d9d9;
 
   border-radius: 16px;
-`;
-const ResourceNum = styled(Flex)`
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 28px;
-
-  color: #000000;
-`;
-
-const FileInfo = styled(Flex)`
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 28px;
-
-  color: #979797;
-  div {
-    display: flex;
-    gap: 2px;
-  }
-  span {
-    color: #181a1e;
-  }
 `;
 
 const BuyInfo = styled.div`

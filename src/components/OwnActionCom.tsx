@@ -6,7 +6,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { parseGroupName } from '../utils/';
 import styled from '@emotion/styled';
-import { Flex, useClipboard } from '@totejs/uikit';
+import { Flex } from '@totejs/uikit';
 import { useGlobal } from '../hooks/useGlobal';
 
 interface IOwnActionCom {

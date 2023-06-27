@@ -13,7 +13,6 @@ import { useMemo, useState } from 'react';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 import { GF_CHAIN_ID } from '../../env';
 import { useChainBalance } from '../../hooks/useChainBalance';
-import { useModal } from '../../hooks/useModal';
 import { useEdit } from '../../hooks/useEdit';
 import { Loader } from '../Loader';
 import { roundFun } from '../../utils';
@@ -30,21 +29,10 @@ export const EditModal = (props: ListModalProps) => {
 
   const { switchNetwork } = useSwitchNetwork();
   const { GfBalanceVal } = useChainBalance();
-  const modalData = useModal();
 
   const { chain } = useNetwork();
 
-  const {
-    id,
-    create_at,
-    name,
-    type,
-    desc: _desc,
-    url,
-    groupName,
-    extra,
-    price,
-  } = detail;
+  const { name, type, desc: _desc, url, groupName, extra } = detail;
 
   const { address } = useAccount();
 
@@ -230,11 +218,6 @@ const Header = styled(ModalHeader)`
   color: #000000;
 `;
 
-const LoaderCon = styled(Loader)`
-  width: 20px;
-  height: 20px;
-`;
-
 const CustomBody = styled(ModalBody)`
   height: 380px;
 `;
@@ -345,10 +328,6 @@ const BalanceWarn = styled(Flex)`
   /* identical to box height, or 180% */
 
   color: #ff6058;
-`;
-
-const LineBox = styled(Box)`
-  background: #fff;
 `;
 
 const FooterCon = styled(Flex)`

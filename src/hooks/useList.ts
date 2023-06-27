@@ -9,6 +9,8 @@ import {
 import {
   ISimulateGasFee,
   PermissionTypes,
+  GRNToString,
+  newGroupGRN,
 } from '@bnb-chain/greenfield-chain-sdk';
 import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -69,7 +71,7 @@ export const useList = () => {
 
         const principal = {
           type: PermissionTypes.PrincipalType.PRINCIPAL_TYPE_GNFD_GROUP,
-          value: groupName,
+          value: GRNToString(newGroupGRN(address as string, groupName)),
         };
         if (type === 'Collection') {
           policyTx = await putBucketPolicy(bucketName, {

@@ -1,9 +1,7 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
 import { Box, Button, Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
-import { useAccount, useSwitchNetwork } from 'wagmi';
-import { getBucketFileList } from '../../utils/gfSDK';
+import { useAccount } from 'wagmi';
 import {
   contentTypeToExtension,
   defaultImg,
@@ -11,8 +9,6 @@ import {
   formatDateUTC,
   parseFileSize,
 } from '../../utils/';
-import { ListModal } from '../modal/listModal';
-import { GF_CHAIN_ID } from '../../env';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
@@ -30,9 +26,9 @@ const TotalVol = (props: any) => {
 };
 
 const ProfileList = (props: any) => {
-  const { name, bucketName } = props;
+  const { name, bucketName, listed: collectionListed } = props;
 
-  const { list, loading } = useCollectionItems(name);
+  const { list, loading } = useCollectionItems(name, collectionListed);
 
   const { handlePageChange, page } = usePagination();
 
@@ -177,7 +173,7 @@ const ProfileList = (props: any) => {
                 );
 
                 navigator(
-                  `/folder?bid=${bucketId}&f=${name}&address=${ownerAddress}&from=${from}`,
+                  `/folder?bid=${bucketId}&f=${name}&address=${ownerAddress}&collectionListed=${collectionListed}&from=${from}`,
                 );
               }}
             />
@@ -185,7 +181,7 @@ const ProfileList = (props: any) => {
         const { owner } = object_info;
         return (
           <div>
-            {owner === address && (
+            {owner === address && !collectionListed && (
               <Button
                 size={'sm'}
                 onClick={async () => {

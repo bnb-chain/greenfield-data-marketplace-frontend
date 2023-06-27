@@ -3,7 +3,6 @@ import { generateGroupName, parseGroupName } from '../utils';
 import {
   getCollectionInfo,
   getGroupInfoByName,
-  headGroupNFT,
   getObjectInfo,
   getObjectInfoByName,
   getCollectionInfoByName,
@@ -95,11 +94,21 @@ export const useResourceInfo = ({
         }
       }
 
-      // owner collection & list
+      // If it is currently data, it is necessary to determine whether its collection has been listed
+      let bucketListed = false;
+      if (objectName && bucketName) {
+        const groupName = generateGroupName(bucketName);
+        const { groupInfo } = await getGroupInfoByName(groupName, address);
+        const groupId = groupInfo?.id;
+        bucketListed = await checkListed(groupId as string);
+      }
+
+      // owner list
       if (groupName && groupId) {
-        const _promise = groupId
-          ? checkListed(groupId as string)
-          : Promise.resolve(false);
+        const _promise =
+          groupId && !bucketListed
+            ? checkListed(groupId as string)
+            : Promise.resolve(false);
 
         Promise.all([_promise, getGroupInfoByName(groupName, address)])
           .then(async (result: any) => {
@@ -122,6 +131,7 @@ export const useResourceInfo = ({
               bucketName,
               objectInfo,
               bucketInfo,
+              bucketListed,
             });
           })
           .finally(() => {

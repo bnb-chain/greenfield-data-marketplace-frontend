@@ -1,20 +1,39 @@
 // export const GF_RPC_URL =
 //   'https://gnfd-testnet-fullnode-tendermint-us.bnbchain.org';
 //   export const GF_CHAIN_ID = 5600;
-export const GF_CHAIN_ID = 9000;
-export const GF_RPC_URL = 'https://gnfd.qa.bnbchain.world';
-export const BSC_RPC_URL = 'https://data-seed-prebsc-1-s1.binance.org:8545';
-export const BSC_CHAIN_ID = 97;
+
+const {
+  REACT_APP_GF_CHAIN_ID,
+  REACT_APP_GF_RPC_URL,
+  REACT_APP_BSC_RPC_URL,
+  REACT_APP_BSC_CHAIN_ID,
+
+  REACT_APP_MARKETPLACE_CONTRACT_ADDRESS,
+  REACT_APP_GROUP_HUB_CONTRACT_ADDRESS,
+  REACT_APP_MULTI_CALL_CONTRACT_ADDRESS,
+  REACT_APP_CROSS_CHAIN_FEE,
+  REACT_APP_INITIATE_LIST_FEE,
+
+  REACT_APP_LIST_FEE_ON_GF,
+  REACT_APP_LIST_ESTIMATE_FEE_ON_BSC,
+} = process.env;
+
+export const GF_CHAIN_ID = Number(REACT_APP_GF_CHAIN_ID);
+export const GF_RPC_URL = REACT_APP_GF_RPC_URL as string;
+export const BSC_RPC_URL = REACT_APP_BSC_RPC_URL as string;
+export const BSC_CHAIN_ID = Number(REACT_APP_BSC_CHAIN_ID);
 
 export const MARKETPLACE_CONTRACT_ADDRESS =
-  '0xa64CF72c1F823e838898A0D541aCb402FF23319c';
+  REACT_APP_MARKETPLACE_CONTRACT_ADDRESS as string;
 export const GROUP_HUB_CONTRACT_ADDRESS =
-  '0x712717332dd0b2e26360d1f1e6a817e916dff09b';
+  REACT_APP_GROUP_HUB_CONTRACT_ADDRESS as string;
 export const MULTI_CALL_CONTRACT_ADDRESS =
-  '0x50f6210b85d38F5d0E660D6C8978C9bdCd12F130';
+  REACT_APP_MULTI_CALL_CONTRACT_ADDRESS as string;
 
-export const CROSS_CHAIN_FEE = 0.000001;
-export const INITIATE_LIST_FEE = 0.00001;
+export const CROSS_CHAIN_FEE = Number(REACT_APP_CROSS_CHAIN_FEE);
+export const INITIATE_LIST_FEE = Number(REACT_APP_INITIATE_LIST_FEE);
 
-export const LIST_FEE_ON_GF = 0.0000036;
-export const LIST_ESTIMATE_FEE_ON_BSC = 0.0000036;
+export const LIST_FEE_ON_GF = Number(REACT_APP_LIST_FEE_ON_GF);
+export const LIST_ESTIMATE_FEE_ON_BSC = Number(
+  REACT_APP_LIST_ESTIMATE_FEE_ON_BSC,
+);
