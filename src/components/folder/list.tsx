@@ -8,6 +8,7 @@ import {
   divide10Exp,
   formatDateUTC,
   parseFileSize,
+  trimLongStr,
 } from '../../utils/';
 import { useCollectionItems, cache } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
@@ -65,10 +66,11 @@ const List = (props: any) => {
     {
       header: 'Data',
       cell: (data: any) => {
-        const object_name = data.children
-          ? data.name
-          : data?.object_info?.object_name;
-        return <div>{object_name}</div>;
+        // const object_name = data.children
+        //   ? data.name
+        //   : data?.object_info?.object_name;
+        const { name } = data;
+        return <div>{trimLongStr(name, 15)}</div>;
       },
     },
     {

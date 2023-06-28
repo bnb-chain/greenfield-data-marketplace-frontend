@@ -28,7 +28,6 @@ export const useCollectionItems = (
 
           if (code == 0) {
             const { key_count, objects } = body;
-
             const strColl = objects.map((item: any) => {
               const {
                 object_info: { object_name, id },
@@ -41,7 +40,6 @@ export const useCollectionItems = (
                 : object_name + '__' + id;
               // return object_name;
             });
-
             const tree = new Tree(strColl.join('\n'));
 
             const _objInfo: { [str: string]: any } = {};
@@ -58,8 +56,8 @@ export const useCollectionItems = (
                 groupName,
                 address as string,
               );
+              _objInfo[objectId] = item;
               if (!groupInfo) {
-                _objInfo[objectId] = item;
                 return item;
               } else {
                 if (!collectionListed) {

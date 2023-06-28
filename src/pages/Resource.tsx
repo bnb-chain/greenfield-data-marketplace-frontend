@@ -48,6 +48,7 @@ const Resource = () => {
   const objectId = p.getAll('oid')[0];
   const ownerAddress = p.getAll('address')[0];
   const gName = p.getAll('gn')[0];
+  const bGroupName = p.getAll('bgn')[0];
 
   const currentTab = tab ? tab : Type.Description;
   const [open, setOpen] = useState(false);
@@ -70,7 +71,6 @@ const Resource = () => {
     groupName: gName,
     update,
   });
-
   const {
     name,
     price,
@@ -88,7 +88,11 @@ const Resource = () => {
 
   const { salesVolume } = useSalesVolume(groupId);
 
-  const { status } = useStatus(gName, ownerAddress, address as string);
+  const { status } = useStatus(
+    bGroupName || gName,
+    ownerAddress,
+    address as string,
+  );
 
   const [showEdit, setShowEdit] = useState(false);
 
@@ -164,6 +168,10 @@ const Resource = () => {
   const isOwn = useMemo(() => {
     return address === ownerAddress;
   }, [address, ownerAddress]);
+
+  const showEndPoint = useMemo(() => {
+    return isOwn || (address !== ownerAddress && status === 2);
+  }, [isOwn, address, ownerAddress, status]);
 
   if (loading) return <Loader></Loader>;
 
@@ -355,10 +363,16 @@ const Resource = () => {
           name={name}
           bucketName={bucketName}
           listed={listed}
-          showEndpoints={isOwn}
+          showEndpoints={showEndPoint}
         ></Overview>
       ) : (
-        <List name={name} listed={listed} bucketName={bucketName}></List>
+        <List
+          status={status}
+          name={name}
+          listed={bucketListed}
+          bucketName={bucketName}
+          bucketInfo={bucketInfo}
+        ></List>
       )}
       {open && (
         <EditModal

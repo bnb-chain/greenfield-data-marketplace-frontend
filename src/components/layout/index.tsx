@@ -57,12 +57,14 @@ export default function Layout({ children }: { children: ReactNode }) {
         ></ListModal>
       )}
 
-      <ListProcess
-        isOpen={openListProcess}
-        handleOpen={() => {
-          handleListProcessOpen();
-        }}
-      ></ListProcess>
+      {openListProcess && (
+        <ListProcess
+          isOpen={openListProcess}
+          handleOpen={() => {
+            handleListProcessOpen();
+          }}
+        ></ListProcess>
+      )}
 
       <BuyIndex></BuyIndex>
 

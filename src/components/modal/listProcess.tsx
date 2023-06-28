@@ -9,7 +9,7 @@ import { Loader } from '../Loader';
 import { batchUpdate } from '../../utils';
 import { useNetwork, useSwitchNetwork } from 'wagmi';
 import { BSC_CHAIN_ID } from '../../env';
-import { useList } from '../../hooks/useList';
+import { useList, IList } from '../../hooks/useList';
 import { useApprove } from '../../hooks/useApprove';
 import { useHasRole } from '../../hooks/useHasRole';
 interface ListProcessProps {
@@ -19,6 +19,8 @@ interface ListProcessProps {
   title?: string;
   buttonRedirect?: boolean;
 }
+let defaultHasRole: any;
+
 export const ListProcess = (props: ListProcessProps) => {
   const { isOpen, handleOpen } = props;
 
@@ -26,7 +28,6 @@ export const ListProcess = (props: ListProcessProps) => {
   const [title, setTitle] = useState('Initiate Listing');
   const { switchNetwork } = useSwitchNetwork();
 
-  const { List } = useList();
   const stateModal = useModal();
 
   const { Approve } = useApprove();
@@ -40,9 +41,11 @@ export const ListProcess = (props: ListProcessProps) => {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const { hasRole, setHasRole } = useHasRole();
+  const { hasRole, setHasRole, loading: roleLoading } = useHasRole();
 
-  const defaultHasRole = hasRole;
+  useMemo(() => {
+    if (!roleLoading) defaultHasRole = defaultHasRole ?? hasRole;
+  }, [hasRole, roleLoading]);
 
   const gfHash = useMemo(() => {
     const d: any = stateModal.modalState?.initListResult;
@@ -53,7 +56,7 @@ export const ListProcess = (props: ListProcessProps) => {
 
   useEffect(() => {
     if (stateModal.modalState.initListStatus) {
-      setStep(1);
+      setStep(hasRole ? 2 : 1);
       setLoading(false);
       setTitle(hasRole ? 'Finalize on BSC' : 'Approve on BSC');
     }
@@ -63,7 +66,14 @@ export const ListProcess = (props: ListProcessProps) => {
     setStep(0);
     setTitle('Initiate Listing');
     setDescription('Please wait here to continue');
+    defaultHasRole = undefined;
+    setLoading(false);
   }, []);
+
+  const { List } = useList(stateModal.modalState.listData as IList);
+
+  if (defaultHasRole == undefined) return <></>;
+
   return (
     <Container
       title={modalTitle}
@@ -80,7 +90,7 @@ export const ListProcess = (props: ListProcessProps) => {
         }}
       />
       <Flex flexDirection={'column'} gap={24} flex={1}>
-        <ProgressContainer width={hasRole ? '312' : '412'}>
+        <ProgressContainer width={defaultHasRole ? '312' : '412'}>
           <ProgressStep>
             <ProgressName active={step == 1} alignItems={'center'}>
               Initiate on Greenfield
@@ -105,7 +115,7 @@ export const ListProcess = (props: ListProcessProps) => {
           </ProgressStep>
           <HorizontalBarFist
             width={defaultHasRole ? '160' : '114'}
-            status={step && step >= 2 ? true : false}
+            status={step && step >= 3 ? true : false}
           />
           {defaultHasRole ? null : (
             <>
@@ -151,24 +161,26 @@ export const ListProcess = (props: ListProcessProps) => {
         {loading ? <LoaderCon minHeight={42}></LoaderCon> : null}
         {title && <ModalTitle>{title}</ModalTitle>}
         {description && <ModalDescription>{description}</ModalDescription>}
-        {step == 1 && chain && chain.id !== BSC_CHAIN_ID && (
-          <Button
-            onClick={() => {
-              switchNetwork?.(BSC_CHAIN_ID);
-            }}
-          >
-            Switch to BSC Testnet Network
-          </Button>
-        )}
-        {step == 1 &&
+        {((hasRole && step == 2) || (!hasRole && step == 1)) &&
+          chain &&
+          chain.id !== BSC_CHAIN_ID && (
+            <Button
+              onClick={() => {
+                switchNetwork?.(BSC_CHAIN_ID);
+              }}
+            >
+              Switch to BSC Testnet Network
+            </Button>
+          )}
+        {step == 2 &&
           chain &&
           chain.id === BSC_CHAIN_ID &&
           hasRole &&
-          status != 1 && (
+          status != 1 &&
+          !loading && (
             <Button
               onClick={async () => {
                 setTitle('Finalize Listing');
-                setStep(2);
                 setLoading(true);
                 let tmp = {};
                 try {
@@ -203,20 +215,25 @@ export const ListProcess = (props: ListProcessProps) => {
               List to BSC Testnet
             </Button>
           )}
-        {step == 1 && chain && chain.id === BSC_CHAIN_ID && !hasRole && (
-          <Button
-            onClick={async () => {
-              setLoading(true);
-              setTitle('Wait for Approve');
-              await Approve();
-              setHasRole(true);
-              setLoading(false);
-              setTitle('Finalize on BSC');
-            }}
-          >
-            Approve
-          </Button>
-        )}
+        {step == 1 &&
+          chain &&
+          chain.id === BSC_CHAIN_ID &&
+          !hasRole &&
+          !loading && (
+            <Button
+              onClick={async () => {
+                setLoading(true);
+                setTitle('Wait for Approve');
+                await Approve();
+                setHasRole(true);
+                setLoading(false);
+                setTitle('Finalize on BSC');
+                setStep(2);
+              }}
+            >
+              Approve
+            </Button>
+          )}
         {status == 1 && (
           <Button
             onClick={() => {
@@ -343,5 +360,5 @@ const HorizontalBarSecond = styled.div<{ status: boolean; hasRole: boolean }>`
     props.status
       ? props.theme.colors.scene.success.progressBar
       : props.theme.colors.readable.top.secondary};
-  right: ${(props: any) => (props.hasRole ? '65px' : '60px')};
+  right: ${(props: any) => (props.hasRole ? '65px' : '70px')};
 `;

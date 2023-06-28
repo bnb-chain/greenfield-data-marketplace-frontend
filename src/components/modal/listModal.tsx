@@ -14,6 +14,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useNetwork, useSwitchNetwork } from 'wagmi';
 import {
   GF_CHAIN_ID,
+  INITIATE_LIST_FEE,
   LIST_ESTIMATE_FEE_ON_BSC,
   LIST_FEE_ON_GF,
 } from '../../env';
@@ -30,6 +31,8 @@ import Web3 from 'web3';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useModal } from '../../hooks/useModal';
 import Logo from '../../images/logo.png';
+import { Loader } from '../Loader';
+import { useDebounce } from '../../hooks';
 
 interface ListModalProps {
   isOpen: boolean;
@@ -38,13 +41,16 @@ interface ListModalProps {
 }
 
 export const ListModal = (props: ListModalProps) => {
-  const { InitiateList } = useList();
-
   const { isOpen, handleOpen, detail } = props;
 
   const [price, setPrice] = useState('');
   const [desc, setDesc] = useState('');
   const [imgUrl, setImgUrl] = useState('');
+
+  const [_price, _setPrice] = useState('');
+  const [_desc, _setDesc] = useState('');
+  const [_imgUrl, _setImgUrl] = useState('');
+
   const [waringPrice, setWarningPrice] = useState(false);
   const { switchNetwork } = useSwitchNetwork();
   const { GfBalanceVal, BscBalanceVal } = useChainBalance();
@@ -58,15 +64,22 @@ export const ListModal = (props: ListModalProps) => {
 
   const { num } = useCollectionItems(bucket_name, false);
 
+  const setValue = useDebounce(async (fn: any, val: string) => {
+    fn?.(val);
+  }, 500);
+
   const onChangePrice = (event: any) => {
     setWarningPrice(false);
-    setPrice(event.target.value);
+    _setPrice(event.target.value);
+    setValue(setPrice, event.target.value);
   };
   const onChangeDesc = (event: any) => {
-    setDesc(event.target.value);
+    _setDesc(event.target.value);
+    setValue(setDesc, event.target.value);
   };
   const onChangeImgUrl = (event: any) => {
-    setImgUrl(event.target.value);
+    _setImgUrl(event.target.value);
+    setValue(setImgUrl, event.target.value);
   };
 
   const GF_FEE_SUFF = useMemo(() => {
@@ -77,16 +90,32 @@ export const ListModal = (props: ListModalProps) => {
     return BscBalanceVal >= LIST_ESTIMATE_FEE_ON_BSC;
   }, [GfBalanceVal]);
 
-  const SUFF = useMemo(() => {
-    return GF_FEE_SUFF && BSC_FEE_SUFF;
-  }, [GF_FEE_SUFF, BSC_FEE_SUFF]);
-
   const reset = useCallback(() => {
     setPrice('');
     setDesc('');
     setImgUrl('');
     handleOpen(false);
   }, []);
+
+  const listData = useMemo(() => {
+    // dm_o_{bucket_name}_{obj_name}
+    // dm_b_{bucket_name}
+    return {
+      groupName: generateGroupName(bucket_name, object_name),
+      // groupName: Math.random().toString(36).slice(-6),
+      extra: JSON.stringify({
+        desc,
+        url: imgUrl,
+        price: price ? Web3.utils.toWei(price) : '',
+      }),
+    };
+  }, [bucket_name, object_name, desc, imgUrl, price]);
+
+  const { InitiateList, loading, simulateInfo } = useList(listData);
+
+  const available = useMemo(() => {
+    return GF_FEE_SUFF && BSC_FEE_SUFF && !loading;
+  }, [GF_FEE_SUFF, BSC_FEE_SUFF, loading]);
 
   return (
     <Container
@@ -136,7 +165,7 @@ export const ListModal = (props: ListModalProps) => {
         <Box h={10}></Box>
         <InputCon>
           <Input
-            value={price}
+            value={_price}
             onChange={onChangePrice}
             placeholder="Please enter an amount..."
             type="number"
@@ -157,7 +186,7 @@ export const ListModal = (props: ListModalProps) => {
         <Box h={10}></Box>
         <InputCon>
           <Textarea
-            value={desc}
+            value={_desc}
             onChange={onChangeDesc}
             placeholder="Please enter an description..."
             maxLength={1000}
@@ -171,7 +200,7 @@ export const ListModal = (props: ListModalProps) => {
         <Box h={10}></Box>
         <InputCon>
           <Input
-            value={imgUrl}
+            value={_imgUrl}
             onChange={onChangeImgUrl}
             placeholder="Please enter an url..."
           ></Input>
@@ -184,23 +213,31 @@ export const ListModal = (props: ListModalProps) => {
                 Gas fee on Greenfield{' '}
                 <ColoredWarningIcon size="sm" color="#AEB4BC" />
               </ItemSubTittle>
-              <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
-                <Fee>{LIST_FEE_ON_GF} BNB</Fee>
-                {GF_FEE_SUFF ? (
-                  <Balance>
-                    Greenfield Balance: {roundFun(GfBalanceVal, 8)} BNB{' '}
-                  </Balance>
-                ) : (
-                  <BalanceWarn
-                    gap={5}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                  >
-                    <ColoredWarningIcon size="sm" color="#ff6058" />{' '}
-                    Insufficient Greenfield Balance
-                  </BalanceWarn>
-                )}
-              </BalanceCon>
+              {loading ? (
+                <Loader
+                  style={{ width: '32px' }}
+                  size={32}
+                  minHeight={32}
+                ></Loader>
+              ) : (
+                <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
+                  <Fee>{simulateInfo?.gasFee || INITIATE_LIST_FEE} BNB</Fee>
+                  {GF_FEE_SUFF ? (
+                    <Balance>
+                      Greenfield Balance: {roundFun(GfBalanceVal, 8)} BNB{' '}
+                    </Balance>
+                  ) : (
+                    <BalanceWarn
+                      gap={5}
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                    >
+                      <ColoredWarningIcon size="sm" color="#ff6058" />{' '}
+                      Insufficient Greenfield Balance
+                    </BalanceWarn>
+                  )}
+                </BalanceCon>
+              )}
             </Item>
             <LineBox h={0.1}></LineBox>
             <Item alignItems={'center'} justifyContent={'space-between'}>
@@ -236,28 +273,16 @@ export const ListModal = (props: ListModalProps) => {
                   return;
                 }
 
-                // dm_o_{bucket_name}_{obj_name}
-                // dm_b_{bucket_name}
-                const obj = {
-                  groupName: generateGroupName(bucket_name, object_name),
-                  // groupName: Math.random().toString(36).slice(-6),
-                  extra: JSON.stringify({
-                    desc,
-                    url: imgUrl,
-                    price: Web3.utils.toWei(price),
-                  }),
-                };
-
                 reset();
 
-                InitiateList(obj);
+                InitiateList();
 
                 modalData.modalDispatch({
                   type: 'OPEN_LIST_PROCESS',
-                  listData: obj,
+                  listData,
                 });
               }}
-              disabled={!SUFF}
+              disabled={!available}
             >
               Start List Process
             </Button>

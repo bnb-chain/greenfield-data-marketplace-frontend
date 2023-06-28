@@ -39,7 +39,7 @@ const PurchaseList = () => {
             gap={6}
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
-            {name}
+            {trimLongStr(name)}
           </ImgContainer>
         );
       },

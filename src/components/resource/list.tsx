@@ -7,7 +7,9 @@ import {
   defaultImg,
   divide10Exp,
   formatDateUTC,
+  generateGroupName,
   parseFileSize,
+  trimLongStr,
 } from '../../utils/';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
@@ -17,7 +19,8 @@ import { toast } from '@totejs/uikit';
 import { BN } from 'bn.js';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGlobal } from '../../hooks/useGlobal';
-import { GoIcon } from '@totejs/icons';
+import { GoIcon, CardPocketIcon } from '@totejs/icons';
+import { OwnActionCom } from '../OwnActionCom';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -26,7 +29,13 @@ const TotalVol = (props: any) => {
 };
 
 const ProfileList = (props: any) => {
-  const { name, bucketName, listed: collectionListed } = props;
+  const {
+    name,
+    bucketName,
+    listed: collectionListed,
+    status: bucketStatus,
+    bucketInfo,
+  } = props;
 
   const { list, loading } = useCollectionItems(name, collectionListed);
 
@@ -40,9 +49,14 @@ const ProfileList = (props: any) => {
   const navigate = useNavigate();
 
   const [p] = useSearchParams();
-  const bucketId = p.getAll('bid')[0];
+  let bucketId = p.getAll('bid')[0];
   const ownerAddress = p.getAll('address')[0];
 
+  let bgn = '';
+  if (!bucketId && bucketInfo) {
+    bucketId = bucketInfo.id;
+    bgn = generateGroupName(bucketInfo.bucketName);
+  }
   const state = useGlobal();
 
   const navigator = useNavigate();
@@ -52,7 +66,7 @@ const ProfileList = (props: any) => {
       header: 'Data',
       width: '200px',
       cell: (data: any) => {
-        const { object_info } = data;
+        const { object_info, name } = data;
         const object_name = data.children
           ? data.name
           : data?.object_info?.object_name;
@@ -85,13 +99,19 @@ const ProfileList = (props: any) => {
               } else {
                 const { id } = object_info;
                 navigate(
-                  `/resource?oid=${id}&address=${address}&tab=description&from=${from}`,
+                  `/resource?oid=${id}&bgn=${bgn}&address=${ownerAddress}&tab=description&from=${from}`,
                 );
               }
             }}
           >
-            <ImgCon src={defaultImg(object_name, 40)}></ImgCon>
-            {object_name}
+            {data.children ? (
+              <IconCon alignItems={'center'} justifyContent={'center'}>
+                <CardPocketIcon color={'white'} />
+              </IconCon>
+            ) : (
+              <ImgCon src={defaultImg(object_name, 40)}></ImgCon>
+            )}
+            {trimLongStr(object_name, 15)}
           </ImgContainer>
         );
       },
@@ -178,7 +198,7 @@ const ProfileList = (props: any) => {
               }}
             />
           );
-        const { owner } = object_info;
+        const { owner, object_name } = object_info;
         return (
           <div>
             {owner === address && !collectionListed && (
@@ -203,6 +223,43 @@ const ProfileList = (props: any) => {
               >
                 {!listed ? 'List' : 'Delist'}
               </Button>
+            )}
+            {owner === address && collectionListed && (
+              <GoIcon
+                cursor={'pointer'}
+                onClick={async () => {
+                  const list = state.globalState.breadList;
+                  const item = {
+                    path: '/resource',
+                    name: bucketName || 'Collection',
+                    query: p.toString(),
+                  };
+                  state.globalDispatch({
+                    type: 'ADD_BREAD',
+                    item,
+                  });
+
+                  const from = encodeURIComponent(
+                    JSON.stringify(list.concat([item])),
+                  );
+
+                  const { id } = object_info;
+                  navigate(
+                    `/resource?oid=${id}&bgn=${bgn}&address=${ownerAddress}&tab=description&from=${from}`,
+                  );
+                }}
+              ></GoIcon>
+            )}
+            {bucketStatus == 2 && owner !== address && (
+              <OwnActionCom
+                data={{
+                  ownerAddress,
+                  type: 'Data',
+                  oid: object_info.id,
+                  bn: bucketName,
+                  on: object_name,
+                }}
+              ></OwnActionCom>
             )}
           </div>
         );
@@ -248,4 +305,9 @@ const ImgCon = styled.img`
 
   background: #d9d9d9;
   border-radius: 8px;
+`;
+
+const IconCon = styled(Flex)`
+  width: 40px;
+  height: 40px;
 `;

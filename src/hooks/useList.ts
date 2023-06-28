@@ -11,42 +11,32 @@ import {
   PermissionTypes,
   GRNToString,
   newGroupGRN,
+  newObjectGRN,
+  newBucketGRN,
 } from '@bnb-chain/greenfield-chain-sdk';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { useModal } from './useModal';
-import { generateResourceName, parseGroupName } from '../utils';
+import { parseGroupName } from '../utils';
 
-export const useList = () => {
+export interface IList {
+  groupName: string;
+  extra: string;
+}
+export const useList = (props: IList) => {
   const [simulateInfo, setSimulateInfo] = useState<ISimulateGasFee>();
-
+  const [loading, setLoading] = useState(false);
   const { address, connector } = useAccount();
 
   const stateModal = useModal();
-
-  const InitiateList = useCallback(
-    async (obj: { groupName: string; extra: string }) => {
-      const { groupName } = obj;
-      const groupResult = await getGroupInfoByName(
-        groupName,
-        address as string,
-      );
-      const { groupInfo } = groupResult;
-      // groupname has created
-      if (groupInfo) {
-        stateModal.modalDispatch({
-          type: 'UPDATE_LIST_STATUS',
-          initListStatus: 1,
-          initListResult: {},
-        });
-        return;
-      }
-      let tmp = {};
+  const { groupName, extra } = props;
+  const simulateTx = useCallback(
+    async (changeLoading = true) => {
+      if (!address || !groupName) return {};
       try {
-        const { groupName, extra } = obj;
-
+        changeLoading && setLoading(true);
         const createGroupTx = await CreateGroup({
           creator: address as string,
           groupName: groupName,
@@ -66,7 +56,13 @@ export const useList = () => {
         const statement: PermissionTypes.Statement = {
           effect: PermissionTypes.Effect.EFFECT_ALLOW,
           actions: [PermissionTypes.ActionType.ACTION_GET_OBJECT],
-          resources: [generateResourceName(bucketName, name)],
+          resources: [
+            GRNToString(
+              type === 'Data'
+                ? newObjectGRN(bucketName, name)
+                : newBucketGRN(bucketName),
+            ),
+          ],
         };
 
         const principal = {
@@ -98,51 +94,75 @@ export const useList = () => {
         });
 
         setSimulateInfo(simulateMultiTxInfo);
-
-        const res = await broadcast({
-          denom: 'BNB',
-          gasLimit: Number(simulateMultiTxInfo.gasLimit) * 2,
-          gasPrice: simulateMultiTxInfo.gasPrice,
-          payer: address as string,
-          granter: '',
-          signTypedDataCallback: async (addr: string, message: string) => {
-            const provider = await connector?.getProvider();
-            return await provider?.request({
-              method: 'eth_signTypedData_v4',
-              params: [addr, message],
-            });
-          },
+        setLoading(false);
+        return { simulate, broadcast, simulateMultiTxInfo };
+      } catch (e) {
+        console.log(e);
+      }
+      setLoading(false);
+      return {};
+    },
+    [groupName, extra, address],
+  );
+  const InitiateList = useCallback(async () => {
+    const groupResult = await getGroupInfoByName(groupName, address as string);
+    const { groupInfo } = groupResult;
+    // groupname has created
+    if (groupInfo) {
+      setTimeout(() => {
+        stateModal.modalDispatch({
+          type: 'UPDATE_LIST_STATUS',
+          initListStatus: 1,
+          initListResult: {},
         });
-
-        if (res.code === 0) {
-          stateModal.modalDispatch({
-            type: 'UPDATE_LIST_STATUS',
-            initListStatus: 1,
-            initListResult: res,
+      }, 500);
+      return;
+    }
+    let tmp = {};
+    try {
+      const { broadcast, simulateMultiTxInfo } = await simulateTx(false);
+      const res = await broadcast?.({
+        denom: 'BNB',
+        gasLimit: Number(simulateMultiTxInfo.gasLimit) * 2,
+        gasPrice: simulateMultiTxInfo.gasPrice,
+        payer: address as string,
+        granter: '',
+        signTypedDataCallback: async (addr: string, message: string) => {
+          const provider = await connector?.getProvider();
+          return await provider?.request({
+            method: 'eth_signTypedData_v4',
+            params: [addr, message],
           });
-        } else {
-          tmp = {
-            variant: 'error',
-            description: 'Mirror failed',
-          };
-        }
-        return res;
-      } catch (e: any) {
+        },
+      });
+
+      if (res?.code === 0) {
+        stateModal.modalDispatch({
+          type: 'UPDATE_LIST_STATUS',
+          initListStatus: 1,
+          initListResult: res,
+        });
+      } else {
         tmp = {
           variant: 'error',
-          description: e.message ? e.message : 'Mirror failed',
+          description: 'Mirror failed',
         };
       }
-      stateModal.modalDispatch({
-        type: 'OPEN_RESULT',
-        result: tmp,
-      });
-    },
-    [connector],
-  );
+      return res;
+    } catch (e: any) {
+      tmp = {
+        variant: 'error',
+        description: e.message ? e.message : 'Mirror failed',
+      };
+    }
+    stateModal.modalDispatch({
+      type: 'OPEN_RESULT',
+      result: tmp,
+    });
+  }, [connector, groupName, extra, address]);
 
   const List = useCallback(
-    async (obj: { groupName: string; extra: string }) => {
+    async (obj: IList) => {
       const { groupName } = obj;
       const { groupInfo } = await getGroupInfoByName(
         groupName,
@@ -160,12 +180,17 @@ export const useList = () => {
 
       return result;
     },
-    [],
+    [connector, address],
   );
+
+  useEffect(() => {
+    simulateTx();
+  }, [props]);
 
   return {
     InitiateList,
     simulateInfo,
     List,
+    loading,
   };
 };

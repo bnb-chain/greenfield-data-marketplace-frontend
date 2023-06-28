@@ -71,7 +71,7 @@ const AllList = () => {
             }}
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
-            {name}
+            {trimLongStr(name, 15)}
             {type === 'Collection' && (
               <CollectionLogo
                 style={{ width: '10px', height: '10px' }}

@@ -116,7 +116,7 @@ const OtherListedList = (props: IOtherListedList) => {
             gap={6}
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
-            {name}
+            {trimLongStr(name, 15)}
           </ImgContainer>
         );
       },

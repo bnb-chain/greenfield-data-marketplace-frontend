@@ -83,24 +83,31 @@ export const useResourceInfo = ({
       }
 
       if (groupName && groupId) {
-        const { name, bucketName, type } = parseGroupName(groupName);
+        const {
+          name: _name,
+          bucketName: _bucketName,
+          type,
+        } = parseGroupName(groupName);
         let result;
         if (type === 'Collection') {
-          result = await getCollectionInfoByName(bucketName);
+          result = await getCollectionInfoByName(_bucketName);
           bucketInfo = result.bucketInfo;
+          bucketName = bucketInfo.bucketName;
         } else {
-          result = await getObjectInfoByName(bucketName, name);
+          result = await getObjectInfoByName(_bucketName, _name);
           objectInfo = result.objectInfo;
+          bucketName = objectInfo.bucketName;
+          objectName = objectInfo.objectName;
         }
       }
 
       // If it is currently data, it is necessary to determine whether its collection has been listed
       let bucketListed = false;
-      if (objectName && bucketName) {
+      if (bucketName) {
         const groupName = generateGroupName(bucketName);
         const { groupInfo } = await getGroupInfoByName(groupName, address);
         const groupId = groupInfo?.id;
-        bucketListed = await checkListed(groupId as string);
+        bucketListed = !!(await checkListed(groupId as string));
       }
 
       // owner list

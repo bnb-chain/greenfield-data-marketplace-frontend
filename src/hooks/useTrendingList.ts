@@ -29,29 +29,37 @@ export const useTrendingList = () => {
             });
 
           let result = await Promise.all(t);
-          result = result.map((item: any, index) => {
-            const {
-              metaData: { attributes, groupName },
-            } = item;
-            const [owner, , , , extra] = attributes;
-            const { type, name } = parseGroupName(groupName);
+          result = result
+            .filter((item: any) => !!item.metaData)
+            .map((item: any, index) => {
+              const {
+                metaData: { attributes, groupName },
+              } = item;
+              const [owner, , , , extra] = attributes;
+              const { type, name } = parseGroupName(groupName);
 
-            const { price, url } = JSON.parse(extra.value);
+              let price;
+              let url;
+              try {
+                const extraObj = JSON.parse(extra.value);
+                price = extraObj.price;
+                url = extraObj.url;
+              } catch (e) {}
 
-            return {
-              ...item,
-              name,
-              groupName,
-              type,
-              ownerAddress: owner.value,
-              price,
-              url,
-              id: _ids[index],
-              listTime: _dates[index],
-              totalVol: _volumes[index],
-              rank: index + 1,
-            };
-          });
+              return {
+                ...item,
+                name,
+                groupName,
+                type,
+                ownerAddress: owner.value,
+                price,
+                url,
+                id: _ids[index],
+                listTime: _dates[index],
+                totalVol: _volumes[index],
+                rank: index + 1,
+              };
+            });
           setList(result);
         } else {
           setLoading(false);

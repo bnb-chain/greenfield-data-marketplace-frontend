@@ -4,7 +4,12 @@ import { usePagination } from '../../hooks/usePagination';
 import { useAccount, useSwitchNetwork } from 'wagmi';
 import { GF_CHAIN_ID } from '../../env';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { defaultImg, divide10Exp, formatDateUTC } from '../../utils/';
+import {
+  defaultImg,
+  divide10Exp,
+  formatDateUTC,
+  trimLongStr,
+} from '../../utils/';
 
 import { useCollectionList } from '../../hooks/useCollectionList';
 import { useModal } from '../../hooks/useModal';
@@ -61,7 +66,7 @@ const CollectionList = () => {
             gap={6}
           >
             <ImgCon src={defaultImg(bucket_name, 40)}></ImgCon>
-            {bucket_name}
+            {trimLongStr(bucket_name, 15)}
           </ImgContainer>
         );
       },

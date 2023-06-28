@@ -1,7 +1,3 @@
-// export const GF_RPC_URL =
-//   'https://gnfd-testnet-fullnode-tendermint-us.bnbchain.org';
-//   export const GF_CHAIN_ID = 5600;
-
 const {
   REACT_APP_GF_CHAIN_ID,
   REACT_APP_GF_RPC_URL,

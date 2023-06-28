@@ -10,7 +10,7 @@ import { GroupHubContract } from '../base/contract/groupHub';
 export const useHasRole = () => {
   const { address } = useAccount();
   const [hasRole, setHasRole] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (address) {
       GroupHubContract(false)
@@ -21,13 +21,15 @@ export const useHasRole = () => {
         )
         .call({ from: address })
         .then((result: any) => {
-          setHasRole(result);
+          setHasRole(!!result);
+          setLoading(false);
         })
         .catch((err: any) => {
           console.log(err);
+          setLoading(false);
         });
     }
   }, [address]);
 
-  return { hasRole, setHasRole };
+  return { hasRole, setHasRole, loading };
 };

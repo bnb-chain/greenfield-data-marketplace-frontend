@@ -11,20 +11,33 @@ import { useGlobal } from '../hooks/useGlobal';
 
 interface IOwnActionCom {
   data: {
-    id: string;
-    groupName: string;
+    id?: string;
+    groupName?: string;
     ownerAddress: string;
     type: string;
+    oid?: string;
+    bn?: string;
+    on?: string;
   };
-  address: string;
+  address?: string;
   breadInfo?: object;
 }
 export const OwnActionCom = (obj: IOwnActionCom) => {
   const navigator = useNavigate();
   const { data, breadInfo } = obj;
-  const { id, groupName, ownerAddress, type } = data;
+  const { id, groupName, ownerAddress, type, oid, bn, on } = data;
 
-  const { name, bucketName } = parseGroupName(groupName);
+  let name = '';
+  let bucketName = '';
+  if (groupName) {
+    const res = parseGroupName(groupName);
+    name = res.name;
+    bucketName = res.bucketName;
+  } else {
+    name = on as string;
+    bucketName = bn as string;
+  }
+  // const { name, bucketName } = parseGroupName(groupName);
 
   //   const [objectInfo, setObjectInfo] = useState<any>();
   //   const [bucketInfo, setBucketInfo] = useState<any>();
@@ -178,9 +191,15 @@ export const OwnActionCom = (obj: IOwnActionCom) => {
             from = encodeURIComponent(JSON.stringify(list.concat([item])));
           }
           const _from = from ? `&from=${from}` : '';
-          navigator(
-            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=description${_from}`,
-          );
+          if (groupName) {
+            navigator(
+              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=description${_from}`,
+            );
+          } else {
+            navigator(
+              `/resource?oid=${oid}&address=${ownerAddress}&type=collection&tab=description${_from}`,
+            );
+          }
         }}
       />
     </ActionCon>

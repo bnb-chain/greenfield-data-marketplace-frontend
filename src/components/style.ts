@@ -9,3 +9,10 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const Name = styled.div`
+  width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
