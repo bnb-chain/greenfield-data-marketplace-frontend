@@ -8,6 +8,7 @@ import { useRelayFee } from './useRelayFee';
 import { divide10Exp } from '../utils';
 import { useModal } from './useModal';
 import { useNavigate } from 'react-router-dom';
+import { BSC_SEND_GAS_FEE } from '../env';
 
 export const useBuy = (
   groupName: string,
@@ -41,6 +42,7 @@ export const useBuy = (
               .send({
                 from: address,
                 value: totalFee,
+                gasPrice: BSC_SEND_GAS_FEE,
               });
             const { status, transactionHash } = result as any;
             const success = status && transactionHash;

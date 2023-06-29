@@ -4,6 +4,7 @@
 import { useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
+import { BSC_SEND_GAS_FEE } from '../env';
 
 export const useDelist = () => {
   const { address } = useAccount();
@@ -12,7 +13,7 @@ export const useDelist = () => {
     async (groupId: string) => {
       return await MarketPlaceContract()
         .methods.delist(groupId)
-        .send({ from: address });
+        .send({ from: address, gasPrice: BSC_SEND_GAS_FEE });
     },
     [address],
   );

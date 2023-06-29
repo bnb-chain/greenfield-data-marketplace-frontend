@@ -19,6 +19,7 @@ import { useAccount } from 'wagmi';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { useModal } from './useModal';
 import { parseGroupName } from '../utils';
+import { BSC_SEND_GAS_FEE } from '../env';
 
 export interface IList {
   groupName: string;
@@ -175,7 +176,7 @@ export const useList = (props: IList) => {
       const { price } = extra;
       const result = await MarketPlaceContract()
         .methods.list(id, price)
-        .send({ from: address });
+        .send({ from: address, gasPrice: BSC_SEND_GAS_FEE });
 
       return result;
     },
