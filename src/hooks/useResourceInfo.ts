@@ -139,6 +139,7 @@ export const useResourceInfo = ({
               objectInfo,
               bucketInfo,
               bucketListed,
+              id: groupId,
             });
           })
           .finally(() => {

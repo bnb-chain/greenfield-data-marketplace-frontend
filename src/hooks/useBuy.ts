@@ -5,7 +5,7 @@ import { useChainBalance } from './useChainBalance';
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import BN from 'bn.js';
 import { useRelayFee } from './useRelayFee';
-import { divide10Exp } from '../utils';
+import { delay, divide10Exp } from '../utils';
 import { useModal } from './useModal';
 import { useNavigate } from 'react-router-dom';
 import { BSC_SEND_GAS_FEE } from '../env';
@@ -37,13 +37,14 @@ export const useBuy = (
         if (BscBalanceVal >= n) {
           let tmp = {};
           try {
-            const result = await MarketPlaceContract()
-              .methods.buy(groupId, address)
-              .send({
-                from: address,
-                value: totalFee,
-                gasPrice: BSC_SEND_GAS_FEE,
-              });
+            const contract = MarketPlaceContract();
+            const result = await contract.methods.buy(groupId, address).send({
+              from: address,
+              value: totalFee,
+              gasPrice: BSC_SEND_GAS_FEE,
+            });
+            await delay(10);
+
             const { status, transactionHash } = result as any;
             const success = status && transactionHash;
             tmp = {

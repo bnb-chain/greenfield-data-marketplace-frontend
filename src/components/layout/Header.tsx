@@ -119,7 +119,6 @@ const Header = () => {
         alignItems={'center'}
       >
         <img src={LogoGroup} alt="logo" width={188} height={38} />
-        testnet
       </ImageContainer>
       {showSearch && <Search width="360px" height="44px"></Search>}
       <NetWorkCon alignItems={'center'} justifyContent={'center'} gap={40}>

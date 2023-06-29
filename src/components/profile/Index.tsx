@@ -13,11 +13,11 @@ enum Type {
 }
 const _navItems = [
   {
-    name: 'My Collections',
+    name: 'My Data Collections',
     key: Type.Collections,
   },
   {
-    name: 'My Purchase',
+    name: 'My Purchases',
     key: Type.Purchase,
   },
 ];
