@@ -10,6 +10,7 @@ Clone the project and install dependencies:
 > git clone https://github.com/bnb-chain/greenfield-data-marketplace-frontend.git
 > cd greenfield-data-marketplace-frontend
 > pnpm install
+> cp .env.example .env.development.local
 ```
 
 abd then run example:
