@@ -33,6 +33,7 @@ import { PenIcon, SendIcon } from '@totejs/icons';
 import { useGlobal } from '../hooks/useGlobal';
 import { useBNBPrice } from '../hooks/useBNBPrice';
 import { NoData } from '../components/NoData';
+import { DCELLAR_URL, GF_EXPLORER_URL } from '../env';
 
 enum Type {
   Description = 'description',
@@ -255,7 +256,7 @@ const Resource = () => {
                 const o = resourceType == '1' ? bucketInfo : objectInfo;
                 const { id } = o;
                 window.open(
-                  `${process.env.REACT_APP_EXPLORER_URL}${
+                  `${GF_EXPLORER_URL}${
                     resourceType == '1' ? 'bucket' : 'object'
                   }/0x${Number(id).toString(16).padStart(64, '0')}`,
                 );
@@ -338,9 +339,7 @@ const Resource = () => {
               <Button
                 size={'sm'}
                 onClick={() => {
-                  window.open(
-                    `https://dcellar-qa.fe.nodereal.cc/buckets/${bucketName}`,
-                  );
+                  window.open(`${DCELLAR_URL}buckets/${bucketName}`);
                 }}
                 variant="ghost"
               >

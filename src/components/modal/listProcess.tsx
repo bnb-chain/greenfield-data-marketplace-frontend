@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader } from '../Loader';
 import { batchUpdate } from '../../utils';
 import { useNetwork, useSwitchNetwork } from 'wagmi';
-import { BSC_CHAIN_ID } from '../../env';
+import { BSC_CHAIN_ID, BSC_EXPLORER_URL, GF_EXPLORER_URL } from '../../env';
 import { useList, IList } from '../../hooks/useList';
 import { useApprove } from '../../hooks/useApprove';
 import { useHasRole } from '../../hooks/useHasRole';
@@ -99,9 +99,7 @@ export const ListProcess = (props: ListProcessProps) => {
                 <SendIcon
                   cursor={'pointer'}
                   onClick={() => {
-                    window.open(
-                      `${process.env.REACT_APP_EXPLORER_URL}tx/${gfHash}`,
-                    );
+                    window.open(`${GF_EXPLORER_URL}tx/${gfHash}`);
                   }}
                 />
               )}
@@ -146,7 +144,7 @@ export const ListProcess = (props: ListProcessProps) => {
                 <SendIcon
                   cursor={'pointer'}
                   onClick={() => {
-                    window.open(`https://testnet.bscscan.com/tx/${bscHash}`);
+                    window.open(`${BSC_EXPLORER_URL}tx/${bscHash}`);
                   }}
                 />
               )}

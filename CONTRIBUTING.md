@@ -14,8 +14,8 @@ The following steps will get you up and running to contribute to Greenfield JS S
 2. Clone your fork locally
 
 ```sh
-git clone https://github.com/<your_github_username>/greenfield-data-marketplace-frontend.git.git
-cd greenfield-data-marketplace-frontend.git
+git clone https://github.com/<your_github_username>/greenfield-data-marketplace-frontend.git
+cd greenfield-data-marketplace-frontend
 ```
 
 3. Setup all the dependencies and packages by running `pnpm install`. This
@@ -74,7 +74,7 @@ https://www.conventionalcommits.org/ or check out the
    commit type. `scope` is just a short id that describes the scope of work.
 
 3. Make and commit your changes following the
-   [commit convention](https://github.com/bnb-chain/greenfield-data-marketplace-frontend/main/CONTRIBUTING.md#commit-convention).
+   [commit convention](https://github.com/bnb-chain/greenfield-data-marketplace-frontend/blob/main/CONTRIBUTING.md#commit-convention).
    As you develop, you can run `pnpm {pkg} <module> build` and
    `pnpm {pkg} <module> test` to make sure everything works as expected.
 
