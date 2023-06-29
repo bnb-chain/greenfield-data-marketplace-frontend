@@ -283,6 +283,7 @@ const ProfileList = (props: any) => {
         columns={columns}
         data={list}
         loading={loading}
+        hoverBg={'#14151A'}
       />
     </Container>
   );

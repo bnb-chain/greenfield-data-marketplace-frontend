@@ -1,11 +1,11 @@
 // import { useGetChainProviders } from './useGetChainProviders';
 import Web3 from 'web3';
-import ABI from './group_hub_abi.json';
+import ABI from './ERC1155NonTransferable_abi.json';
 import { AbiItem } from 'web3-utils';
-import { BSC_RPC_URL, GROUP_HUB_CONTRACT_ADDRESS } from '../../env/';
+import { BSC_RPC_URL, ERC1155_TRANSFER_CONTRACT_ADDRESS } from '../../env';
 
 const cache: any = {};
-export const GroupHubContract = (sign = true) => {
+export const OwnContract = (sign = true) => {
   if (cache[sign + '']) return cache[sign + ''];
   let web3;
   if (sign) {
@@ -17,7 +17,7 @@ export const GroupHubContract = (sign = true) => {
 
   const contractInstance = new web3.eth.Contract(
     ABI as AbiItem[],
-    GROUP_HUB_CONTRACT_ADDRESS,
+    ERC1155_TRANSFER_CONTRACT_ADDRESS,
   );
   if (!cache[sign + '']) cache[sign + ''] = contractInstance;
   return contractInstance;

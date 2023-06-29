@@ -153,6 +153,7 @@ const AllList = () => {
         columns={columns}
         data={list}
         loading={loading}
+        hoverBg={'#14151A'}
       />
     </Container>
   );

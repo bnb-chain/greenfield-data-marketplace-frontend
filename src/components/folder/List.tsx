@@ -230,6 +230,7 @@ const List = (props: any) => {
         columns={columns}
         data={folderList}
         loading={loading}
+        hoverBg={'#14151A'}
       />
     </Container>
   );

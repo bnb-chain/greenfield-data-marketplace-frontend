@@ -9,6 +9,7 @@ import { delay, divide10Exp } from '../utils';
 import { useModal } from './useModal';
 import { useNavigate } from 'react-router-dom';
 import { BSC_SEND_GAS_FEE } from '../env';
+import { OwnContract } from '../base/contract/ownContract';
 
 export const useBuy = (
   groupName: string,
@@ -34,22 +35,35 @@ export const useBuy = (
         const totalFee = new BN(price, 10).add(new BN(relayFee, 10));
         const n = Number(divide10Exp(totalFee, 18));
 
+        const count = 30;
         if (BscBalanceVal >= n) {
           let tmp = {};
           try {
-            const contract = MarketPlaceContract();
-            const result = await contract.methods.buy(groupId, address).send({
+            await MarketPlaceContract().methods.buy(groupId, address).send({
               from: address,
               value: totalFee,
               gasPrice: BSC_SEND_GAS_FEE,
             });
-            await delay(10);
 
-            const { status, transactionHash } = result as any;
-            const success = status && transactionHash;
+            const t = new Array(count).fill(1);
+
+            let success = false;
+            for (const {} of t) {
+              const hasOwn = Number(
+                await OwnContract(false)
+                  .methods.balanceOf(address, Number(groupId))
+                  .call(),
+              );
+              if (hasOwn > 0) {
+                success = true;
+                break;
+              }
+              await delay(1);
+            }
+
             tmp = {
-              variant: success ? 'success' : 'error',
-              description: success ? 'Buy successful' : 'Buy failed',
+              variant: 'success',
+              description: success ? 'Buy successful' : 'pending',
               callBack: () => {
                 navigator('/profile?tab=purchase');
               },

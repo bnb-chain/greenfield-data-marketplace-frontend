@@ -121,6 +121,7 @@ const PurchaseList = () => {
         columns={columns}
         data={list}
         loading={loading}
+        hoverBg={'#14151A'}
       />
     </Container>
   );
