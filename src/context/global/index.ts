@@ -1,7 +1,16 @@
 import React from 'react';
 import { getUrlParam } from '../../utils';
 
-export const initialState: any = {
+interface IInitialState {
+  breadList: Array<{
+    path: string;
+    name: string;
+    query: string;
+  }>;
+  showSearch: boolean;
+}
+
+export const initialState: IInitialState = {
   breadList: [
     {
       path: '/',

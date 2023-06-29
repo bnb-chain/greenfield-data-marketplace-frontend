@@ -59,6 +59,7 @@ export const ListProcess = (props: ListProcessProps) => {
       setStep(hasRole ? 2 : 1);
       setLoading(false);
       setTitle(hasRole ? 'Finalize on BSC' : 'Approve on BSC');
+      setStatus(1);
     }
   }, [stateModal.modalState.initListStatus]);
 
@@ -141,7 +142,7 @@ export const ListProcess = (props: ListProcessProps) => {
               alignItems={'center'}
             >
               Finalize on BSC
-              {status == 1 && (
+              {status == 2 && (
                 <SendIcon
                   cursor={'pointer'}
                   onClick={() => {
@@ -176,7 +177,7 @@ export const ListProcess = (props: ListProcessProps) => {
           chain &&
           chain.id === BSC_CHAIN_ID &&
           hasRole &&
-          status != 1 &&
+          status == 1 &&
           !loading && (
             <Button
               onClick={async () => {
@@ -194,7 +195,7 @@ export const ListProcess = (props: ListProcessProps) => {
                       setLoading(false);
                       setTitle('');
                       setStep(3);
-                      setStatus(1);
+                      setStatus(2);
                       setModalTitle('List Success');
                       setDescription('');
                       setBscHash(transactionHash);
@@ -234,7 +235,7 @@ export const ListProcess = (props: ListProcessProps) => {
               Approve
             </Button>
           )}
-        {status == 1 && (
+        {status == 2 && (
           <Button
             onClick={() => {
               reset();

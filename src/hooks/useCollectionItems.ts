@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi';
 import { getBucketFileList, getGroupInfoByName } from '../utils/gfSDK';
 import { generateGroupName } from '../utils';
 import { useListedStatus } from './useListedStatus';
-import { Tree } from '../utils/tree';
+import { INode, Tree } from '../utils/tree';
 
 export const cache: { [str: string]: any } = {};
 
@@ -15,7 +15,7 @@ export const useCollectionItems = (
   // 1 Waiting for purchase
   // 2 purchase
   const { address } = useAccount();
-  const [list, setList] = useState([]);
+  const [list, setList] = useState<INode[]>([]);
   const [loading, setLoading] = useState(true);
   const [num, setNum] = useState(0);
 

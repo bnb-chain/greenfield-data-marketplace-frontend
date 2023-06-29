@@ -3,9 +3,9 @@ import { NavBar } from '../NavBar';
 import { useCallback, useEffect, useState } from 'react';
 import { Box } from '@totejs/uikit';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import CollectionList from './collectionList';
-import PurchaseList from './purchaseList';
-import OtherListedList from './otherListedList';
+import CollectionList from './CollectionList';
+import PurchaseList from './PurchaseList';
+import OtherListedList from './OtherListedList';
 
 enum Type {
   Collections = 'collections',

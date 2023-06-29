@@ -4,7 +4,7 @@ import { SearchInput } from './SearchInput';
 import styled from '@emotion/styled';
 import { Box, Flex } from '@totejs/uikit';
 import ScrollSelect from './ScrollSelect';
-import { useDebounce } from '../hooks';
+import { useDebounce } from '../hooks/useDebounce';
 import { searchKey } from '../utils/gfSDK';
 import { parseGroupName } from '../utils';
 import { multiCallFun } from '../base/contract/multiCall';

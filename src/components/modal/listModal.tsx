@@ -32,7 +32,7 @@ import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useModal } from '../../hooks/useModal';
 import Logo from '../../images/logo.png';
 import { Loader } from '../Loader';
-import { useDebounce } from '../../hooks';
+import { useDebounce } from '../../hooks/useDebounce';
 
 interface ListModalProps {
   isOpen: boolean;

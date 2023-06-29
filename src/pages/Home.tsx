@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import Search from '../components/Search';
-import HomeList from '../components/home';
+import HomeList from '../components/home/Index';
 import { Flex } from '@totejs/uikit';
 import useScroll from '../hooks/useScroll';
 import React, { useRef } from 'react';

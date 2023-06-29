@@ -132,7 +132,7 @@ const AllList = () => {
     {
       header: 'Action',
       cell: (data: any) => {
-        return <ActionCom data={data} address={address}></ActionCom>;
+        return <ActionCom data={data} address={address as string}></ActionCom>;
       },
     },
   ];

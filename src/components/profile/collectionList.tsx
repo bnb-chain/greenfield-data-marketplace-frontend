@@ -9,7 +9,7 @@ import {
   divide10Exp,
   formatDateUTC,
   trimLongStr,
-} from '../../utils/';
+} from '../../utils';
 
 import { useCollectionList } from '../../hooks/useCollectionList';
 import { useModal } from '../../hooks/useModal';
@@ -18,7 +18,7 @@ import { useListedStatus } from '../../hooks/useListedStatus';
 import { BN } from 'bn.js';
 import { useGlobal } from '../../hooks/useGlobal';
 
-const PriceCon = (props: any) => {
+const PriceCon = (props: { groupId: string }) => {
   const { groupId } = props;
   const { price } = useListedStatus(groupId);
 
@@ -29,7 +29,7 @@ const PriceCon = (props: any) => {
   return <div>{balance}</div>;
 };
 
-const TotalVol = (props: any) => {
+const TotalVol = (props: { groupId: string }) => {
   const { groupId } = props;
   const { salesVolume } = useSalesVolume(groupId);
   return <div>{Number(salesVolume) || '-'}</div>;

@@ -205,41 +205,12 @@ export const downloadWithProgress = async ({
       seedString,
     });
     const { url, headers } = uploadOptions;
-    // const toastId = toast.info({
-    //   description: ``,
-    //   render: (props: any) => {
-    //     return (
-    //       <ProgressBarToast
-    //         progress={0}
-    //         fileName={objectName}
-    //         closeToast={() => {
-    //           toast.close(toastId);
-    //         }}
-    //       />
-    //     );
-    //   },
-    //   duration: -1,
-    // });
     const result = await axios
       .get(url, {
         onDownloadProgress: (progressEvent) => {
           const progress = Math.round(
             (progressEvent.loaded / payloadSize) * 100,
           );
-          // toast.update(toastId, {
-          //   description: ``,
-          //   render: () => {
-          //     return (
-          //       <ProgressBarToast
-          //         progress={progress}
-          //         fileName={objectName}
-          //         closeToast={() => {
-          //           toast.close(toastId);
-          //         }}
-          //       />
-          //     );
-          //   },
-          // });
           console.log(progress);
         },
         headers: {

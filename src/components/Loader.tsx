@@ -5,7 +5,7 @@ import { keyframes } from '@emotion/react';
 interface LoadingProps {
   minHeight?: number;
   size?: number;
-  style?: { [key: string]: any };
+  style?: React.CSSProperties;
 }
 
 export const Loader = (props: LoadingProps) => {

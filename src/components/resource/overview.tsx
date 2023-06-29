@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { PenIcon, ColoredInfoIcon } from '@totejs/icons';
 import { Box, Flex } from '@totejs/uikit';
-import { Copy } from '../../components/Copy';
+import { Copy } from '../Copy';
 import { getRandomSp } from '../../utils/gfSDK';
 import { useEffect, useMemo, useState } from 'react';
 

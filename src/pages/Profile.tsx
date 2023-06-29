@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Copy } from '../components/Copy';
 import { useAccount } from 'wagmi';
 import { Flex } from '@totejs/uikit';
-import ProfileList from '../components/profile/';
+import ProfileList from '../components/profile/Index';
 import Identicon from 'identicon.js';
 import sha265 from 'sha256';
 import Logo from '../images/logo.png';

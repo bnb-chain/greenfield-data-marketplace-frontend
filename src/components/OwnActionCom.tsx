@@ -37,25 +37,6 @@ export const OwnActionCom = (obj: IOwnActionCom) => {
     name = on as string;
     bucketName = bn as string;
   }
-  // const { name, bucketName } = parseGroupName(groupName);
-
-  //   const [objectInfo, setObjectInfo] = useState<any>();
-  //   const [bucketInfo, setBucketInfo] = useState<any>();
-
-  //   useEffect(() => {
-  //     Promise.all([
-  //       getObjectInfoByName(bucketName, name),
-  //       getCollectionInfoByName(bucketName),
-  //     ])
-  //       .then((result) => {
-  //         const [{ objectInfo }, { bucketInfo }] = result;
-  //         setBucketInfo(bucketInfo as any);
-  //         setObjectInfo(objectInfo as any);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   }, []);
 
   const state = useGlobal();
   const [p] = useSearchParams();
@@ -81,92 +62,19 @@ export const OwnActionCom = (obj: IOwnActionCom) => {
   return (
     <ActionCon gap={10}>
       {type === 'Data' && (
-        // <Copy
-        //   value={downloadUrl}
-        //   copyToolTips="Copy Download Link to CLipboard"
-        // >
         <DownloadIcon
           color={'#AEB4BC'}
           cursor="pointer"
           onClick={async () => {
             window.open(downloadUrl);
-            //   onCopyDownLoad();
-            // try {
-            //   const { visibility, payloadSize } = objectInfo as any;
-            //   if (visibility === VisibilityType.VISIBILITY_TYPE_PUBLIC_READ) {
-            //     const directDownloadLink = encodeURI(
-            //       `${await getRandomSp()}/download/${bucketName}/${encodeObjectName(
-            //         name,
-            //       )}`,
-            //     );
-            //     directlyDownload(directDownloadLink);
-            //   } else {
-            //     const sps = await getSps();
-            //     const spIndex = sps.findIndex(function (item: any) {
-            //       return item.operatorAddress === bucketInfo?.primarySpAddress;
-            //     });
-            //     const result = await downloadWithProgress({
-            //       bucketName,
-            //       objectName: name,
-            //       primarySp: sps[spIndex] as IRawSPInfo,
-            //       address,
-            //       payloadSize,
-            //     });
-            //     saveFileByAxiosResponse(result, name);
-            //   }
-            //   console.log(objectInfo);
-            //   console.log(data);
-            //   console.log(name, bucketName, dataType);
-            // } catch (e) {
-            //   console.log(e);
-            //   toast.error({ description: 'download error' });
-            // }
           }}
         />
-        // </Copy>
       )}
       {type === 'Data' && (
-        // <Copy value={previewUrl} copyToolTips="Copy Preview Link to CLipboard">
         <Preview
           cursor="pointer"
           onClick={async () => {
             window.open(previewUrl);
-
-            // try {
-            //   const { visibility, payloadSize } = objectInfo as any;
-            //   if (visibility === VisibilityType.VISIBILITY_TYPE_PUBLIC_READ) {
-            //     const viewLink = encodeURI(
-            //       `${await getRandomSp()}/download/${bucketName}/${encodeObjectName(
-            //         name,
-            //       )}`,
-            //     );
-            //     window.open(viewLink, '_blank');
-            //   } else {
-            //     const sps = await getSps();
-            //     const spIndex = sps.findIndex(function (item: any) {
-            //       return item.operatorAddress === bucketInfo?.primarySpAddress;
-            //     });
-            //     const primarySp = sps[spIndex] as IRawSPInfo;
-            //     const spOffChainData = await getSpOffChainData({
-            //       address,
-            //       spAddress: primarySp.operatorAddress,
-            //     });
-            //     if (!checkSpOffChainDataAvailable(spOffChainData)) {
-            //       return;
-            //     }
-            //     const result = await downloadWithProgress({
-            //       bucketName,
-            //       objectName: name,
-            //       primarySp,
-            //       payloadSize: Number(payloadSize),
-            //       address,
-            //     });
-            //     viewFileByAxiosResponse(result);
-            //   }
-            // } catch (e) {
-            //   console.log(e);
-            //   toast.error({ description: 'preview error' });
-            // }
           }}
         ></Preview>
         // </Copy>

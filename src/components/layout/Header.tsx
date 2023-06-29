@@ -119,7 +119,7 @@ const Header = () => {
         alignItems={'center'}
       >
         <img src={LogoGroup} alt="logo" width={188} height={38} />
-        devnet
+        testnet
       </ImageContainer>
       {showSearch && <Search width="360px" height="44px"></Search>}
       <NetWorkCon alignItems={'center'} justifyContent={'center'} gap={40}>
@@ -202,7 +202,7 @@ const Header = () => {
                           <Copy value={address} />
                         </Address>
                         <MenuElement
-                          onClick={async (e: any) => {
+                          onClick={async (e: React.MouseEvent<HTMLElement>) => {
                             e.preventDefault();
                             navigate('/profile?tab=collections');
                           }}
@@ -210,14 +210,6 @@ const Header = () => {
                           <PaperLibraryIcon mr={8} width={24} height={24} /> My
                           Profile
                         </MenuElement>
-                        {/* <MenuElement
-                      onClick={async (e: any) => {
-                        e.preventDefault();
-                        navigate('/profile?tab=purchase');
-                      }}
-                    >
-                      <WalletIcon mr={8} width={24} height={24} /> My Purchase
-                    </MenuElement> */}
                         {hasRole && (
                           <MenuElement
                             onClick={() => {

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@totejs/uikit';
 import { useEffect, useMemo, useState } from 'react';
-import List from '../components/folder/list';
+import List from '../components/folder/List';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useResourceInfo } from '../hooks/useResourceInfo';
 import { Loader } from '../components/Loader';

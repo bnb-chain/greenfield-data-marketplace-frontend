@@ -3,8 +3,8 @@ import { NavBar } from '../NavBar';
 import { useCallback } from 'react';
 import { Box } from '@totejs/uikit';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import AllList from './all';
-import TrendingList from './trending';
+import AllList from './All';
+import TrendingList from './Trending';
 
 enum Type {
   All = 'all',

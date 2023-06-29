@@ -9,10 +9,10 @@ import {
 } from '@totejs/uikit';
 import { NavBar } from '../components/NavBar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Overview from '../components/resource/overview';
-import List from '../components/resource/list';
+import Overview from '../components/resource/Overview';
+import List from '../components/resource/List';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { EditModal } from '../components/modal/editModal';
+import { EditModal } from '../components/modal/EditModal';
 import { useAccount } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 import { useResourceInfo } from '../hooks/useResourceInfo';

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { BuyModal } from './buyModal';
-import { BuyProcess } from './buyProcess';
+import { BuyModal } from './BuyModal';
+import { BuyProcess } from './BuyProcess';
 import { useModal } from '../../../hooks/useModal';
 
 export const BuyIndex = () => {

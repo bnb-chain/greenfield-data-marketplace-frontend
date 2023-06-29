@@ -3,11 +3,11 @@ import Footer from './Footer';
 import { ReactNode, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Flex } from '@totejs/uikit';
-import { ListModal } from '../modal/listModal';
-import { ListProcess } from '../modal/listProcess';
-import { DelistModal } from '../modal/delistModal';
-import { ActionResult } from '../modal/actionResult';
-import { BuyIndex } from '../modal/buy/index';
+import { ListModal } from '../modal/ListModal';
+import { ListProcess } from '../modal/ListProcess';
+import { DelistModal } from '../modal/DelistModal';
+import { ActionResult } from '../modal/ActionResult';
+import { BuyIndex } from '../modal/buy/Index';
 import { useModal } from '../../hooks/useModal';
 
 export default function Layout({ children }: { children: ReactNode }) {

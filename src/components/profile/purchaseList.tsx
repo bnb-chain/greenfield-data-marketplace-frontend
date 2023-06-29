@@ -7,7 +7,7 @@ import {
   divide10Exp,
   formatDateUTC,
   trimLongStr,
-} from '../../utils/';
+} from '../../utils';
 import { useUserPurchased } from '../../hooks/useUserPurchased';
 import BN from 'bn.js';
 import { useSalesVolume } from '../../hooks/useSalesVolume';

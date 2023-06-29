@@ -1,3 +1,4 @@
+import { StateModalVariantType } from '@totejs/uikit';
 import React from 'react';
 
 export const initialState: any = {
@@ -34,7 +35,10 @@ export interface ModalState {
     openDelist: boolean;
     delistData: object;
     openResult: boolean;
-    result: object;
+    result: {
+      variant: StateModalVariantType;
+      description: string;
+    };
     callBack: () => void;
   };
   modalDispatch: React.Dispatch<any>;

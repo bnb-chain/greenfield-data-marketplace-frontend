@@ -9,7 +9,7 @@ import {
   formatDateUTC,
   parseFileSize,
   trimLongStr,
-} from '../../utils/';
+} from '../../utils';
 import { useCollectionItems, cache } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';

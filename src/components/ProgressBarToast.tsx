@@ -11,7 +11,7 @@ const ProgressBarToast = ({
 }: {
   progress: number;
   fileName: string;
-  closeToast: any;
+  closeToast: () => void;
 }) => {
   return (
     <Flex alignItems={'center'} justifyContent={'center'}>

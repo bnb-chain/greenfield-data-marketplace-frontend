@@ -12,7 +12,6 @@ import {
   GRNToString,
   newGroupGRN,
   newObjectGRN,
-  newBucketGRN,
 } from '@bnb-chain/greenfield-chain-sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -60,7 +59,7 @@ export const useList = (props: IList) => {
             GRNToString(
               type === 'Data'
                 ? newObjectGRN(bucketName, name)
-                : newBucketGRN(bucketName),
+                : newObjectGRN(bucketName, '*'),
             ),
           ],
         };

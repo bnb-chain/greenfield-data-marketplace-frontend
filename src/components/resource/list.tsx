@@ -10,7 +10,7 @@ import {
   generateGroupName,
   parseFileSize,
   trimLongStr,
-} from '../../utils/';
+} from '../../utils';
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';

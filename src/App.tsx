@@ -7,7 +7,7 @@ import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { ThemeProvider } from '@totejs/uikit';
 import { bscTestnet } from 'wagmi/chains';
 import { ConnectKitProvider } from 'connectkit';
-import Layout from './components/layout';
+import Layout from './components/layout/Index';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Resource from './pages/Resource';

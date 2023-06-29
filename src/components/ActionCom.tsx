@@ -6,7 +6,16 @@ import { OwnActionCom } from './OwnActionCom';
 import styled from '@emotion/styled';
 import { Button, Flex } from '@totejs/uikit';
 
-export const ActionCom = (obj: any) => {
+interface IActionCom {
+  data: {
+    id: string;
+    groupName: string;
+    ownerAddress: string;
+    type: string;
+  };
+  address: string;
+}
+export const ActionCom = (obj: IActionCom) => {
   const { data, address } = obj;
   const { id, groupName, ownerAddress, type } = data;
 

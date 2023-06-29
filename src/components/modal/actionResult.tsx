@@ -1,7 +1,14 @@
 import styled from '@emotion/styled';
-import { Button, StateModal } from '@totejs/uikit';
+import { Button, StateModal, StateModalVariantType } from '@totejs/uikit';
 
-export const ActionResult = (props: any) => {
+interface IActionResult {
+  isOpen: boolean;
+  handleOpen: (b?: boolean) => void;
+  variant?: StateModalVariantType;
+  description: string;
+  callBack?: () => void;
+}
+export const ActionResult = (props: IActionResult) => {
   const { isOpen, handleOpen, variant, description, callBack } = props;
   return (
     <Container
