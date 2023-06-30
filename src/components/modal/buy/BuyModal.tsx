@@ -56,7 +56,12 @@ export const BuyModal = (props: any) => {
   }, [GfBalanceVal, TotalPrice]);
 
   return (
-    <Container isOpen={isOpen} onClose={handleOpen} background={'#ffffff'}>
+    <Container
+      isOpen={isOpen}
+      onClose={handleOpen}
+      background={'#ffffff'}
+      w={395}
+    >
       <QDrawerCloseButton />
       <Header>Checking out</Header>
       <CustomBody>
@@ -116,7 +121,7 @@ export const BuyModal = (props: any) => {
             <ItemVal> {TotalPrice} BNB </ItemVal>
           </ItemCon>
           <ItemCon alignItems={'flex-end'} justifyContent={'space-between'}>
-            <ItemTitle>balance on BSC</ItemTitle>
+            <ItemTitle>Balance on BSC Testnet</ItemTitle>
             <ItemVal> {roundFun(BscBalanceVal, 4)} BNB </ItemVal>
           </ItemCon>
         </BuyInfo>
@@ -142,7 +147,7 @@ export const BuyModal = (props: any) => {
               switchNetwork?.(BSC_CHAIN_ID);
             }}
           >
-            Switch to Bsc Testnet
+            Switch to BSC Testnet
           </Button>
         ) : null}
         <Cancel width={'50%'} onClick={handleOpen} variant="ghost">

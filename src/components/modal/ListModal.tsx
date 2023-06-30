@@ -276,7 +276,6 @@ export const ListModal = (props: ListModalProps) => {
                 reset();
 
                 InitiateList();
-                debugger;
                 modalData.modalDispatch({
                   type: 'OPEN_LIST_PROCESS',
                   listData,

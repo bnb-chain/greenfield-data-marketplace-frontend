@@ -103,19 +103,25 @@ export const useResourceInfo = ({
 
       // If it is currently data, it is necessary to determine whether its collection has been listed
       let bucketListed = false;
+      let bucketListedId;
       if (bucketName) {
         const groupName = generateGroupName(bucketName);
         const { groupInfo } = await getGroupInfoByName(groupName, address);
-        const groupId = groupInfo?.id;
-        bucketListed = !!(await checkListed(groupId as string));
+        bucketListedId = groupInfo?.id;
+        bucketListed = !!(await checkListed(bucketListedId as string));
       }
 
       // owner list
       if (groupName && groupId) {
-        const _promise =
-          groupId && !bucketListed
-            ? checkListed(groupId as string)
-            : Promise.resolve(false);
+        let _promise;
+
+        if (groupId) {
+          if (bucketListed || bucketListedId === groupId)
+            _promise = Promise.resolve(true);
+          else checkListed(groupId as string);
+        } else {
+          _promise = Promise.resolve(false);
+        }
 
         Promise.all([_promise, getGroupInfoByName(groupName, address)])
           .then(async (result: any) => {

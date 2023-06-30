@@ -25,7 +25,6 @@ import {
   parseFileSize,
 } from '../utils';
 import BN from 'bn.js';
-import { useCollectionItems } from '../hooks/useCollectionItems';
 import { useSalesVolume } from '../hooks/useSalesVolume';
 import { useStatus } from '../hooks/useStatus';
 import { useModal } from '../hooks/useModal';
@@ -84,7 +83,7 @@ const Resource = () => {
     bucketListed,
   } = baseInfo;
 
-  const { num } = useCollectionItems(name, listed);
+  const [num, setNum] = useState(0);
 
   const { salesVolume } = useSalesVolume(groupId);
 
@@ -379,6 +378,7 @@ const Resource = () => {
           listed={bucketListed}
           bucketName={bucketName}
           bucketInfo={bucketInfo}
+          setNum={setNum}
         ></List>
       )}
       {open && (

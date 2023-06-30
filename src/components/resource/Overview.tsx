@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { PenIcon, ColoredInfoIcon } from '@totejs/icons';
-import { Box, Flex } from '@totejs/uikit';
+import { Box, Flex, Tooltip } from '@totejs/uikit';
 import { Copy } from '../Copy';
 import { getRandomSp } from '../../utils/gfSDK';
 import { useEffect, useMemo, useState } from 'react';
@@ -32,7 +32,19 @@ const Overview = (props: IOverView) => {
     getRandomSp().then((result) => {
       setDomain(result);
     });
+    const clickHandle = () => {
+      setIsOpenF(false);
+      setIsOpenS(false);
+    };
+    document.addEventListener('click', clickHandle);
+    return () => {
+      document.removeEventListener('click', clickHandle);
+    };
   }, []);
+
+  const [isOpenF, setIsOpenF] = useState(false);
+  const [isOpenS, setIsOpenS] = useState(false);
+
   return (
     <Container>
       <Box h={20}></Box>
@@ -60,9 +72,30 @@ const Overview = (props: IOverView) => {
                 justifyItems={'center'}
               >
                 Download Universal Endpoint{' '}
-                <ColoredInfoIcon
-                  style={{ width: '20px', height: '20px' }}
-                ></ColoredInfoIcon>{' '}
+                <Tooltip
+                  isOpen={isOpenF}
+                  content={
+                    <div>
+                      All storage objects in the Greenfield Network can be
+                      identified and accessed through a universal resource
+                      identifier (URI).
+                      <LearnMore
+                        target="_blank"
+                        href="https://github.com/bnb-chain/greenfield-whitepaper/blob/main/part3.md#231-universal-endpoint"
+                      >
+                        Learn More
+                      </LearnMore>
+                    </div>
+                  }
+                >
+                  <ColoredInfoIcon
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation();
+                      setIsOpenF(true);
+                    }}
+                    style={{ width: '20px', height: '20px' }}
+                  ></ColoredInfoIcon>
+                </Tooltip>
               </SupInfoTitle>
               <Box h={8}></Box>
               <UrlCon justifyContent={'space-between'}>
@@ -85,9 +118,30 @@ const Overview = (props: IOverView) => {
                 justifyItems={'center'}
               >
                 Preview Universal Endpoint{' '}
-                <ColoredInfoIcon
-                  style={{ width: '20px', height: '20px' }}
-                ></ColoredInfoIcon>{' '}
+                <Tooltip
+                  isOpen={isOpenS}
+                  content={
+                    <div>
+                      All storage objects in the Greenfield Network can be
+                      identified and accessed through a universal resource
+                      identifier (URI).
+                      <LearnMore
+                        target="_blank"
+                        href="https://github.com/bnb-chain/greenfield-whitepaper/blob/main/part3.md#231-universal-endpoint"
+                      >
+                        Learn More
+                      </LearnMore>
+                    </div>
+                  }
+                >
+                  <ColoredInfoIcon
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation();
+                      setIsOpenS(true);
+                    }}
+                    style={{ width: '20px', height: '20px' }}
+                  ></ColoredInfoIcon>
+                </Tooltip>
               </SupInfoTitle>
               <Box h={8}></Box>
               <UrlCon justifyContent={'space-between'}>
@@ -196,4 +250,8 @@ const Url = styled(Flex)`
 
   flex: 1;
   padding-left: 20px;
+`;
+
+const LearnMore = styled.a`
+  color: #f0b90b;
 `;

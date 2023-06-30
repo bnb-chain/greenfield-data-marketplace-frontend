@@ -188,7 +188,7 @@ export const updateGroupInfo = async (
     operator: address,
     groupOwner: address,
     groupName,
-    Extra: extra,
+    extra,
   });
 };
 

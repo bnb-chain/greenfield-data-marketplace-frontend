@@ -13,6 +13,7 @@ import BN from 'bn.js';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { OwnActionCom } from '../OwnActionCom';
 import { Link } from 'react-router-dom';
+import { CollectionLogo } from '../svgIcon/CollectionLogo';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -30,8 +31,9 @@ const PurchaseList = () => {
   const columns = [
     {
       header: 'Data',
+      width: 200,
       cell: (data: any) => {
-        const { name, url } = data;
+        const { name, url, type } = data;
         return (
           <ImgContainer
             alignItems={'center'}
@@ -40,6 +42,11 @@ const PurchaseList = () => {
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
             {trimLongStr(name)}
+            {type === 'Collection' && (
+              <CollectionLogo
+                style={{ width: '10px', height: '10px' }}
+              ></CollectionLogo>
+            )}
           </ImgContainer>
         );
       },
@@ -52,7 +59,7 @@ const PurchaseList = () => {
       },
     },
     {
-      header: 'Purchased Price',
+      header: 'Current List Price',
       width: 160,
       cell: (data: any) => {
         const { price } = data;
@@ -133,7 +140,10 @@ const Container = styled.div`
   width: 1123px;
 `;
 
-const ImgContainer = styled(Flex)``;
+const ImgContainer = styled(Flex)`
+  cursor: pointer;
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
+`;
 
 const ImgCon = styled.img`
   width: 40px;

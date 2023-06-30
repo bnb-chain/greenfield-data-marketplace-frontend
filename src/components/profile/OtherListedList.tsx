@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Button, Flex, Table } from '@totejs/uikit';
+import { Flex, Table } from '@totejs/uikit';
 import { usePagination } from '../../hooks/usePagination';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -10,76 +10,9 @@ import {
 } from '../../utils';
 import { useUserListed } from '../../hooks/useUserListed';
 import BN from 'bn.js';
-import { useStatus } from '../../hooks/useStatus';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
-import { useModal } from '../../hooks/useModal';
-import { OwnActionCom } from '../OwnActionCom';
-import { GoIcon } from '@totejs/icons';
-
-const ActionCom = (obj: any) => {
-  const navigator = useNavigate();
-  const { data, address } = obj;
-  const { id, groupName, ownerAddress, type } = data;
-
-  const { status } = useStatus(groupName, ownerAddress, address);
-
-  const modalData = useModal();
-  return (
-    <ButtonCon gap={6}>
-      {status == 1 && (
-        <Button
-          size={'sm'}
-          onClick={async () => {
-            modalData.modalDispatch({
-              type: 'OPEN_BUY',
-              buyData: data,
-            });
-          }}
-        >
-          Buy
-        </Button>
-      )}
-      {(status == 0 || status == 2) && (
-        <OwnActionCom
-          data={{
-            id,
-            groupName,
-            ownerAddress,
-            type,
-          }}
-          address={address}
-          breadInfo={{
-            name: 'Address',
-            path: '/profile',
-          }}
-        ></OwnActionCom>
-      )}
-
-      {status === -1 && (
-        <GoIcon
-          cursor={'pointer'}
-          color={'#AEB4BC'}
-          onClick={() => {
-            navigator(
-              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=dataList&from=otherAddress`,
-            );
-          }}
-        />
-      )}
-
-      {/* <Button
-        onClick={() => {
-          navigator(
-            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=dataList`,
-          );
-        }}
-        size={'sm'}
-      >
-        View detail
-      </Button> */}
-    </ButtonCon>
-  );
-};
+import { CollectionLogo } from '../svgIcon/CollectionLogo';
+import { ActionCom } from '../ActionCom';
 
 interface ITotalVol {
   id: string;
@@ -96,6 +29,7 @@ interface IOtherListedList {
 }
 
 const OtherListedList = (props: IOtherListedList) => {
+  const navigator = useNavigate();
   const { realAddress } = props;
 
   const { handlePageChange, page } = usePagination();
@@ -107,16 +41,26 @@ const OtherListedList = (props: IOtherListedList) => {
     {
       header: 'Data',
       cell: (data: any) => {
-        const { name, url } = data;
+        const { name, url, type, id, groupName, ownerAddress } = data;
 
         return (
           <ImgContainer
             alignItems={'center'}
             justifyContent={'flex-start'}
             gap={6}
+            onClick={() => {
+              navigator(
+                `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=dataList&from=otherAddress`,
+              );
+            }}
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
             {trimLongStr(name, 15)}
+            {type === 'Collection' && (
+              <CollectionLogo
+                style={{ width: '10px', height: '10px' }}
+              ></CollectionLogo>
+            )}
           </ImgContainer>
         );
       },
@@ -151,14 +95,6 @@ const OtherListedList = (props: IOtherListedList) => {
       cell: (data: any) => {
         const { id } = data;
         return <TotalVol id={id}></TotalVol>;
-      },
-    },
-    {
-      header: 'Creator',
-      width: 120,
-      cell: (data: any) => {
-        const { ownerAddress } = data;
-        return <div>{trimLongStr(ownerAddress)}</div>;
       },
     },
     {
@@ -197,7 +133,10 @@ const Container = styled.div`
   width: 1123px;
 `;
 
-const ImgContainer = styled(Flex)``;
+const ImgContainer = styled(Flex)`
+  cursor: pointer;
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
+`;
 
 const ImgCon = styled.img`
   width: 40px;
@@ -206,5 +145,3 @@ const ImgCon = styled.img`
   background: #d9d9d9;
   border-radius: 8px;
 `;
-
-const ButtonCon = styled(Flex)``;

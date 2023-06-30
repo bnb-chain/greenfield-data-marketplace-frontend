@@ -14,12 +14,12 @@ import {
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
-import { useDelist } from '../../hooks/useDelist';
 import { BN } from 'bn.js';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGlobal } from '../../hooks/useGlobal';
 import { GoIcon, CardPocketIcon } from '@totejs/icons';
 import { OwnActionCom } from '../OwnActionCom';
+import { useMemo } from 'react';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -34,9 +34,10 @@ const ProfileList = (props: any) => {
     listed: collectionListed,
     status: bucketStatus,
     bucketInfo,
+    setNum,
   } = props;
 
-  const { list, loading } = useCollectionItems(name, collectionListed);
+  const { list, loading, num } = useCollectionItems(name, collectionListed);
 
   const { handlePageChange, page } = usePagination();
 
@@ -58,6 +59,10 @@ const ProfileList = (props: any) => {
   const state = useGlobal();
 
   const navigator = useNavigate();
+
+  useMemo(() => {
+    if (num) setNum(num);
+  }, [num]);
 
   const columns = [
     {
