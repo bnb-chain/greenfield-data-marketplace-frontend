@@ -88,7 +88,7 @@ const Search = (props: ISearch) => {
     const {
       group: { group_name, id, owner },
     } = item;
-    return `resource?gid=${id}&gn=${group_name}&address=${owner}&tab=description`;
+    return `resource?gid=${id}&gn=${group_name}&address=${owner}&tab=dataList`;
   };
   const filteredData = useMemo(() => {
     if (searchValue) {

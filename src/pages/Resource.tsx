@@ -43,7 +43,7 @@ enum Type {
 const Resource = () => {
   const navigator = useNavigate();
   const [p] = useSearchParams();
-  const tab = p.getAll('tab')[0];
+
   const groupId = p.getAll('gid')[0];
   const bucketId = p.getAll('bid')[0];
   const objectId = p.getAll('oid')[0];
@@ -51,7 +51,6 @@ const Resource = () => {
   const gName = p.getAll('gn')[0];
   const bGroupName = p.getAll('bgn')[0];
 
-  const currentTab = tab ? tab : Type.Description;
   const [open, setOpen] = useState(false);
 
   const handleTabChange = useCallback((tab: any) => {
@@ -144,13 +143,22 @@ const Resource = () => {
       },
     ];
     if ((address === ownerAddress || status == 2) && resourceType === '1') {
-      _navItems.push({
+      _navItems.unshift({
         name: 'Data List',
         key: Type.DataList,
       });
     }
     return _navItems;
   }, [address, ownerAddress, status, resourceType]);
+
+  const currentTab = useMemo(() => {
+    const tab = p.getAll('tab')[0];
+    return resourceType === '1'
+      ? tab
+        ? tab
+        : Type.Description
+      : Type.Description;
+  }, [p, resourceType]);
 
   const CreateTime = useMemo(() => {
     let obj;

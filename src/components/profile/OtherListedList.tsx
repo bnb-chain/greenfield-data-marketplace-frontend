@@ -61,7 +61,7 @@ const ActionCom = (obj: any) => {
           color={'#AEB4BC'}
           onClick={() => {
             navigator(
-              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description&from=otherAddress`,
+              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=dataList&from=otherAddress`,
             );
           }}
         />
@@ -70,7 +70,7 @@ const ActionCom = (obj: any) => {
       {/* <Button
         onClick={() => {
           navigator(
-            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description`,
+            `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=dataList`,
           );
         }}
         size={'sm'}

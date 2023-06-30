@@ -38,8 +38,8 @@ dependencies:
     specifier: ^2.13.0
     version: 2.13.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
   '@totejs/uikit':
-    specifier: ^2.45.1
-    version: 2.45.1(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^2.47.0
+    version: 2.47.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
   '@types/jest':
     specifier: ^27.5.2
     version: 27.5.2
@@ -3793,6 +3793,21 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /@totejs/icons@2.14.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-k2rr3SJD4zqjjMYIroNvdSxoJyqlq8TajFiV3llQXEDXKaZEiC8oShmIUcdfSm+4jVUa5mAob2sTptNKQqZ0og==}
+    peerDependencies:
+      '@emotion/react': '>=11'
+      '@emotion/styled': '>=11'
+      react: '>=16.9.0'
+      react-dom: '>=16.9.0'
+    dependencies:
+      '@emotion/react': 11.11.0(@types/react@18.2.7)(react@18.2.0)
+      '@emotion/styled': 11.11.0(@emotion/react@11.11.0)(@types/react@18.2.7)(react@18.2.0)
+      '@totejs/styled-system': 2.12.0(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@totejs/styled-system@2.11.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-qsiRLlw9y/t2qq0/6Bw9ojOmxVBEih6oigrQCaYza8e2OyYVwvSCWeVniT7RwD+7Cp7SjKYE+twYb8JChJtBMw==}
     peerDependencies:
@@ -3813,8 +3828,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@totejs/uikit@2.45.1(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-iJCZFUfhIVg8H3iyQPsbC16t1CaaDIA9lYGmeG068EVenG38ltfy4b1T+UNPHE5mEkI2e8R3T6zx0oF/Ksd5bQ==}
+  /@totejs/uikit@2.47.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Mwg2iT63wt0/mj1nAxz1l1eoGtiVkpGmkl8sBZwmrO419tKe8UuMFF6plsRdxsTSl1orGfohbUrc9CDRd5b3lQ==}
     peerDependencies:
       '@emotion/react': '>=11'
       '@emotion/styled': '>=11'
@@ -3824,7 +3839,7 @@ packages:
       '@emotion/react': 11.11.0(@types/react@18.2.7)(react@18.2.0)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.0)(@types/react@18.2.7)(react@18.2.0)
       '@popperjs/core': 2.11.8
-      '@totejs/icons': 2.13.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
+      '@totejs/icons': 2.14.0(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
       '@totejs/styled-system': 2.12.0(react-dom@18.2.0)(react@18.2.0)
       '@xobotyi/scrollbar-width': 1.9.5
       react: 18.2.0

@@ -23,7 +23,7 @@ export const useCollectionItems = (
   useEffect(() => {
     if (bucketName && address) {
       getBucketFileList({ bucketName })
-        .then((result: any) => {
+        .then(async (result: any) => {
           const { body, code } = result;
 
           if (code == 0) {
@@ -76,25 +76,15 @@ export const useCollectionItems = (
                 return item;
               }
             });
-            Promise.all(t)
-              .then(() => {
-                // res = res.filter((item: any) => !!item.object_info);
 
-                tree.orderTraverse((item: any) => {
-                  const { _id } = item;
-                  Object.assign(item, _objInfo[_id] || {});
-                });
+            await Promise.all(t);
+            tree.orderTraverse((item: any) => {
+              const { _id } = item;
+              Object.assign(item, _objInfo[_id] || {});
+            });
 
-                cache[bucketName] = tree;
-
-                setList(tree.list);
-              })
-              .catch(() => {
-                setList([]);
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            cache[bucketName] = tree;
+            setList(tree.list);
 
             setNum(key_count);
           } else {

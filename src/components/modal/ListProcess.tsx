@@ -183,6 +183,7 @@ export const ListProcess = (props: ListProcessProps) => {
                 setLoading(true);
                 let tmp = {};
                 try {
+                  debugger;
                   const listResult: any = await List(
                     stateModal.modalState.listData as any,
                   );

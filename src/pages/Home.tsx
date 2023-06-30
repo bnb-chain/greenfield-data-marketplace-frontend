@@ -27,8 +27,8 @@ const Home = () => {
   return (
     <Container flexDirection={'column'} alignItems={'center'}>
       <Title>
-        Fast, secure, simple <br></br>
-        BNB Greenfield Data MarketPlace
+        Fast, Secure, Simple <br></br>
+        BNB Greenfield Data Marketplace
       </Title>
 
       <Search></Search>

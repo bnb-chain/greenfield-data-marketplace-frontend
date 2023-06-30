@@ -197,7 +197,7 @@ const List = (props: any) => {
                   item,
                 });
                 navigate(
-                  `/resource?oid=${id}&address=${address}&tab=description&from=${encodeURIComponent(
+                  `/resource?oid=${id}&address=${address}&tab=dataList&from=${encodeURIComponent(
                     JSON.stringify(list.concat([item])),
                   )}`,
                 );

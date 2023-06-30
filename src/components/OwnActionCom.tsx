@@ -101,11 +101,11 @@ export const OwnActionCom = (obj: IOwnActionCom) => {
           const _from = from ? `&from=${from}` : '';
           if (groupName) {
             navigator(
-              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=description${_from}`,
+              `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=dataList${_from}`,
             );
           } else {
             navigator(
-              `/resource?oid=${oid}&address=${ownerAddress}&type=collection&tab=description${_from}`,
+              `/resource?oid=${oid}&address=${ownerAddress}&type=collection&tab=dataList${_from}`,
             );
           }
         }}

@@ -25,13 +25,13 @@ import { HeaderProfileBg } from '../svgIcon/HeaderProfileBg';
 import {
   // BookmarkIcon,
   WithdrawIcon,
-  WalletIcon,
-  PaperLibraryIcon,
+  SaverIcon,
   MenuCloseIcon,
+  DepositIcon,
 } from '@totejs/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRevoke } from '../../hooks/useRevoke';
-import { useHasRole } from '../../hooks/useHasRole';
+// import { useRevoke } from '../../hooks/useRevoke';
+// import { useHasRole } from '../../hooks/useHasRole';
 import LogoGroup from '../../images/logo-group.png';
 import { BSCLogo } from '../svgIcon/BSCLogo';
 import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
@@ -87,8 +87,8 @@ const Header = () => {
     setDropDownOpen(false);
   }, []);
 
-  const { revoke } = useRevoke();
-  const { hasRole, setHasRole } = useHasRole();
+  // const { revoke } = useRevoke();
+  // const { hasRole, setHasRole } = useHasRole();
 
   const navigate = useNavigate();
   const { onClose, onToggle } = useDisclosure();
@@ -109,19 +109,37 @@ const Header = () => {
       justifyContent={'space-between'}
       alignItems={'center'}
       padding={'0px 24px 0'}
-      height={64}
+      height={80}
     >
-      <ImageContainer
-        onClick={() => {
-          navigate('/');
-        }}
-        gap={4}
-        alignItems={'center'}
-      >
-        <img src={LogoGroup} alt="logo" width={188} height={38} />
-      </ImageContainer>
-      {showSearch && <Search width="360px" height="44px"></Search>}
-      <NetWorkCon alignItems={'center'} justifyContent={'center'} gap={40}>
+      <LeftCon gap={42} alignItems={'center'}>
+        <img
+          onClick={() => {
+            navigate('/');
+          }}
+          src={LogoGroup}
+          alt="logo"
+        />
+        {showSearch && <Search width="380px" height="40px"></Search>}
+      </LeftCon>
+
+      <RightFunCon alignItems={'center'} justifyContent={'center'} gap={18}>
+        <ConnectKitButton.Custom>
+          {({ isConnected, show }) => {
+            return (
+              <>
+                <ListLink
+                  onClick={() => {
+                    if (show && !isConnected) show();
+                    navigate('/profile?tab=collections');
+                  }}
+                  className={isConnected ? 'connected' : ''}
+                >
+                  List My Data
+                </ListLink>
+              </>
+            );
+          }}
+        </ConnectKitButton.Custom>
         {address && (
           <Menu placement="bottom-end">
             <MenuButton
@@ -206,10 +224,19 @@ const Header = () => {
                             navigate('/profile?tab=collections');
                           }}
                         >
-                          <PaperLibraryIcon mr={8} width={24} height={24} /> My
-                          Profile
+                          <SaverIcon mr={8} width={24} height={24} />
+                          My Data Collections
                         </MenuElement>
-                        {hasRole && (
+                        <MenuElement
+                          onClick={async (e: React.MouseEvent<HTMLElement>) => {
+                            e.preventDefault();
+                            navigate('/profile?tab=purchase');
+                          }}
+                        >
+                          <DepositIcon mr={8} width={24} height={24} />
+                          My Purchases
+                        </MenuElement>
+                        {/* {hasRole && (
                           <MenuElement
                             onClick={() => {
                               revoke().then(() => {
@@ -219,7 +246,7 @@ const Header = () => {
                           >
                             <WalletIcon mr={8} width={24} height={24} /> Revoke
                           </MenuElement>
-                        )}
+                        )} */}
                         <Disconnect
                           onClick={async () => {
                             await disconnect();
@@ -241,7 +268,7 @@ const Header = () => {
             }}
           </ConnectKitButton.Custom>
         </ButtonWrapper>
-      </NetWorkCon>
+      </RightFunCon>
     </HeaderFlex>
   );
 };
@@ -255,12 +282,11 @@ const HeaderFlex = styled(Flex)`
   background-color: #000000;
   border-bottom: 1px #2f3034 solid;
 `;
-const ImageContainer = styled(Flex)`
-  position: relative;
-  cursor: pointer;
+const LeftCon = styled(Flex)`
   img {
-    width: 378px;
-    height: 42px;
+    width: 268px;
+    height: 56px;
+    cursor: pointer;
   }
 `;
 
@@ -379,4 +405,10 @@ const MenuElement = styled.div`
   }
 `;
 
-const NetWorkCon = styled(Flex)``;
+const RightFunCon = styled(Flex)``;
+
+const ListLink = styled.div`
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+`;
