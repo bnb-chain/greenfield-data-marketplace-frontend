@@ -69,7 +69,6 @@ const ImgCon = styled.div`
 const Info = styled(Flex)``;
 
 const Address = styled.span`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 700;
   font-size: 24px;

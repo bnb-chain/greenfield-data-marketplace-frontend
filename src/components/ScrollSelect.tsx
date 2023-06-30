@@ -369,7 +369,7 @@ const Title = styled.div`
   color: ${(props: any) => props.theme.colors.scene.primary.normal};
   background: ${(props: any) => props.theme.colors.bg.bottom};
   position: sticky;
-  font-family: 'poppins';
+
   top: 0;
   height: 34px;
   ${mobileMedia} {
@@ -381,7 +381,7 @@ const Row = styled.div<{ active: boolean }>`
   display: flex;
   align-items: center;
   cursor: pointer;
-  font-family: 'poppins';
+
   text-decoration: none;
   padding: 12px 24px;
   gap: 4px;

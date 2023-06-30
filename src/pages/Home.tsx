@@ -43,7 +43,6 @@ const Container = styled(Flex)``;
 const Title = styled.h1`
   margin: 60px 0;
 
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
   font-size: 50px;

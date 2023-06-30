@@ -74,7 +74,6 @@ const NavContainer = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
-  font-family: 'poppins';
 `;
 
 const Nav = styled.nav<INavProps>`
@@ -115,7 +114,6 @@ const InlineContainer = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
-  font-family: 'poppins';
 `;
 
 const InlineNav = styled.nav<INavProps>`

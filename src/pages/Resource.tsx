@@ -403,7 +403,6 @@ const ResourceInfo = styled(Flex)`
 `;
 
 const MyBreadcrumb = styled(Breadcrumb)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -448,7 +447,6 @@ const NameCon = styled(Flex)``;
 const CollInfo = styled(Flex)``;
 
 const Name = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
   font-size: 32px;
@@ -467,7 +465,6 @@ const Tag = styled(Flex)`
 `;
 
 const ItemNum = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -477,7 +474,6 @@ const ItemNum = styled.div`
 `;
 
 const OwnCon = styled(Flex)`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -504,7 +500,6 @@ const Price = styled.div`
 const ActionGroup = styled(Flex)``;
 
 const BoughtNum = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -515,7 +510,7 @@ const BoughtNum = styled.div`
 
 const FileSize = styled.div`
   margin-right: 6px;
-  font-family: 'Space Grotesk';
+
   font-style: normal;
   font-weight: 700;
   font-size: 20px;

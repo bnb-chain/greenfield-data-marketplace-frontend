@@ -268,13 +268,12 @@ const StyledButton = styled(Button)`
   width: 100%;
   max-width: 158px;
   height: 44px;
-  font-family: Poppins;
+
   font-size: 14px;
   font-weight: 500;
   line-height: 24px;
   border-radius: 200px;
   &.connected {
-    font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -311,7 +310,6 @@ const AddressWrapper = styled.div`
 `;
 
 const Address = styled(Flex)`
-  font-family: Poppins;
   font-size: 20px;
   font-weight: 600;
   line-height: 24px;
@@ -324,7 +322,7 @@ const Disconnect = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-family: Poppins;
+
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
@@ -368,7 +366,7 @@ const MenuElement = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-family: Poppins;
+
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;

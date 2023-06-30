@@ -125,7 +125,6 @@ const PenCon = styled(PenIcon)`
   cursor: pointer;
 `;
 const Title = styled.div`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 400;
   font-size: 24px;
@@ -145,7 +144,7 @@ const SupInfoItem = styled(Flex)``;
 
 const SupInfoTitle = styled(Flex)`
   width: 948px;
-  font-family: 'Poppins';
+
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -169,7 +168,7 @@ const UrlCon = styled(Flex)`
 
 const Left = styled(Flex)`
   width: 115px;
-  font-family: 'Poppins';
+
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -185,7 +184,6 @@ const CopyCon = styled(Flex)`
 `;
 
 const Url = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 14px;

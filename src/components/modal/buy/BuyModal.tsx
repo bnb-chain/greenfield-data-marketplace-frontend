@@ -161,7 +161,6 @@ const Container = styled(QDrawer)`
 `;
 
 const Header = styled(QDrawerHeader)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -187,7 +186,6 @@ const BaseInfo = styled(Flex)``;
 const LeftInfo = styled.div``;
 
 const ItemPrice = styled.div`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -206,7 +204,6 @@ const ImgCon = styled.div`
   }
 `;
 const ResourceNameCon = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
   font-size: 18px;
@@ -216,7 +213,6 @@ const ResourceNameCon = styled(Flex)`
 `;
 
 const Tag = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 8px;
@@ -237,7 +233,6 @@ const BuyInfo = styled.div`
 const ItemCon = styled(Flex)``;
 
 const ItemTitle = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
@@ -247,7 +242,6 @@ const ItemTitle = styled.div`
 `;
 
 const ItemVal = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -258,7 +252,7 @@ const ItemVal = styled.div`
 
 const BalanceWarn = styled(Flex)`
   position: absolute;
-  font-family: 'Space Grotesk';
+
   font-style: normal;
   font-weight: 700;
   font-size: 10px;

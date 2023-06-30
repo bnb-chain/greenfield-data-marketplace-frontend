@@ -205,7 +205,6 @@ const Container = styled(Modal)`
   }
 `;
 const Header = styled(ModalHeader)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -223,7 +222,6 @@ const CustomBody = styled(ModalBody)`
 `;
 
 const ItemTittle = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -237,7 +235,6 @@ const ItemTittle = styled(Flex)`
 `;
 
 const ResourceNameCon = styled(Flex)`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -248,7 +245,7 @@ const ResourceNameCon = styled(Flex)`
 
 const Tag = styled(Flex)`
   margin-left: 16px;
-  font-family: 'Poppins';
+
   font-style: normal;
   font-weight: 400;
   font-size: 8px;
@@ -288,7 +285,6 @@ const Item = styled(Flex)`
   height: 40px;
 `;
 const ItemSubTittle = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
@@ -299,7 +295,6 @@ const ItemSubTittle = styled.div`
 const BalanceCon = styled(Flex)``;
 
 const Fee = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -310,7 +305,7 @@ const Fee = styled.div`
 
 const Balance = styled.div`
   text-align: right;
-  font-family: 'Space Grotesk';
+
   font-style: normal;
   font-weight: 400;
   font-size: 10px;
@@ -320,7 +315,6 @@ const Balance = styled.div`
 `;
 
 const BalanceWarn = styled(Flex)`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 700;
   font-size: 10px;

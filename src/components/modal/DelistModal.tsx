@@ -168,7 +168,6 @@ const Container = styled(Modal)`
 `;
 
 const Header = styled(ModalHeader)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -199,7 +198,6 @@ const ImgCon = styled.div`
   }
 `;
 const ResourceNameCon = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -209,7 +207,6 @@ const ResourceNameCon = styled(Flex)`
 `;
 
 const CreateTime = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 10px;
@@ -217,7 +214,7 @@ const CreateTime = styled.div`
 `;
 const Tag = styled(Flex)`
   margin-left: 16px;
-  font-family: 'Poppins';
+
   font-style: normal;
   font-weight: 400;
   font-size: 8px;
@@ -231,7 +228,6 @@ const Tag = styled(Flex)`
   border-radius: 16px;
 `;
 const ResourceNum = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -241,7 +237,6 @@ const ResourceNum = styled(Flex)`
 `;
 
 const FileInfo = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -264,7 +259,6 @@ const BuyInfo = styled.div`
 const ItemCon = styled(Flex)``;
 
 const ItemTitle = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
@@ -274,7 +268,6 @@ const ItemTitle = styled.div`
 `;
 
 const ItemVal = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -285,7 +278,7 @@ const ItemVal = styled.div`
 
 const BalanceWarn = styled(Flex)`
   position: absolute;
-  font-family: 'Space Grotesk';
+
   font-style: normal;
   font-weight: 700;
   font-size: 10px;
