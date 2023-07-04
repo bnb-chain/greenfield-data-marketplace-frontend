@@ -75,7 +75,7 @@ const gfChain: Chain = {
 };
 
 const { chains, provider } = configureChains(
-  [gfChain, bscTestnet],
+  [bscTestnet, gfChain],
   [publicProvider()],
 );
 
