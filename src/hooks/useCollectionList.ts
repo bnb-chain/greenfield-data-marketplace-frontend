@@ -21,6 +21,7 @@ export const useCollectionList = (page: number, pageSize = 10) => {
           const { statusCode, body } = result;
           if (statusCode == 200 && Array.isArray(body)) {
             const t = body
+              .filter((item: any) => !item.removed)
               .slice((page - 1) * pageSize, page * pageSize)
               .map(async (item) => {
                 const {
