@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.0",
-    "@bnb-chain/greenfield-chain-sdk": "0.2.2-alpha.3",
+    "@bnb-chain/greenfield-chain-sdk": "0.2.1",
     "@dopex-io/web3-multicall": "^0.1.9",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",

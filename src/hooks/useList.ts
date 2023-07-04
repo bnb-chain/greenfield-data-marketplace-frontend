@@ -18,8 +18,10 @@ import { useAccount } from 'wagmi';
 
 import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import { useModal } from './useModal';
-import { parseGroupName } from '../utils';
+import { delay, parseGroupName } from '../utils';
 import { BSC_SEND_GAS_FEE } from '../env';
+import { OwnBuyContract } from '../base/contract/ownBuyContract';
+import { IHeadGroup } from '../utils/type';
 
 export interface IList {
   groupName: string;
@@ -104,8 +106,15 @@ export const useList = (props: IList) => {
     },
     [groupName, extra, address],
   );
+  const getGroupInfo = useCallback(
+    async (groupName: string, address: string): Promise<IHeadGroup> => {
+      const result = await getGroupInfoByName(groupName, address);
+      return result;
+    },
+    [],
+  );
   const InitiateList = useCallback(async () => {
-    const groupResult = await getGroupInfoByName(groupName, address as string);
+    const groupResult = await getGroupInfo(groupName, address as string);
     const { groupInfo } = groupResult;
     // groupname has created
     if (groupInfo) {
@@ -136,7 +145,25 @@ export const useList = (props: IList) => {
         },
       });
 
-      if (res?.code === 0) {
+      const count = 60;
+      const t = new Array(count).fill(1);
+      let hasMirror = false;
+      let groupId;
+      for (const {} of t) {
+        if (!groupId) {
+          const groupResult = await getGroupInfo(groupName, address as string);
+          groupId = groupResult?.groupInfo?.id;
+        }
+        hasMirror = await OwnBuyContract(false)
+          .methods.exists(Number(groupId))
+          .call({ from: address });
+        if (hasMirror) {
+          break;
+        }
+        await delay(1);
+      }
+
+      if (res?.code === 0 && hasMirror) {
         stateModal.modalDispatch({
           type: 'UPDATE_LIST_STATUS',
           initListStatus: 1,
@@ -144,8 +171,8 @@ export const useList = (props: IList) => {
         });
       } else {
         tmp = {
-          variant: 'error',
-          description: 'Mirror failed',
+          variant: res?.code !== 0 ? 'error' : 'success',
+          description: res?.code !== 0 ? 'Mirror failed' : 'Mirror pending',
         };
       }
       return res;
@@ -164,10 +191,8 @@ export const useList = (props: IList) => {
   const List = useCallback(
     async (obj: IList) => {
       const { groupName } = obj;
-      const { groupInfo } = await getGroupInfoByName(
-        groupName,
-        address as string,
-      );
+      const groupResult = await getGroupInfo(groupName, address as string);
+      const { groupInfo } = groupResult;
       if (!groupInfo) return;
       const { id } = groupInfo;
       let { extra } = groupInfo as any;

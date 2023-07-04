@@ -95,7 +95,7 @@ export const ListProcess = (props: ListProcessProps) => {
           <ProgressStep>
             <ProgressName active={step == 1} alignItems={'center'}>
               Initiate on Greenfield
-              {status >= 1 && (
+              {status >= 1 && gfHash && (
                 <SendIcon
                   cursor={'pointer'}
                   onClick={() => {
