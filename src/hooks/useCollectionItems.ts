@@ -28,18 +28,20 @@ export const useCollectionItems = (
 
           if (code == 0) {
             const { key_count, objects } = body;
-            const strColl = objects.map((item: any) => {
-              const {
-                object_info: { object_name, id },
-              } = item;
-              // folder
-              let hasFolder = false;
-              if (object_name.indexOf('/')) hasFolder = true;
-              return hasFolder
-                ? object_name.slice(0, -1) + '__' + id + '/'
-                : object_name + '__' + id;
-              // return object_name;
-            });
+            const strColl = objects
+              .filter((item: any) => !item.removed)
+              .map((item: any) => {
+                const {
+                  object_info: { object_name, id },
+                } = item;
+                // folder
+                let hasFolder = false;
+                if (object_name.indexOf('/')) hasFolder = true;
+                return hasFolder
+                  ? object_name.slice(0, -1) + '__' + id + '/'
+                  : object_name + '__' + id;
+                // return object_name;
+              });
             const tree = new Tree(strColl.join('\n'));
 
             const _objInfo: { [str: string]: any } = {};
