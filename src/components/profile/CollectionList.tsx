@@ -17,6 +17,8 @@ import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useListedStatus } from '../../hooks/useListedStatus';
 import { BN } from 'bn.js';
 import { useGlobal } from '../../hooks/useGlobal';
+import CollNoData from './CollNoData';
+import { Dispatch, useMemo } from 'react';
 
 const PriceCon = (props: { groupId: string }) => {
   const { groupId } = props;
@@ -35,10 +37,14 @@ const TotalVol = (props: { groupId: string }) => {
   return <div>{Number(salesVolume) || '-'}</div>;
 };
 
-const CollectionList = () => {
+interface ICollectionList {
+  setShowButton: Dispatch<boolean>;
+}
+const CollectionList = (props: ICollectionList) => {
   const pageSize = 10;
 
   const { handlePageChange, page } = usePagination();
+  const { setShowButton } = props;
 
   const { address } = useAccount();
   const { list, loading, total } = useCollectionList(page, pageSize);
@@ -52,6 +58,12 @@ const CollectionList = () => {
 
   const [p] = useSearchParams();
 
+  const showNoData = useMemo(() => {
+    const show = !loading && !list.length;
+    setShowButton(!show);
+    return show;
+  }, [loading, list]);
+
   const columns = [
     {
       header: 'Data Collection',
@@ -64,6 +76,29 @@ const CollectionList = () => {
             alignItems={'center'}
             justifyContent={'flex-start'}
             gap={6}
+            onClick={() => {
+              const {
+                groupId,
+                bucket_info: { id },
+              } = data;
+
+              const list = state.globalState.breadList;
+              const item = {
+                path: '/profile',
+                name: 'My Collections',
+                query: p.toString(),
+              };
+              state.globalDispatch({
+                type: 'ADD_BREAD',
+                item,
+              });
+
+              navigator(
+                `/resource?&bid=${id}&address=${address}&tab=dataList&from=${encodeURIComponent(
+                  JSON.stringify(list.concat([item])),
+                )}${groupId ? '&gid=' + groupId : ''}`,
+              );
+            }}
           >
             <ImgCon src={defaultImg(bucket_name, 40)}></ImgCon>
             {trimLongStr(bucket_name, 15)}
@@ -128,7 +163,7 @@ const CollectionList = () => {
             >
               {!listed ? 'List' : 'Delist'}
             </Button>
-            <Button
+            {/* <Button
               onClick={() => {
                 const {
                   groupId,
@@ -147,7 +182,7 @@ const CollectionList = () => {
                 });
 
                 navigator(
-                  `/resource?&bid=${id}&address=${address}&tab=description&from=${encodeURIComponent(
+                  `/resource?&bid=${id}&address=${address}&tab=dataList&from=${encodeURIComponent(
                     JSON.stringify(list.concat([item])),
                   )}${groupId ? '&gid=' + groupId : ''}`,
                 );
@@ -156,7 +191,7 @@ const CollectionList = () => {
               style={{ marginLeft: '6px' }}
             >
               View detail
-            </Button>
+            </Button> */}
           </div>
         );
       },
@@ -180,6 +215,7 @@ const CollectionList = () => {
         data={list}
         loading={loading}
         hoverBg={'#14151A'}
+        customComponent={showNoData && <CollNoData></CollNoData>}
       />
     </Container>
   );
@@ -191,7 +227,10 @@ const Container = styled.div`
   width: 1123px;
 `;
 
-const ImgContainer = styled(Flex)``;
+const ImgContainer = styled(Flex)`
+  cursor: pointer;
+  color: ${(props: any) => props.theme.colors.scene.primary.normal};
+`;
 
 const ImgCon = styled.img`
   width: 40px;

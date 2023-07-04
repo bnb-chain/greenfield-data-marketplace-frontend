@@ -96,7 +96,6 @@ const Container = styled.div`
 `;
 
 const MyBreadcrumb = styled(Breadcrumb)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;

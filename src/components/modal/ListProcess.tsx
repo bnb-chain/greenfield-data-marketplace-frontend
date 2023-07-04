@@ -140,7 +140,7 @@ export const ListProcess = (props: ListProcessProps) => {
               alignItems={'center'}
             >
               Finalize on BSC
-              {status == 2 && (
+              {status == 2 && bscHash && (
                 <SendIcon
                   cursor={'pointer'}
                   onClick={() => {

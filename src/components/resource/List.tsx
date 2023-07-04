@@ -14,13 +14,12 @@ import {
 import { useCollectionItems } from '../../hooks/useCollectionItems';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useModal } from '../../hooks/useModal';
-import { useDelist } from '../../hooks/useDelist';
-import { toast } from '@totejs/uikit';
 import { BN } from 'bn.js';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGlobal } from '../../hooks/useGlobal';
 import { GoIcon, CardPocketIcon } from '@totejs/icons';
 import { OwnActionCom } from '../OwnActionCom';
+import { useMemo } from 'react';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -35,14 +34,14 @@ const ProfileList = (props: any) => {
     listed: collectionListed,
     status: bucketStatus,
     bucketInfo,
+    setNum,
   } = props;
 
-  const { list, loading } = useCollectionItems(name, collectionListed);
+  const { list, loading, num } = useCollectionItems(name, collectionListed);
 
   const { handlePageChange, page } = usePagination();
 
   const modalData = useModal();
-  const { delist } = useDelist();
 
   const { address } = useAccount();
 
@@ -60,6 +59,10 @@ const ProfileList = (props: any) => {
   const state = useGlobal();
 
   const navigator = useNavigate();
+
+  useMemo(() => {
+    if (num) setNum(num);
+  }, [num]);
 
   const columns = [
     {
@@ -99,7 +102,7 @@ const ProfileList = (props: any) => {
               } else {
                 const { id } = object_info;
                 navigate(
-                  `/resource?oid=${id}&bgn=${bgn}&address=${ownerAddress}&tab=description&from=${from}`,
+                  `/resource?oid=${id}&bgn=${bgn}&address=${ownerAddress}&tab=dataList&from=${from}`,
                 );
               }
             }}
@@ -198,7 +201,7 @@ const ProfileList = (props: any) => {
               }}
             />
           );
-        const { owner, object_name } = object_info;
+        const { owner, object_name, create_at } = object_info;
         return (
           <div>
             {owner === address && !collectionListed && (
@@ -212,12 +215,15 @@ const ProfileList = (props: any) => {
                       initInfo: object_info,
                     });
                   } else {
-                    try {
-                      await delist(groupId);
-                      toast.success({ description: 'buy successful' });
-                    } catch (e) {
-                      toast.error({ description: 'buy failed' });
-                    }
+                    modalData.modalDispatch({
+                      type: 'OPEN_DELIST',
+                      delistData: {
+                        groupId,
+                        object_name,
+                        create_at,
+                        owner,
+                      },
+                    });
                   }
                 }}
               >
@@ -245,7 +251,7 @@ const ProfileList = (props: any) => {
 
                   const { id } = object_info;
                   navigate(
-                    `/resource?oid=${id}&bgn=${bgn}&address=${ownerAddress}&tab=description&from=${from}`,
+                    `/resource?oid=${id}&bgn=${bgn}&address=${ownerAddress}&tab=dataList&from=${from}`,
                   );
                 }}
               ></GoIcon>

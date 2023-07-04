@@ -36,21 +36,16 @@ export const useCollectionList = (page: number, pageSize = 10) => {
                 const result = await checkListed(id);
                 return { ...item, groupId: id, listed: !!result };
               });
-            Promise.all(t)
-              .then((res: any) => {
-                setList(res);
-                setTotal(body.length);
-              })
-              .catch(() => {
-                setList([]);
-                setTotal(0);
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            const res: any = await Promise.all(t);
+            setList(res);
+            setTotal(body.length);
           } else {
             setLoading(false);
           }
+        })
+        .catch(() => {
+          setList([]);
+          setTotal(0);
         })
         .finally(() => {
           setLoading(false);

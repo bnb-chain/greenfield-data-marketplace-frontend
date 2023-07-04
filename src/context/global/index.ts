@@ -15,7 +15,7 @@ export const initialState: IInitialState = {
     {
       path: '/',
       name: 'Data MarketPlace',
-      query: 'tab=all',
+      query: '',
     },
   ],
   showSearch: false,

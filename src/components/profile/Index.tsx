@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import { NavBar } from '../NavBar';
 import { useCallback, useEffect, useState } from 'react';
-import { Box } from '@totejs/uikit';
+import { Box, Button, Flex } from '@totejs/uikit';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import CollectionList from './CollectionList';
 import PurchaseList from './PurchaseList';
 import OtherListedList from './OtherListedList';
+import { DCELLAR_URL } from '../../env';
 
 enum Type {
   Collections = 'collections',
@@ -51,13 +52,33 @@ const ProfileList = (props: IProfileList) => {
     navigator(`/profile?tab=${tab}`);
   }, []);
 
+  const [showButton, setShowButton] = useState(false);
+
   return (
     <Container>
-      <NavBar active={currentTab} onChange={handleTabChange} items={navItems} />
+      <NavCon alignItems={'center'}>
+        <NavBar
+          active={currentTab}
+          onChange={handleTabChange}
+          items={navItems}
+        />
+        {self && showButton && (
+          <MyButton
+            onClick={() => {
+              window.open(`${DCELLAR_URL}`);
+            }}
+            size={'sm'}
+            style={{ marginLeft: '6px' }}
+          >
+            Upload Data in DCellar
+          </MyButton>
+        )}
+      </NavCon>
+
       <Box h={20} />
       {self ? (
         currentTab === Type.Collections ? (
-          <CollectionList></CollectionList>
+          <CollectionList setShowButton={setShowButton}></CollectionList>
         ) : (
           <PurchaseList></PurchaseList>
         )
@@ -77,4 +98,11 @@ const Container = styled.div`
   margin-top: 30px;
 
   width: 1123px;
+`;
+
+const NavCon = styled(Flex)``;
+const MyButton = styled(Button)`
+  width: 200px;
+  height: 40px;
+  border-radius: 8px;
 `;

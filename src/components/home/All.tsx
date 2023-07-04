@@ -64,7 +64,7 @@ const AllList = () => {
               });
 
               navigator(
-                `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=description&from=${encodeURIComponent(
+                `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&tab=dataList&from=${encodeURIComponent(
                   JSON.stringify([item]),
                 )}`,
               );

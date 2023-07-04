@@ -168,7 +168,6 @@ export const useList = (props: IList) => {
         groupName,
         address as string,
       );
-
       if (!groupInfo) return;
       const { id } = groupInfo;
       let { extra } = groupInfo as any;

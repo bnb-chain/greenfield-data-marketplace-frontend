@@ -25,7 +25,6 @@ import {
   parseFileSize,
 } from '../utils';
 import BN from 'bn.js';
-import { useCollectionItems } from '../hooks/useCollectionItems';
 import { useSalesVolume } from '../hooks/useSalesVolume';
 import { useStatus } from '../hooks/useStatus';
 import { useModal } from '../hooks/useModal';
@@ -43,7 +42,7 @@ enum Type {
 const Resource = () => {
   const navigator = useNavigate();
   const [p] = useSearchParams();
-  const tab = p.getAll('tab')[0];
+
   const groupId = p.getAll('gid')[0];
   const bucketId = p.getAll('bid')[0];
   const objectId = p.getAll('oid')[0];
@@ -51,7 +50,6 @@ const Resource = () => {
   const gName = p.getAll('gn')[0];
   const bGroupName = p.getAll('bgn')[0];
 
-  const currentTab = tab ? tab : Type.Description;
   const [open, setOpen] = useState(false);
 
   const handleTabChange = useCallback((tab: any) => {
@@ -85,7 +83,7 @@ const Resource = () => {
     bucketListed,
   } = baseInfo;
 
-  const { num } = useCollectionItems(name, listed);
+  const [num, setNum] = useState(0);
 
   const { salesVolume } = useSalesVolume(groupId);
 
@@ -144,13 +142,22 @@ const Resource = () => {
       },
     ];
     if ((address === ownerAddress || status == 2) && resourceType === '1') {
-      _navItems.push({
+      _navItems.unshift({
         name: 'Data List',
         key: Type.DataList,
       });
     }
     return _navItems;
   }, [address, ownerAddress, status, resourceType]);
+
+  const currentTab = useMemo(() => {
+    const tab = p.getAll('tab')[0];
+    return resourceType === '1'
+      ? tab
+        ? tab
+        : Type.Description
+      : Type.Description;
+  }, [p, resourceType]);
 
   const CreateTime = useMemo(() => {
     let obj;
@@ -371,6 +378,7 @@ const Resource = () => {
           listed={bucketListed}
           bucketName={bucketName}
           bucketInfo={bucketInfo}
+          setNum={setNum}
         ></List>
       )}
       {open && (
@@ -403,7 +411,6 @@ const ResourceInfo = styled(Flex)`
 `;
 
 const MyBreadcrumb = styled(Breadcrumb)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -448,7 +455,6 @@ const NameCon = styled(Flex)``;
 const CollInfo = styled(Flex)``;
 
 const Name = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
   font-size: 32px;
@@ -467,7 +473,6 @@ const Tag = styled(Flex)`
 `;
 
 const ItemNum = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -477,7 +482,6 @@ const ItemNum = styled.div`
 `;
 
 const OwnCon = styled(Flex)`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -504,7 +508,6 @@ const Price = styled.div`
 const ActionGroup = styled(Flex)``;
 
 const BoughtNum = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -515,7 +518,7 @@ const BoughtNum = styled.div`
 
 const FileSize = styled.div`
   margin-right: 6px;
-  font-family: 'Space Grotesk';
+
   font-style: normal;
   font-weight: 700;
   font-size: 20px;

@@ -56,7 +56,12 @@ export const BuyModal = (props: any) => {
   }, [GfBalanceVal, TotalPrice]);
 
   return (
-    <Container isOpen={isOpen} onClose={handleOpen} background={'#ffffff'}>
+    <Container
+      isOpen={isOpen}
+      onClose={handleOpen}
+      background={'#ffffff'}
+      w={395}
+    >
       <QDrawerCloseButton />
       <Header>Checking out</Header>
       <CustomBody>
@@ -116,7 +121,7 @@ export const BuyModal = (props: any) => {
             <ItemVal> {TotalPrice} BNB </ItemVal>
           </ItemCon>
           <ItemCon alignItems={'flex-end'} justifyContent={'space-between'}>
-            <ItemTitle>balance on BSC</ItemTitle>
+            <ItemTitle>Balance on BSC Testnet</ItemTitle>
             <ItemVal> {roundFun(BscBalanceVal, 4)} BNB </ItemVal>
           </ItemCon>
         </BuyInfo>
@@ -142,7 +147,7 @@ export const BuyModal = (props: any) => {
               switchNetwork?.(BSC_CHAIN_ID);
             }}
           >
-            Switch to Bsc Testnet
+            Switch to BSC Testnet
           </Button>
         ) : null}
         <Cancel width={'50%'} onClick={handleOpen} variant="ghost">
@@ -161,7 +166,6 @@ const Container = styled(QDrawer)`
 `;
 
 const Header = styled(QDrawerHeader)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -187,7 +191,6 @@ const BaseInfo = styled(Flex)``;
 const LeftInfo = styled.div``;
 
 const ItemPrice = styled.div`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -206,7 +209,6 @@ const ImgCon = styled.div`
   }
 `;
 const ResourceNameCon = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
   font-size: 18px;
@@ -216,7 +218,6 @@ const ResourceNameCon = styled(Flex)`
 `;
 
 const Tag = styled(Flex)`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 8px;
@@ -237,7 +238,6 @@ const BuyInfo = styled.div`
 const ItemCon = styled(Flex)``;
 
 const ItemTitle = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
@@ -247,7 +247,6 @@ const ItemTitle = styled.div`
 `;
 
 const ItemVal = styled.div`
-  font-family: 'Poppins';
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -258,7 +257,7 @@ const ItemVal = styled.div`
 
 const BalanceWarn = styled(Flex)`
   position: absolute;
-  font-family: 'Space Grotesk';
+
   font-style: normal;
   font-weight: 700;
   font-size: 10px;
