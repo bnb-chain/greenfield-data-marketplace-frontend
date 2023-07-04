@@ -23,6 +23,7 @@ import {
   trimLongStr,
   formatDateUTC,
   parseFileSize,
+  roundFun,
 } from '../utils';
 import BN from 'bn.js';
 import { useSalesVolume } from '../hooks/useSalesVolume';
@@ -118,7 +119,6 @@ const Resource = () => {
   const state = useGlobal();
 
   const { price: bnbPrice } = useBNBPrice();
-
   useEffect(() => {
     const list = state.globalState.breadList;
     if (list.length) {
@@ -302,8 +302,13 @@ const Resource = () => {
               {divide10Exp(new BN(price, 10), 18)} BNB
               <Price>
                 $
-                {Number(divide10Exp(new BN(price, 10), 18).toString()) *
-                  bnbPrice}
+                {roundFun(
+                  divide10Exp(
+                    new BN(price, 10).mul(new BN(Number(bnbPrice), 10)),
+                    18,
+                  ).toString(),
+                  8,
+                )}
               </Price>
               <BoughtNum>{salesVolume} Bought</BoughtNum>
             </MarketInfo>
