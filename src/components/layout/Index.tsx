@@ -9,9 +9,13 @@ import { DelistModal } from '../modal/DelistModal';
 import { ActionResult } from '../modal/ActionResult';
 import { BuyIndex } from '../modal/buy/Index';
 import { useModal } from '../../hooks/useModal';
+import { useWalletModal } from '../../hooks/useWalletModal';
+import { WalletConnectModal } from '../wallet/WalletConnectModal';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const modalData = useModal();
+  const { modalData: walletModalData, handleModalClose } = useWalletModal();
+  const walletModalOpen = walletModalData.modalState?.open;
 
   const {
     openList,
@@ -83,6 +87,13 @@ export default function Layout({ children }: { children: ReactNode }) {
         callBack={callBack}
         {...result}
       ></ActionResult>
+
+      <WalletConnectModal
+        isOpen={walletModalOpen}
+        onClose={() => {
+          handleModalClose();
+        }}
+      />
     </>
   );
 }

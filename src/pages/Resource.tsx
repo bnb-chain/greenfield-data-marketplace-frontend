@@ -14,7 +14,6 @@ import List from '../components/resource/List';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { EditModal } from '../components/modal/EditModal';
 import { useAccount } from 'wagmi';
-import { ConnectKitButton } from 'connectkit';
 import { useResourceInfo } from '../hooks/useResourceInfo';
 import { Loader } from '../components/Loader';
 import {
@@ -33,6 +32,7 @@ import { useGlobal } from '../hooks/useGlobal';
 import { useBNBPrice } from '../hooks/useBNBPrice';
 import { NoData } from '../components/NoData';
 import { DCELLAR_URL, GF_EXPLORER_URL } from '../env';
+import { useWalletModal } from '../hooks/useWalletModal';
 
 enum Type {
   Description = 'description',
@@ -58,7 +58,8 @@ const Resource = () => {
     );
   }, []);
 
-  const { address } = useAccount();
+  const { address, isConnected, isConnecting } = useAccount();
+  const { handleModalOpen } = useWalletModal();
 
   const [update, setUpdate] = useState(false);
 
@@ -322,30 +323,23 @@ const Resource = () => {
                 List
               </Button>
             )}
-
-            <ConnectKitButton.Custom>
-              {({ isConnected, show }) => {
-                return (
-                  showBuy && (
-                    <Button
-                      size={'sm'}
-                      onClick={() => {
-                        if (!isConnected) {
-                          show?.();
-                        } else {
-                          modalData.modalDispatch({
-                            type: 'OPEN_BUY',
-                            buyData: baseInfo,
-                          });
-                        }
-                      }}
-                    >
-                      Buy
-                    </Button>
-                  )
-                );
-              }}
-            </ConnectKitButton.Custom>
+            {showBuy && (
+              <Button
+                size={'sm'}
+                onClick={() => {
+                  if (!isConnected && !isConnecting) {
+                    handleModalOpen();
+                  } else {
+                    modalData.modalDispatch({
+                      type: 'OPEN_BUY',
+                      buyData: baseInfo,
+                    });
+                  }
+                }}
+              >
+                Buy
+              </Button>
+            )}
             {showDcellarBut && (
               <Button
                 size={'sm'}
