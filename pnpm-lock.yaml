@@ -5,8 +5,8 @@ dependencies:
     specifier: ^7.16.0
     version: 7.22.1
   '@bnb-chain/greenfield-chain-sdk':
-    specifier: 0.2.2-alpha.3
-    version: 0.2.2-alpha.3
+    specifier: 0.2.1
+    version: 0.2.1
   '@dopex-io/web3-multicall':
     specifier: ^0.1.9
     version: 0.1.9(web3@1.10.0)
@@ -1771,11 +1771,12 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: false
 
-  /@bnb-chain/greenfield-chain-sdk@0.2.2-alpha.3:
-    resolution: {integrity: sha512-PzSYKllkFkC5++e8eczAQJv6z7GgnVNnQO7LWj4tXozWgCo+o0kd5BcglKzsK66QxfCvhQoZxuvgrctYgEP8AQ==}
+  /@bnb-chain/greenfield-chain-sdk@0.2.1:
+    resolution: {integrity: sha512-5AsicuMDL5kAqhk0HBUl9EW+gls0mWciPPrbGKhPk0Xjxn6mSgnw74IPBMuizWi64EceMpp66QmqTT4nsu1IFw==}
     engines: {npm: please use pnpm, yarn: please use pnpm}
     dependencies:
-      '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.12
+      '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.11
+      '@bnb-chain/greenfiled-file-handle': 0.2.0
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
       '@cosmjs/tendermint-rpc': 0.30.1
@@ -1785,26 +1786,27 @@ packages:
       '@ethersproject/strings': 5.7.0
       '@ethersproject/units': 5.7.0
       '@metamask/eth-sig-util': 5.1.0
-      cross-fetch: 3.1.6
       dayjs: 1.11.8
       ethereum-cryptography: 2.0.0
-      lodash.mapvalues: 4.6.0
-      lodash.sortby: 4.7.0
       long: 5.2.3
       reflect-metadata: 0.1.13
       tsyringe: 4.7.0
     transitivePeerDependencies:
       - bufferutil
       - debug
-      - encoding
       - utf-8-validate
     dev: false
 
-  /@bnb-chain/greenfield-cosmos-types@0.4.0-alpha.12:
-    resolution: {integrity: sha512-CenKMlgGw5RjptF/ju2PRL3QUtHhX7QoyUHTlRy13zt/K0lLcyifgNSZFsR/DeSFfX16KoahPQbpzXmpEnW00A==}
+  /@bnb-chain/greenfield-cosmos-types@0.4.0-alpha.11:
+    resolution: {integrity: sha512-59ILIwpifUWUAihTbU+DDEkddH5Xz0lghxUMRGwjvlB8+MF0m5t+R6SAJWk0ZkVMVIWdIGJphjkBJn2ffKbisA==}
     dependencies:
       long: 4.0.0
       protobufjs: 6.11.3
+    dev: false
+
+  /@bnb-chain/greenfiled-file-handle@0.2.0:
+    resolution: {integrity: sha512-UER3459jjNouGEr5lMb1zFT9yPqOthLdspl3RTfP5HDgM2P2Y+13PlXSi4DY1PNL8pjah7iZbfmxdJH7V+y9wg==}
+    engines: {npm: please use pnpm, yarn: please use pnpm}
     dev: false
 
   /@chainsafe/as-sha256@0.4.1:
@@ -9924,10 +9926,6 @@ packages:
 
   /lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
-    dev: false
-
-  /lodash.mapvalues@4.6.0:
-    resolution: {integrity: sha512-JPFqXFeZQ7BfS00H58kClY7SPVeHertPE0lNuCyZ26/XlN8TvakYD7b9bGyNmXbT/D3BbtPAAmq90gPWqLkxlQ==}
     dev: false
 
   /lodash.memoize@4.1.2:

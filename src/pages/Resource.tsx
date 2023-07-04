@@ -134,6 +134,18 @@ const Resource = () => {
     }
   }, [state.globalState.breadList, title]);
 
+  const isOwner = useMemo(() => {
+    return address === ownerAddress;
+  }, [address, ownerAddress]);
+
+  const showEndPoint = useMemo(() => {
+    return isOwner || (address !== ownerAddress && status === 2);
+  }, [isOwner, address, ownerAddress, status]);
+
+  const hasOwn = useMemo(() => {
+    return isOwner || status === 2;
+  }, [isOwner, status]);
+
   const navItems = useMemo(() => {
     const _navItems = [
       {
@@ -141,7 +153,7 @@ const Resource = () => {
         key: Type.Description,
       },
     ];
-    if ((address === ownerAddress || status == 2) && resourceType === '1') {
+    if (hasOwn && resourceType === '1') {
       _navItems.unshift({
         name: 'Data List',
         key: Type.DataList,
@@ -152,12 +164,12 @@ const Resource = () => {
 
   const currentTab = useMemo(() => {
     const tab = p.getAll('tab')[0];
-    return resourceType === '1'
+    return resourceType === '1' && hasOwn
       ? tab
         ? tab
         : Type.Description
       : Type.Description;
-  }, [p, resourceType]);
+  }, [p, resourceType, hasOwn]);
 
   const CreateTime = useMemo(() => {
     let obj;
@@ -172,14 +184,6 @@ const Resource = () => {
   const fileSize = useMemo(() => {
     return objectInfo?.payloadSize?.low;
   }, [objectInfo]);
-
-  const isOwn = useMemo(() => {
-    return address === ownerAddress;
-  }, [address, ownerAddress]);
-
-  const showEndPoint = useMemo(() => {
-    return isOwn || (address !== ownerAddress && status === 2);
-  }, [isOwn, address, ownerAddress, status]);
 
   if (loading) return <Loader></Loader>;
 
@@ -225,17 +229,17 @@ const Resource = () => {
       <ResourceInfo gap={20}>
         <ImgCon
           onMouseMove={() => {
-            if (isOwn && listed) {
+            if (isOwner && listed) {
               setShowEdit(true);
             }
           }}
           onMouseLeave={() => {
-            if (isOwn && listed) {
+            if (isOwner && listed) {
               setShowEdit(false);
             }
           }}
           onClick={() => {
-            if (isOwn && listed) {
+            if (isOwner && listed) {
               setOpen(true);
             }
           }}
