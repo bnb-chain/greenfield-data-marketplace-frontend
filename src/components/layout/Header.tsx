@@ -6,9 +6,11 @@ import {
   MenuItem,
   MenuButton,
   useDisclosure,
+  useOutsideClick,
 } from '@totejs/uikit';
 import styled from '@emotion/styled';
-import { ConnectKitButton } from 'connectkit';
+import { useWalletModal } from '../../hooks/useWalletModal';
+
 import {
   ForwardedRef,
   ReactNode,
@@ -16,6 +18,7 @@ import {
   useCallback,
   useMemo,
   useState,
+  useRef,
 } from 'react';
 import { useAccount, useDisconnect, useSwitchNetwork, useNetwork } from 'wagmi';
 import { Copy } from '../Copy';
@@ -77,15 +80,24 @@ const CustomMenuButton = forwardRef(
 
 const Header = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false);
-  const { address, isConnecting } = useAccount();
+  const { address, isConnecting, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const onMouseEnter = useCallback(() => {
-    setDropDownOpen(true);
+  const { handleModalOpen } = useWalletModal();
+  const handleShowDropDown = useCallback(() => {
+    setDropDownOpen((preState) => !preState);
   }, []);
+  const ref = useRef(null);
 
-  const onMouseLeave = useCallback(() => {
-    setDropDownOpen(false);
-  }, []);
+  useOutsideClick({
+    ref,
+    handler: () => {
+      if (dropDownOpen) {
+        setTimeout(() => {
+          setDropDownOpen(false);
+        }, 50);
+      }
+    },
+  });
 
   // const { revoke } = useRevoke();
   // const { hasRole, setHasRole } = useHasRole();
@@ -123,23 +135,17 @@ const Header = () => {
       </LeftCon>
 
       <RightFunCon alignItems={'center'} justifyContent={'center'} gap={18}>
-        <ConnectKitButton.Custom>
-          {({ isConnected, show }) => {
-            return (
-              <>
-                <ListLink
-                  onClick={() => {
-                    if (show && !isConnected) show();
-                    navigate('/profile?tab=collections');
-                  }}
-                  className={isConnected ? 'connected' : ''}
-                >
-                  List My Data
-                </ListLink>
-              </>
-            );
-          }}
-        </ConnectKitButton.Custom>
+        <>
+          <ListLink
+            onClick={() => {
+              if (!isConnecting && !isConnected) handleModalOpen();
+              navigate('/profile?tab=collections');
+            }}
+            className={isConnected ? 'connected' : ''}
+          >
+            List My Data
+          </ListLink>
+        </>
         {address && (
           <Menu placement="bottom-end">
             <MenuButton
@@ -174,69 +180,71 @@ const Header = () => {
             </MenuList>
           </Menu>
         )}
-        <ButtonWrapper onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
-          <ConnectKitButton.Custom>
-            {({ isConnected, show, address, ensName }) => {
-              return (
-                <>
-                  <StyledButton
-                    onClick={() => {
-                      if (show && !isConnected) show();
-                    }}
-                    className={isConnected ? 'connected' : ''}
-                  >
-                    {isConnected
-                      ? ensName ?? (
-                          <>
-                            <ProfileWrapper gap={10}>
-                              <Profile>
-                                <ProfileImage width={32} height={32} />
-                              </Profile>
-                              <div>
-                                {address ? trimLongStr(address, 10, 6, 4) : ''}
-                              </div>
-                            </ProfileWrapper>
-                          </>
-                        )
-                      : 'Connect Wallet'}
-                  </StyledButton>
-                  {dropDownOpen && isConnected && !isConnecting && (
-                    <DropDown>
-                      <HeaderProfileBg
-                        width={300}
-                        height={96}
-                      ></HeaderProfileBg>
+        <ButtonWrapper>
+          {!isConnected && !isConnecting ? (
+            <StyledButton
+              onClick={() => {
+                handleModalOpen();
+              }}
+            >
+              Connect Wallet
+            </StyledButton>
+          ) : (
+            <ConnectProfile
+              onClick={() => {
+                try {
+                  if (isConnected && !dropDownOpen) handleShowDropDown();
+                } catch (e) {
+                  //eslint-disable-next-line no-console
+                  console.log(e);
+                }
+              }}
+            >
+              <ProfileWrapper
+                ml={3}
+                gap={10}
+                justifyContent={'flex-start'}
+                w={158}
+              >
+                <Profile>
+                  <ProfileImage width={32} height={32} />
+                </Profile>
+                <div>{address ? trimLongStr(address, 10, 6, 4) : ''}</div>
+              </ProfileWrapper>
+            </ConnectProfile>
+          )}
+          {dropDownOpen && isConnected && !isConnecting && (
+            <DropDown>
+              <HeaderProfileBg width={300} height={96}></HeaderProfileBg>
 
-                      <ImageWrapper>
-                        <ProfileImage width={64} height={64} />
-                      </ImageWrapper>
+              <ImageWrapper>
+                <ProfileImage width={64} height={64} />
+              </ImageWrapper>
 
-                      <AddressWrapper>
-                        <Address gap={10} mb={24} height={24}>
-                          <div>
-                            {address ? trimLongStr(address, 10, 6, 4) : ''}
-                          </div>
-                          <Copy value={address} />
-                        </Address>
-                        <MenuElement
-                          onClick={async (e: React.MouseEvent<HTMLElement>) => {
-                            e.preventDefault();
-                            navigate('/profile?tab=collections');
-                          }}
-                        >
-                          <SaverIcon mr={8} width={24} height={24} />
-                          My Data Collections
-                        </MenuElement>
-                        <MenuElement
-                          onClick={async (e: React.MouseEvent<HTMLElement>) => {
-                            e.preventDefault();
-                            navigate('/profile?tab=purchase');
-                          }}
-                        >
-                          <DepositIcon mr={8} width={24} height={24} />
-                          My Purchases
-                        </MenuElement>
-                        {/* {hasRole && (
+              <AddressWrapper>
+                <Address gap={10} mb={24} height={24}>
+                  <div>{address ? trimLongStr(address, 10, 6, 4) : ''}</div>
+                  <Copy value={address} />
+                </Address>
+                <MenuElement
+                  onClick={async (e: React.MouseEvent<HTMLElement>) => {
+                    e.preventDefault();
+                    navigate('/profile?tab=collections');
+                  }}
+                >
+                  <SaverIcon mr={8} width={24} height={24} />
+                  My Data Collections
+                </MenuElement>
+                <MenuElement
+                  onClick={async (e: React.MouseEvent<HTMLElement>) => {
+                    e.preventDefault();
+                    navigate('/profile?tab=purchase');
+                  }}
+                >
+                  <DepositIcon mr={8} width={24} height={24} />
+                  My Purchases
+                </MenuElement>
+                {/* {hasRole && (
                           <MenuElement
                             onClick={() => {
                               revoke().then(() => {
@@ -247,26 +255,22 @@ const Header = () => {
                             <WalletIcon mr={8} width={24} height={24} /> Revoke
                           </MenuElement>
                         )} */}
-                        <Disconnect
-                          onClick={async () => {
-                            await disconnect();
-                          }}
-                        >
-                          <WithdrawIcon
-                            mr={8}
-                            width={24}
-                            height={24}
-                            style={{ transform: 'rotate(-90deg)' }}
-                          />{' '}
-                          Disconnect
-                        </Disconnect>
-                      </AddressWrapper>
-                    </DropDown>
-                  )}
-                </>
-              );
-            }}
-          </ConnectKitButton.Custom>
+                <Disconnect
+                  onClick={async () => {
+                    await disconnect();
+                  }}
+                >
+                  <WithdrawIcon
+                    mr={8}
+                    width={24}
+                    height={24}
+                    style={{ transform: 'rotate(-90deg)' }}
+                  />{' '}
+                  Disconnect
+                </Disconnect>
+              </AddressWrapper>
+            </DropDown>
+          )}
         </ButtonWrapper>
       </RightFunCon>
     </HeaderFlex>
@@ -411,4 +415,21 @@ const ListLink = styled.div`
   font-size: 16px;
   font-weight: 400;
   cursor: pointer;
+`;
+
+const ConnectProfile = styled(Flex)`
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  max-width: 158px;
+  height: 44px;
+  font-family: Space Grotesk;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+  border-radius: 200px;
+  border: 1px solid ${(props: any) => props.theme.colors.readable.border};
+  &:hover {
+    background: ${(props: any) => props.theme.colors.read?.normal};
+  }
 `;

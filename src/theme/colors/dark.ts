@@ -16,6 +16,7 @@ export const dark = {
     bg: {
       bottom: '#14151A',
       middle: '#1E2026',
+      walletTab: '#F7F7F7',
       codebox: '#262D37',
       top: {
         normal: '#2B2F36',
@@ -27,6 +28,7 @@ export const dark = {
         normal: '#E1A325',
         active: '#f39d53',
         opacity: rgba('#B845FF', 0.1),
+        semiOpacity: rgba('#E1A325', 0.15),
       },
 
       success: {
