@@ -39,7 +39,7 @@ export const useCollectionList = (page: number, pageSize = 10) => {
               });
             const res: any = await Promise.all(t);
             setList(res);
-            setTotal(body.length);
+            setTotal(t.length);
           } else {
             setLoading(false);
           }

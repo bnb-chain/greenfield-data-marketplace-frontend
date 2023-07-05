@@ -75,7 +75,7 @@ const gfChain: Chain = {
 };
 
 const { chains, provider } = configureChains(
-  [gfChain, bscTestnet],
+  [bscTestnet, gfChain],
   [publicProvider()],
 );
 
@@ -97,6 +97,9 @@ function App() {
               ) {
                 // window.ethereum = window?.trustWallet;
                 // eslint-disable-next-line
+                Object.defineProperty(window.trustWallet, 'removeListener', {
+                  value: window.trustWallet.off,
+                });
                 return window?.trustWallet;
               } else {
                 return null;
@@ -145,6 +148,7 @@ function App() {
                     {routes.map((item: IRoute) => {
                       return (
                         <Route
+                          key={item.path}
                           path={item.path}
                           element={<RouteGuard>{item.element}</RouteGuard>}
                         />
