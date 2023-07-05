@@ -46,6 +46,14 @@ PUBLIC_URL=${PUBLIC_URL}
 REACT_APP_DAPP_NAME=${DAPP_NAME}
 ```
 
+then build example:
+
+```bash
+> pnpm run build
+```
+
+finally, you can see the output resources in the build directory
+
 ## Contribution
 
 Look over [CONTRIBUTING](./CONTRIBUTING.md)
