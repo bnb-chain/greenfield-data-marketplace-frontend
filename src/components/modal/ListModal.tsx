@@ -98,8 +98,6 @@ export const ListModal = (props: ListModalProps) => {
   }, []);
 
   const listData = useMemo(() => {
-    // dm_o_{bucket_name}_{obj_name}
-    // dm_b_{bucket_name}
     return {
       groupName: generateGroupName(bucket_name, object_name),
       // groupName: Math.random().toString(36).slice(-6),

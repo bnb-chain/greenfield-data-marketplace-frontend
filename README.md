@@ -13,6 +13,12 @@ Clone the project and install dependencies:
 > cp .env.example .env.development.local
 ```
 
+modify the value of REACT_APP_DAPP_NAME in the .env.development.local file, you can set it to the value you like:
+
+```
+REACT_APP_DAPP_NAME=${DAPP_NAME}
+```
+
 abd then run example:
 
 ```bash
@@ -23,6 +29,21 @@ if you want to add dependency:
 
 ```bash
 > pnpm i react
+```
+
+### Publish the project
+
+publish to production environment:
+
+```bash
+> cp .env.example .env.production
+```
+
+you also need to modify the value of REACT_APP_DAPP_NAME and PUBLIC_URL:
+
+```
+PUBLIC_URL=${PUBLIC_URL}
+REACT_APP_DAPP_NAME=${DAPP_NAME}
 ```
 
 ## Contribution

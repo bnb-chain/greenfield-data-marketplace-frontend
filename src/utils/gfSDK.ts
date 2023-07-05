@@ -1,4 +1,4 @@
-import { GF_RPC_URL, GF_CHAIN_ID } from '../env';
+import { GF_RPC_URL, GF_CHAIN_ID, DAPP_NAME } from '../env';
 import { Client } from '@bnb-chain/greenfield-chain-sdk';
 
 export const getSingleton = function () {
@@ -214,7 +214,7 @@ export const getCollectionInfoByName = async (bucketName: string) => {
 
 export const searchKey = async (key: string) => {
   try {
-    return await client.sp.listGroup(key, 'dm_', {
+    return await client.sp.listGroup(key, `${DAPP_NAME}_`, {
       sourceType: 'SOURCE_TYPE_ORIGIN',
       limit: 1000,
       offset: 0,

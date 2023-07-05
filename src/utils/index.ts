@@ -12,6 +12,7 @@ import { getDomain } from './getDomain';
 import { generateGetObjectOptions } from './generateGetObjectOptions';
 import { IReturnOffChainAuthKeyPairAndUpload } from '@bnb-chain/greenfield-chain-sdk';
 import { getUtcZeroTimestamp } from './time';
+import { DAPP_NAME } from '../env';
 
 // import ProgressBarToast from '../components/ProgressBarToast';
 
@@ -86,9 +87,9 @@ export const divide10Exp = (origin: BN, pow: number) => {
 
 export const generateGroupName = (bucketName: string, objName?: string) => {
   if (objName) {
-    return `dm_o_${bucketName}_${objName}`;
+    return `${DAPP_NAME}_o_${bucketName}_${objName}`;
   } else {
-    return `dm_b_${bucketName}`;
+    return `${DAPP_NAME}_b_${bucketName}`;
   }
 };
 
@@ -104,8 +105,8 @@ export const parseGroupName = (groupName: string) => {
   let name = groupName;
   let type = 'Collection';
   let bucketName = '';
-  if (name.indexOf('dm_') === 0) {
-    if (name.indexOf('dm_o_') === 0) {
+  if (name.indexOf(`${DAPP_NAME}_`) === 0) {
+    if (name.indexOf(`${DAPP_NAME}_o_`) === 0) {
       type = 'Data';
     }
     const temp = name.split('_');
