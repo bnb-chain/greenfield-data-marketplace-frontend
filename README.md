@@ -52,6 +52,12 @@ then build example:
 > pnpm run build
 ```
 
+If you want to output all the files to index.html so that they can be deployed on decentralized storage platforms, such as [dCellar](https://dcellar.io/):
+
+```bash
+> pnpm run build:gf
+```
+
 finally, you can see the output resources in the build directory
 
 ## Contribution
