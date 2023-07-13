@@ -2,8 +2,16 @@
 
 Greenfield Data marketplace is a data exchange platform where users can freely create, list, trade, and sell data assets, including digital publications, scientific experimental data, and specific domain data, or even NFT can be treated as a kind of data.
 
-The contract of the marketplace is available at [greenfield-data-marketplace-contracts
-](https://github.com/bnb-chain/greenfield-data-marketplace-contracts/)
+## Documentation
+
+| Description                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------ |
+| [greenfield-data-marketplace-contracts](https://github.com/bnb-chain/greenfield-data-marketplace-contracts/) |
+| [BNB greenfield official website](https://greenfield.bnbchain.org/en)                                        |
+| [Guide to BNB Greenfield](https://docs.bnbchain.org/greenfield-docs/docs/guide/home)                         |
+| [Discord of BNB Greenfield](https://discord.gg/bnbchain)                                                     |
+| [Forum of bnbchain](https://forum.bnbchain.org/)                                                             |
+| [Guide to BNB Greenfield](https://docs.bnbchain.org/greenfield-docs/docs/guide/home)                         |
 
 ### Start the project
 
