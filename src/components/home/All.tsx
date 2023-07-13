@@ -142,7 +142,7 @@ const AllList = () => {
         headerContent={`Latest ${Math.min(
           20,
           list.length,
-        )}  Collections (Total of ${list.length})`}
+        )}  Collections (Total of ${total})`}
         containerStyle={{ padding: '4px 20px' }}
         pagination={{
           current: page,

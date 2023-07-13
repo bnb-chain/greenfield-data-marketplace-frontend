@@ -114,11 +114,12 @@ export const useResourceInfo = ({
       // owner list
       if (groupName && groupId) {
         let _promise;
-
         if (groupId) {
-          if (bucketListed || bucketListedId === groupId)
+          if (bucketListed || (bucketListedId === groupId && objectInfo))
             _promise = Promise.resolve(true);
-          else checkListed(groupId as string);
+          else {
+            _promise = checkListed(groupId as string);
+          }
         } else {
           _promise = Promise.resolve(false);
         }
@@ -156,6 +157,7 @@ export const useResourceInfo = ({
           name: objectName || bucketName,
           bucketName,
           listed: false,
+          bucketListed,
           owner: address,
           objectInfo,
           bucketInfo,

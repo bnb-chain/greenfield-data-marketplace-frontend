@@ -50,7 +50,19 @@ const Search = (props: ISearch) => {
         setList([searchValue as never]);
       } else {
         const result: any = await searchKey(searchValue);
-        const { groups } = result;
+        let { groups } = result;
+        groups = groups.filter((item: any) => {
+          const {
+            group: { group_name },
+          } = item;
+          const { bucketName, name, type } = parseGroupName(group_name);
+          const reg = new RegExp(searchValue, 'g');
+          if (type === 'Collection') {
+            return reg.test(bucketName);
+          } else {
+            return reg.test(name);
+          }
+        });
         if (groups.length) {
           const res = await multiCallFun(
             groups.map((item: any) => {
