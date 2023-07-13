@@ -44,7 +44,10 @@ export const selectSp = async () => {
 export const getRandomSp = async () => {
   const sps = await client.sp.getStorageProviders();
   const finalSps = (sps ?? []).filter(
-    (v: any) => v?.description?.moniker !== 'QATest',
+    (v: any) =>
+      v?.description?.moniker !== 'QATest' &&
+      (v.endpoint.indexOf('bnbchain.org') > 0 ||
+        v.endpoint.indexOf('nodereal.io') > 0),
   );
   return finalSps[Math.floor(Math.random() * finalSps.length)].endpoint;
 };

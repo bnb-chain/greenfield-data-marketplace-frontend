@@ -351,6 +351,7 @@ module.exports = function (webpackEnv) {
         stream: false,
         crypto: false,
         url: false,
+        buffer: false,
         'crypto-browserify': false,
       },
     },

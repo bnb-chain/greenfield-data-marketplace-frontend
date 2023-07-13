@@ -171,7 +171,7 @@ export const EditModal = (props: ListModalProps) => {
                     duration: 3000,
                   });
                 } catch (error) {
-                  toast.error({ description: 'edit success', duration: 3000 });
+                  toast.error({ description: 'edit failed', duration: 3000 });
                 }
                 setLoading(false);
                 updateFn?.();

@@ -187,7 +187,6 @@ const Resource = () => {
   }, [objectInfo]);
 
   if (loading) return <Loader></Loader>;
-
   if (noData)
     return (
       <NoDataCon

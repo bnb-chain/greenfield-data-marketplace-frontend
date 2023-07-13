@@ -4,6 +4,8 @@ import { Box, Flex, Tooltip } from '@totejs/uikit';
 import { Copy } from '../Copy';
 import { getRandomSp } from '../../utils/gfSDK';
 import { useEffect, useMemo, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface IOverView {
   desc: string;
@@ -49,7 +51,11 @@ const Overview = (props: IOverView) => {
     <Container>
       <Box h={20}></Box>
       <DescBox w={996} alignItems={'center'} justifyItems={'center'}>
-        {desc || 'This is a default description.'}
+        {desc ? (
+          <ReactMarkdown children={desc} remarkPlugins={[remarkGfm]} />
+        ) : (
+          'This is a default description.'
+        )}
         {showEdit && listed && (
           <PenCon
             onClick={() => {
