@@ -171,11 +171,15 @@ const Search = (props: ISearch) => {
         borderRadius={8}
         onMouseUp={(e) => e.stopPropagation()}
         flexDirection="column"
-        bg="bg.middle"
+        bg="#35363C"
         boxShadow="0px 4px 24px rgba(0, 0, 0, 0.08)"
         minWidth={[0, 230, 230]}
       >
-        <Box bg="bg.middle" boxShadow="4px 2px 8px rgba(0, 0, 0, 0.08)">
+        <Box
+          borderRadius={8}
+          bg="#35363C"
+          boxShadow="4px 2px 8px rgba(0, 0, 0, 0.08)"
+        >
           <Input
             placeholder={'Search Data Names, Accounts'}
             value={searchValue}
@@ -199,6 +203,9 @@ const Search = (props: ISearch) => {
               data={filteredData}
               showSelectIcon={false}
               loading={loading}
+              onClose={() => {
+                setShow(false);
+              }}
             />
           </Box>
         )}

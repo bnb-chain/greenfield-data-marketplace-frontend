@@ -102,7 +102,7 @@ const Main = styled.main`
   display: flex;
   flex: 1 1 0%;
   justify-content: center;
-  margin-top: 62px;
+  margin-top: 80px;
 `;
 
 const Container = styled(Flex)`

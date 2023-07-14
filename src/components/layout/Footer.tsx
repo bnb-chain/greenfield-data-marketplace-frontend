@@ -2,23 +2,17 @@ import { Flex } from '@totejs/uikit';
 import styled from '@emotion/styled';
 const Footer = () => {
   return (
-    <FooterCon>
-      <Flex justifyContent={'center'}>
-        <CopyRight></CopyRight>
-      </Flex>
+    <FooterCon alignItems={'center'} justifyContent={'center'}>
+      © 2023 BNB Chain. All rights reserved.
     </FooterCon>
   );
 };
 
 export default Footer;
 
-const FooterCon = styled.div`
+const FooterCon = styled(Flex)`
   margin-top: 30px;
-  height: 42px;
+  color: #aeafb0;
+  height: 48px;
   background-color: #000000;
-`;
-const CopyRight = styled.div`
-  padding: 13px;
-  text-align: center;
-  color: ${(props: any) => props.theme.colors.readable?.secondary};
 `;
