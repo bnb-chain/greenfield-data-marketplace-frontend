@@ -143,7 +143,7 @@ const AllList = () => {
           20,
           list.length,
         )}  Collections (Total of ${total})`}
-        containerStyle={{ padding: '4px 20px' }}
+        containerStyle={{ padding: '0' }}
         pagination={{
           current: page,
           pageSize: 10,

@@ -376,8 +376,8 @@ const Tag = styled(Flex)`
   font-size: 12px;
   line-height: 28px;
 
-  width: 85px;
-  height: 16px;
+  width: 100px;
+  height: 20px;
 
   background: #d9d9d9;
 

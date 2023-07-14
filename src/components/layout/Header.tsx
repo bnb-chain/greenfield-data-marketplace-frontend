@@ -16,7 +16,6 @@ import {
   ReactNode,
   forwardRef,
   useCallback,
-  useMemo,
   useState,
   useRef,
 } from 'react';
@@ -32,13 +31,12 @@ import {
   MenuCloseIcon,
   DepositIcon,
 } from '@totejs/icons';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // import { useRevoke } from '../../hooks/useRevoke';
 // import { useHasRole } from '../../hooks/useHasRole';
 import LogoGroup from '../../images/logo-group.png';
 import { BSCLogo } from '../svgIcon/BSCLogo';
 import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
-import { useGlobal } from '../../hooks/useGlobal';
 import Search from '../../components/Search';
 
 const CustomMenuButton = forwardRef(
@@ -108,14 +106,6 @@ const Header = () => {
 
   const { chain } = useNetwork();
 
-  const state = useGlobal();
-
-  const location = useLocation();
-
-  const showSearch = useMemo(() => {
-    return state.globalState.showSearch || location.pathname != '/';
-  }, [state.globalState.showSearch, location]);
-
   return (
     <HeaderFlex
       justifyContent={'space-between'}
@@ -131,20 +121,20 @@ const Header = () => {
           src={LogoGroup}
           alt="logo"
         />
-        {showSearch && <Search width="380px" height="40px"></Search>}
+        <Search width="380px" height="40px"></Search>
       </LeftCon>
 
       <RightFunCon alignItems={'center'} justifyContent={'center'} gap={18}>
         <>
-          <ListLink
+          <Button
             onClick={() => {
               if (!isConnecting && !isConnected) handleModalOpen();
               navigate('/profile?tab=collections');
             }}
-            className={isConnected ? 'connected' : ''}
+            variant="text"
           >
             List My Data
-          </ListLink>
+          </Button>
         </>
         {address && (
           <Menu placement="bottom-end">
@@ -283,7 +273,7 @@ const HeaderFlex = styled(Flex)`
   position: fixed;
   width: 100%;
   z-index: 10;
-  background-color: #000000;
+  background-color: #1e2026;
   border-bottom: 1px #2f3034 solid;
 `;
 const LeftCon = styled(Flex)`
@@ -410,12 +400,6 @@ const MenuElement = styled.div`
 `;
 
 const RightFunCon = styled(Flex)``;
-
-const ListLink = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  cursor: pointer;
-`;
 
 const ConnectProfile = styled(Flex)`
   align-items: center;
