@@ -30,7 +30,7 @@ const TrendingList = () => {
       width: 20,
       cell: (data: any) => {
         const { rank } = data;
-        return <div>{rank}</div>;
+        return <Rank className={rank <= 3 ? 'active' : ''}>{rank}</Rank>;
       },
     },
     {
@@ -130,7 +130,7 @@ const TrendingList = () => {
   return (
     <Container>
       <Table
-        containerStyle={{ padding: '4px 16px', background: '#1E2026' }}
+        containerStyle={{ padding: '0', background: '#1E2026' }}
         columns={columns}
         data={list}
         loading={loading}
@@ -162,4 +162,12 @@ const ImgCon = styled.img`
 
 const MyLink = styled(Link)`
   color: ${(props: any) => props.theme.colors.scene.primary.normal};
+`;
+
+const Rank = styled.div`
+  &.active {
+    font-size: 24px;
+    font-weight: 500;
+    color: ${(props: any) => props.theme.colors.scene.primary.normal};
+  }
 `;
