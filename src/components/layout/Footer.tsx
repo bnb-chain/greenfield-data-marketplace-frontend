@@ -1,8 +1,14 @@
 import { Flex } from '@totejs/uikit';
 import styled from '@emotion/styled';
+import { useLocation } from 'react-router-dom';
 const Footer = () => {
+  const location = useLocation();
   return (
-    <FooterCon alignItems={'center'} justifyContent={'center'}>
+    <FooterCon
+      style={{ marginTop: location.pathname != '/' ? '30px' : '' }}
+      alignItems={'center'}
+      justifyContent={'center'}
+    >
       © 2023 BNB Chain. All rights reserved.
     </FooterCon>
   );
@@ -11,7 +17,6 @@ const Footer = () => {
 export default Footer;
 
 const FooterCon = styled(Flex)`
-  margin-top: 30px;
   color: #aeafb0;
   height: 48px;
   background-color: #000000;

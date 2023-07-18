@@ -21,29 +21,34 @@ export const useCollectionItems = (
 
   const { checkListed } = useListedStatus();
   useEffect(() => {
-    if (bucketName && address) {
+    if (bucketName) {
       getBucketFileList({ bucketName })
         .then(async (result: any) => {
           const { body, code } = result;
-
           if (code == 0) {
-            const { key_count, objects } = body;
-            const strColl = objects
-              .filter((item: any) => !item.removed)
-              .map((item: any) => {
-                const {
-                  object_info: { object_name, id },
-                } = item;
-                // folder
-                let hasFolder = false;
-                if (object_name.indexOf('/')) hasFolder = true;
-                return hasFolder
-                  ? object_name.slice(0, -1) + '__' + id + '/'
-                  : object_name + '__' + id;
-                // return object_name;
-              });
-            const tree = new Tree(strColl.join('\n'));
+            let { objects } = body;
+            objects = objects.filter((item: any) => !item.removed);
+            const strColl = objects.map((item: any) => {
+              const {
+                object_info: { object_name, id },
+              } = item;
+              // folder
+              let hasFolder = false;
+              if (object_name.indexOf('/') > -1) hasFolder = true;
+              const isFile = object_name.slice(-1) !== '/';
 
+              return hasFolder
+                ? object_name.slice(0, -1) +
+                    '__' +
+                    id +
+                    '__' +
+                    `${isFile ? 'file' : 'folder'}` +
+                    '/'
+                : object_name + '__' + id + '__' + 'file';
+              // return object_name;
+            });
+
+            const tree = new Tree(strColl.join('\n'));
             const _objInfo: { [str: string]: any } = {};
 
             const t = objects.map(async (item: any) => {
@@ -87,8 +92,7 @@ export const useCollectionItems = (
 
             cache[bucketName] = tree;
             setList(tree.list);
-
-            setNum(key_count);
+            setNum(objects.length);
           } else {
             setList([]);
           }

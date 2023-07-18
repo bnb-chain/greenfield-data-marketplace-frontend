@@ -6,7 +6,7 @@ import { BSC_SEND_GAS_FEE, MARKETPLACE_CONTRACT_ADDRESS } from '../env';
 export const useApprove = () => {
   const { address } = useAccount();
 
-  const Approve = useCallback(() => {
+  const Approve = useCallback(async () => {
     if (!address) return Promise.reject(false);
     return new Promise((res, rej) => {
       GroupHubContract()

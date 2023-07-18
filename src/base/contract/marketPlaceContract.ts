@@ -6,9 +6,14 @@ import { BSC_RPC_URL, MARKETPLACE_CONTRACT_ADDRESS } from '../../env';
 
 export const MarketPlaceContract = (sign = true) => {
   // const gfProvider = new Web3.providers.HttpProvider(BSC_RPC_URL);
+  const isTrustWallet = JSON.parse(localStorage.getItem('wagmi.wallet') || '');
   let web3;
   if (sign) {
-    web3 = new Web3(window.ethereum as any);
+    web3 = new Web3(
+      isTrustWallet === 'injected'
+        ? (window.trustWallet as any)
+        : (window.ethereum as any),
+    );
   } else {
     const gfProvider = new Web3.providers.HttpProvider(BSC_RPC_URL);
     web3 = new Web3(gfProvider);

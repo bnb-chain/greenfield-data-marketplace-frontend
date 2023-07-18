@@ -32,12 +32,12 @@ const Folder = () => {
   const state = useGlobal();
 
   const folder = useMemo(() => {
-    return folderGroup.split('-').slice(-1)[0];
+    return folderGroup.split('__').slice(-1)[0];
   }, [folderGroup]);
 
   useEffect(() => {
     const list = state.globalState.breadList;
-    if (list.length) {
+    if (list.length && list.slice(-1)[0].name !== folder) {
       setBreadItems(
         list.concat([
           {

@@ -19,7 +19,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGlobal } from '../../hooks/useGlobal';
 import { GoIcon, CardPocketIcon } from '@totejs/icons';
 import { OwnActionCom } from '../OwnActionCom';
-import { useMemo } from 'react';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -34,10 +33,9 @@ const ProfileList = (props: any) => {
     listed: collectionListed,
     status: bucketStatus,
     bucketInfo,
-    setNum,
   } = props;
 
-  const { list, loading, num } = useCollectionItems(name, collectionListed);
+  const { list, loading } = useCollectionItems(name, collectionListed);
 
   const { handlePageChange, page } = usePagination();
 
@@ -60,10 +58,6 @@ const ProfileList = (props: any) => {
 
   const navigator = useNavigate();
 
-  useMemo(() => {
-    if (num) setNum(num);
-  }, [num]);
-
   const columns = [
     {
       header: 'Data',
@@ -80,20 +74,21 @@ const ProfileList = (props: any) => {
             justifyContent={'flex-start'}
             gap={6}
             onClick={() => {
-              const list = state.globalState.breadList;
-              const item = {
-                path: '/resource',
-                name: bucketName || 'Collection',
-                query: p.toString(),
-              };
-              state.globalDispatch({
-                type: 'ADD_BREAD',
-                item,
-              });
+              let list = state.globalState.breadList;
+              if (list.slice(-1)[0].name !== bucketName) {
+                const item = {
+                  path: '/resource',
+                  name: bucketName || 'Collection',
+                  query: p.toString(),
+                };
+                state.globalDispatch({
+                  type: 'ADD_BREAD',
+                  item,
+                });
+                list = list.concat([item]);
+              }
 
-              const from = encodeURIComponent(
-                JSON.stringify(list.concat([item])),
-              );
+              const from = encodeURIComponent(JSON.stringify(list));
 
               if (!object_info) {
                 navigator(
@@ -180,20 +175,21 @@ const ProfileList = (props: any) => {
               cursor={'pointer'}
               color={'#AEB4BC'}
               onClick={() => {
-                const list = state.globalState.breadList;
-                const item = {
-                  path: '/resource',
-                  name: bucketName,
-                  query: p.toString(),
-                };
-                state.globalDispatch({
-                  type: 'ADD_BREAD',
-                  item,
-                });
+                let list = state.globalState.breadList;
+                if (list.slice(-1)[0].name !== bucketName) {
+                  const item = {
+                    path: '/resource',
+                    name: bucketName,
+                    query: p.toString(),
+                  };
+                  state.globalDispatch({
+                    type: 'ADD_BREAD',
+                    item,
+                  });
+                  list = list.concat([item]);
+                }
 
-                const from = encodeURIComponent(
-                  JSON.stringify(list.concat([item])),
-                );
+                const from = encodeURIComponent(JSON.stringify(list));
 
                 navigator(
                   `/folder?bid=${bucketId}&f=${name}&address=${ownerAddress}&collectionListed=${collectionListed}&from=${from}`,

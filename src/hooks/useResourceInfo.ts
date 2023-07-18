@@ -110,7 +110,6 @@ export const useResourceInfo = ({
         bucketListedId = groupInfo?.id;
         bucketListed = !!(await checkListed(bucketListedId as string));
       }
-
       // owner list
       if (groupName && groupId) {
         let _promise;

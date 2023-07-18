@@ -4,12 +4,16 @@ import ABI from './group_hub_abi.json';
 import { AbiItem } from 'web3-utils';
 import { BSC_RPC_URL, GROUP_HUB_CONTRACT_ADDRESS } from '../../env/';
 
-const cache: any = {};
 export const GroupHubContract = (sign = true) => {
-  if (cache[sign + '']) return cache[sign + ''];
+  const isTrustWallet = JSON.parse(localStorage.getItem('wagmi.wallet') || '');
+
   let web3;
   if (sign) {
-    web3 = new Web3(window.ethereum as any);
+    web3 = new Web3(
+      isTrustWallet === 'injected'
+        ? (window.trustWallet as any)
+        : (window.ethereum as any),
+    );
   } else {
     const gfProvider = new Web3.providers.HttpProvider(BSC_RPC_URL);
     web3 = new Web3(gfProvider);
@@ -19,6 +23,5 @@ export const GroupHubContract = (sign = true) => {
     ABI as AbiItem[],
     GROUP_HUB_CONTRACT_ADDRESS,
   );
-  if (!cache[sign + '']) cache[sign + ''] = contractInstance;
   return contractInstance;
 };
