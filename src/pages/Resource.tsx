@@ -34,6 +34,7 @@ import { useBNBPrice } from '../hooks/useBNBPrice';
 import { NoData } from '../components/NoData';
 import { DCELLAR_URL, GF_EXPLORER_URL } from '../env';
 import { useWalletModal } from '../hooks/useWalletModal';
+import { useCollectionItems } from '../hooks/useCollectionItems';
 
 enum Type {
   Description = 'description',
@@ -84,9 +85,6 @@ const Resource = () => {
     bucketInfo,
     bucketListed,
   } = baseInfo;
-
-  const [num, setNum] = useState(0);
-
   const { salesVolume } = useSalesVolume(groupId);
 
   const { status } = useStatus(
@@ -99,9 +97,13 @@ const Resource = () => {
 
   const [breadItems, setBreadItems] = useState<any>([]);
 
+  const state = useGlobal();
   const showBuy = useMemo(() => {
-    return status == 1 || status == -1;
-  }, [status, address]);
+    const list = state.globalState.breadList;
+    const fromPurchase =
+      list.findIndex((item) => item.name == 'My Purchase') > -1;
+    return (status == 1 || status == -1) && !fromPurchase;
+  }, [status, address, state.globalState.breadList]);
 
   const showDcellarBut = useMemo(() => {
     return status > -1;
@@ -117,12 +119,10 @@ const Resource = () => {
     return bucketName === name ? name : `${bucketName} #${name}`;
   }, [name, bucketName]);
 
-  const state = useGlobal();
-
   const { price: bnbPrice } = useBNBPrice();
   useEffect(() => {
     const list = state.globalState.breadList;
-    if (list.length) {
+    if (list.length && list[list.length - 1].name != title) {
       setBreadItems(
         list.concat([
           {
@@ -132,6 +132,8 @@ const Resource = () => {
           },
         ]),
       );
+    } else {
+      setBreadItems(list);
     }
   }, [state.globalState.breadList, title]);
 
@@ -186,6 +188,7 @@ const Resource = () => {
     return objectInfo?.payloadSize?.low;
   }, [objectInfo]);
 
+  const { num } = useCollectionItems(name, bucketListed);
   if (loading) return <Loader></Loader>;
   if (noData)
     return (
@@ -318,9 +321,16 @@ const Resource = () => {
               <Button
                 size={'sm'}
                 onClick={async () => {
+                  console.log(bucketInfo || objectInfo);
+                  const initInfo = {
+                    bucket_name: bucketName,
+                    object_name: bucketName === name ? '' : name,
+                    create_at: CreateTime,
+                    payload_size: fileSize,
+                  };
                   modalData.modalDispatch({
                     type: 'OPEN_LIST',
-                    listData: baseInfo,
+                    initInfo,
                   });
                 }}
               >
@@ -380,7 +390,6 @@ const Resource = () => {
           listed={bucketListed}
           bucketName={bucketName}
           bucketInfo={bucketInfo}
-          setNum={setNum}
         ></List>
       )}
       {open && (

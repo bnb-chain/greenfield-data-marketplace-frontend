@@ -61,12 +61,11 @@ const List = (props: any) => {
     }
     return [];
   }, [list, folderGroup]);
-
   const columns = [
     {
       header: 'Data',
       cell: (data: any) => {
-        // const object_name = data.children
+        // const object_name = data._type === "folder"
         //   ? data.name
         //   : data?.object_info?.object_name;
         const { name } = data;
@@ -77,9 +76,10 @@ const List = (props: any) => {
       header: 'Type',
       width: 160,
       cell: (data: any) => {
-        const content_type = data.children
-          ? 'Folder'
-          : contentTypeToExtension(data?.object_info?.content_type);
+        const content_type =
+          data._type === 'folder'
+            ? 'Folder'
+            : contentTypeToExtension(data?.object_info?.content_type);
         return <div>{content_type}</div>;
       },
     },
@@ -89,7 +89,7 @@ const List = (props: any) => {
       cell: (data: any) => {
         return (
           <div>
-            {data.children
+            {data._type === 'folder'
               ? '-'
               : parseFileSize(data?.object_info?.payload_size)}
           </div>
@@ -102,9 +102,11 @@ const List = (props: any) => {
       cell: (data: any) => {
         return (
           <div>
-            {data.children
+            {data._type === 'folder'
               ? '-'
-              : formatDateUTC(data?.object_info?.create_at * 1000)}
+              : data?.object_info?.create_at
+              ? formatDateUTC(data?.object_info?.create_at * 1000)
+              : '-'}
           </div>
         );
       },
@@ -151,7 +153,7 @@ const List = (props: any) => {
 
                 navigator(
                   `/folder?bid=${bucketId}&address=${ownerAddress}&f=${
-                    folderGroup + '-' + name
+                    folderGroup + '__' + name
                   }&from=${from}`,
                 );
               }}
@@ -197,7 +199,7 @@ const List = (props: any) => {
                   item,
                 });
                 navigate(
-                  `/resource?oid=${id}&address=${address}&tab=dataList&from=${encodeURIComponent(
+                  `/resource?oid=${id}&address=${ownerAddress}&tab=dataList&from=${encodeURIComponent(
                     JSON.stringify(list.concat([item])),
                   )}`,
                 );

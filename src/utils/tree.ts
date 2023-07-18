@@ -37,10 +37,12 @@ export class Tree {
           const tt = e.split('__');
           const name = tt[0];
           const id = tt[1];
+          const type = tt[2];
           const result = {
             label: name,
             name: name,
             _id: id,
+            _type: type,
             pLabel: itemArr[i - 1],
           };
           return result;
@@ -100,7 +102,7 @@ export class Tree {
   }
 
   getDepItem(str: string) {
-    const aim = str.split('-');
+    const aim = str.split('__');
     let prevColl = this.root;
     let name = '';
     while ((name = aim.shift() as string) && prevColl.length) {
