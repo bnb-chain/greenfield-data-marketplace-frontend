@@ -98,7 +98,7 @@ export const EditModal = (props: ListModalProps) => {
         <ItemTittle alignItems={'center'} justifyContent={'space-between'}>
           Description
           <span>
-            Markdown syntax is supported. {desc.length} of 1000 characters used.
+            Markdown syntax is supported. {desc.length} of 300 characters used.
           </span>
         </ItemTittle>
         <Box h={10}></Box>
@@ -107,7 +107,7 @@ export const EditModal = (props: ListModalProps) => {
             value={desc}
             onChange={onChangeDesc}
             placeholder="Please enter an description..."
-            maxLength={1000}
+            maxLength={300}
           />
         </InputCon>
         <Box h={10}></Box>
