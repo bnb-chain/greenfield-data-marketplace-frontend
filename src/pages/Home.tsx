@@ -38,17 +38,18 @@ const Home = () => {
       <HomeList></HomeList>
       <WorkInfo flexDirection={'column'} gap={37}>
         <WorkItem flexDirection={'column'} gap={20}>
-          <WorkTitle>How it works</WorkTitle>
+          <WorkTitle>On Chain Permission Management </WorkTitle>
           <WorkDesc>
-            We’ve prepared all the toolings you need to get started with BNB
-            Greenfield Now!
+            Sell the download/preview permission in stead of data itself, get
+            full control of data sovereignty
           </WorkDesc>
         </WorkItem>
         <WorkItem flexDirection={'column'} gap={20}>
-          <WorkTitle>How it works</WorkTitle>
+          <WorkTitle>Cross Chain Programmable Ability </WorkTitle>
           <WorkDesc>
-            We’ve prepared all the toolings you need to get started with BNB
-            Greenfield Now!
+            No need to migrate to Greenfield, through build smart contract on
+            BSC, you can take full advantage of the BNB greenfield’s data
+            capabilities
           </WorkDesc>
         </WorkItem>
       </WorkInfo>
