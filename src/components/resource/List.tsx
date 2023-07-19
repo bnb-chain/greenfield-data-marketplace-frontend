@@ -64,9 +64,8 @@ const ProfileList = (props: any) => {
       width: '200px',
       cell: (data: any) => {
         const { object_info, name } = data;
-        const object_name = data.children
-          ? data.name
-          : data?.object_info?.object_name;
+        const object_name =
+          data._type === 'folder' ? data.name : data?.object_info?.object_name;
 
         return (
           <ImgContainer
@@ -118,9 +117,10 @@ const ProfileList = (props: any) => {
       header: 'Type',
       width: 160,
       cell: (data: any) => {
-        const content_type = data.children
-          ? 'Folder'
-          : contentTypeToExtension(data?.object_info?.content_type);
+        const content_type =
+          data._type === 'folder'
+            ? 'Folder'
+            : contentTypeToExtension(data?.object_info?.content_type);
         return <div>{content_type}</div>;
       },
     },
@@ -130,7 +130,7 @@ const ProfileList = (props: any) => {
       cell: (data: any) => {
         return (
           <div>
-            {data.children
+            {data._type === 'folder'
               ? '-'
               : parseFileSize(data?.object_info?.payload_size)}
           </div>
@@ -143,7 +143,7 @@ const ProfileList = (props: any) => {
       cell: (data: any) => {
         return (
           <div>
-            {data.children
+            {data._type === 'folder'
               ? '-'
               : formatDateUTC(data?.object_info?.create_at * 1000)}
           </div>

@@ -321,7 +321,6 @@ const Resource = () => {
               <Button
                 size={'sm'}
                 onClick={async () => {
-                  console.log(bucketInfo || objectInfo);
                   const initInfo = {
                     bucket_name: bucketName,
                     object_name: bucketName === name ? '' : name,

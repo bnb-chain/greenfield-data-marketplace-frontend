@@ -5,7 +5,10 @@ import { AbiItem } from 'web3-utils';
 import { BSC_RPC_URL, GROUP_HUB_CONTRACT_ADDRESS } from '../../env/';
 
 export const GroupHubContract = (sign = true) => {
-  const isTrustWallet = JSON.parse(localStorage.getItem('wagmi.wallet') || '');
+  let isTrustWallet = '';
+  try {
+    isTrustWallet = JSON.parse(localStorage.getItem('wagmi.wallet') || '');
+  } catch (e) {}
 
   let web3;
   if (sign) {
