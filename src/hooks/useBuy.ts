@@ -35,7 +35,7 @@ export const useBuy = (
         const totalFee = new BN(price, 10).add(new BN(relayFee, 10));
         const n = Number(divide10Exp(totalFee, 18));
 
-        const count = 30;
+        const count = 180;
         if (BscBalanceVal >= n) {
           let tmp = {};
           try {
