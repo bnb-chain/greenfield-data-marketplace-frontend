@@ -37,18 +37,37 @@ const Home = () => {
       </BannerInfo>
       <HomeList></HomeList>
       <WorkInfo flexDirection={'column'} gap={37}>
+        <WorkMainTitle>How it works</WorkMainTitle>
         <WorkItem flexDirection={'column'} gap={20}>
-          <WorkTitle>How it works</WorkTitle>
+          <WorkTitle>Backendless Framework </WorkTitle>
           <WorkDesc>
-            We’ve prepared all the toolings you need to get started with BNB
-            Greenfield Now!
+            Data-marketplace fully utilizes smart contracts, greenfield APIs,
+            and pre-defined rules to avoid complex backend deployments,
+            simplifying the deployment process to the extreme.
           </WorkDesc>
         </WorkItem>
         <WorkItem flexDirection={'column'} gap={20}>
-          <WorkTitle>How it works</WorkTitle>
+          <WorkTitle>Fully Greenfield Hosted Website</WorkTitle>
           <WorkDesc>
-            We’ve prepared all the toolings you need to get started with BNB
-            Greenfield Now!
+            The data-marketplace website is hosted by greenfield, no traditional
+            cloud infrastructure，anti-Censorship.
+          </WorkDesc>
+        </WorkItem>
+        <WorkItem flexDirection={'column'} gap={20}>
+          <WorkTitle>Fully EVM Compatible</WorkTitle>
+          <WorkDesc>
+            Data-marketplace has implemented smart contracts using Solidity,
+            which are deployed on the BSC network. Users/developers on any BSC
+            don't even need to be aware of Greenfield's existence, and don't
+            need to hold any tokens on Greenfield in order to purchase and
+            access data.
+          </WorkDesc>
+        </WorkItem>
+        <WorkItem flexDirection={'column'} gap={20}>
+          <WorkTitle>Ultimate Fast Trading Experience</WorkTitle>
+          <WorkDesc>
+            Thanks to the fast blocking time of Greenfield and BSC, users can
+            complete data listing and trading in seconds.
           </WorkDesc>
         </WorkItem>
       </WorkInfo>
@@ -174,6 +193,13 @@ const WorkInfo = styled(Flex)`
   margin-top: 70px;
   width: 1200px;
   padding: 24px 40px;
+`;
+
+const WorkMainTitle = styled.div`
+  text-align: center;
+  font-size: 42px;
+  font-weight: 700;
+  color: #ffffff;
 `;
 
 const WorkItem = styled(Flex)``;
