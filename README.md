@@ -1,4 +1,4 @@
-# GreenField Marketplace
+# Greenfield Marketplace
 
 Greenfield Data marketplace is a data exchange platform where users can freely create, list, trade, and sell data assets, including digital publications, scientific experimental data, and specific domain data, or even NFT can be treated as a kind of data.
 
