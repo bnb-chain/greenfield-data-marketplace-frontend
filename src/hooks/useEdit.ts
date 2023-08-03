@@ -1,5 +1,5 @@
 import { updateGroupInfo } from '../utils/gfSDK';
-import { ISimulateGasFee } from '@bnb-chain/greenfield-chain-sdk';
+import { ISimulateGasFee } from '@bnb-chain/greenfield-js-sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 

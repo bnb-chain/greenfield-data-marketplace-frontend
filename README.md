@@ -4,7 +4,7 @@ Greenfield Data marketplace is a data exchange platform where users can freely c
 
 ### Demo link
 
-[BNB Greenfield Data Marketplace](https://gnfd-testnet-sp-6.bnbchain.org/view/gf-marketplace/index.html)
+[BNB Greenfield Data Marketplace](https://gnfd-testnet-sp1.bnbchain.org/view/gf-marketplace/index.html)
 
 ### Start the project
 

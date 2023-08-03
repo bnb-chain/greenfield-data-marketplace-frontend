@@ -1,7 +1,7 @@
 import {
   generateUrlByBucketName,
   isValidUrl,
-} from '@bnb-chain/greenfield-chain-sdk';
+} from '@bnb-chain/greenfield-js-sdk';
 import {
   getObjectPropsType,
   requestParamsType,

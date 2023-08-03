@@ -12,7 +12,7 @@ import {
   GRNToString,
   newGroupGRN,
   newObjectGRN,
-} from '@bnb-chain/greenfield-chain-sdk';
+} from '@bnb-chain/greenfield-js-sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
