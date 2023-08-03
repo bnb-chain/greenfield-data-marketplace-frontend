@@ -1,5 +1,5 @@
 import { GF_RPC_URL, GF_CHAIN_ID, DAPP_NAME } from '../env';
-import { Client } from '@bnb-chain/greenfield-chain-sdk';
+import { Client } from '@bnb-chain/greenfield-js-sdk';
 
 export const getSingleton = function () {
   let client: Client | null;
@@ -191,7 +191,7 @@ export const updateGroupInfo = async (
     operator: address,
     groupOwner: address,
     groupName,
-    Extra: extra,
+    extra,
   });
 };
 

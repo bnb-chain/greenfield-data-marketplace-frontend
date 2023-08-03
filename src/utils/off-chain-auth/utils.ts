@@ -1,4 +1,4 @@
-import { IReturnOffChainAuthKeyPairAndUpload } from '@bnb-chain/greenfield-chain-sdk';
+import { IReturnOffChainAuthKeyPairAndUpload } from '@bnb-chain/greenfield-js-sdk';
 import { getUtcZeroTimestamp } from '../time';
 import { GF_CHAIN_ID } from '../../env';
 

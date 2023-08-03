@@ -10,7 +10,7 @@ import { IRawSPInfo } from './type';
 import { getSpOffChainData } from './off-chain-auth/utils';
 import { getDomain } from './getDomain';
 import { generateGetObjectOptions } from './generateGetObjectOptions';
-import { IReturnOffChainAuthKeyPairAndUpload } from '@bnb-chain/greenfield-chain-sdk';
+import { IReturnOffChainAuthKeyPairAndUpload } from '@bnb-chain/greenfield-js-sdk';
 import { getUtcZeroTimestamp } from './time';
 import { DAPP_NAME } from '../env';
 

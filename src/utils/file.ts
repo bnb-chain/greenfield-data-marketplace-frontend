@@ -1,4 +1,4 @@
-import { isValidUrl } from '@bnb-chain/greenfield-chain-sdk';
+import { isValidUrl } from '@bnb-chain/greenfield-js-sdk';
 
 const IP_REGEX = /^(\d+\.){3}\d+$/g;
 const ALLOW_REGEX = /^[a-z0-9][a-z0-9.\-]{1,61}[a-z0-9]$/g;
