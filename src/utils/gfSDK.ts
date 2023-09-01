@@ -1,4 +1,5 @@
-import { GF_RPC_URL, GF_CHAIN_ID, DAPP_NAME } from '../env';
+import { forEach } from '.';
+import { GF_RPC_URL, GF_CHAIN_ID, DAPP_NAME, BSC_CHAIN_ID } from '../env';
 import { Client } from '@bnb-chain/greenfield-js-sdk';
 
 export const getSingleton = function () {
@@ -58,36 +59,12 @@ export const multiTx = async (list: any) => {
 
 export const getBucketList = async (address: string) => {
   const endpoint = await getRandomSp();
-  const bucketList = client.bucket.getUserBuckets({
+  const bucketList = await client.bucket.getUserBuckets({
     address,
     endpoint,
   });
-
+  forEach(bucketList.body);
   return bucketList;
-};
-
-export const getQuota = async (bucketName: string) => {
-  try {
-    const endpoint = await getRandomSp();
-    const { code, body } = await client.bucket.getBucketReadQuota({
-      bucketName,
-      endpoint,
-    });
-    if (code !== 0 || !body) {
-      console.error(`Get bucket read quota met error. Error code: ${code}`);
-      return null;
-    }
-    const { freeQuota, readQuota, consumedQuota } = body;
-    return {
-      freeQuota,
-      readQuota,
-      consumedQuota,
-    };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('get bucket read quota error', error);
-    return null;
-  }
 };
 
 export const getBucketFileList = async ({ bucketName }: any) => {
@@ -96,7 +73,8 @@ export const getBucketFileList = async ({ bucketName }: any) => {
     bucketName,
     endpoint,
   });
-
+  fileList.body = fileList.body?.GfSpListObjectsByBucketNameResponse;
+  forEach(fileList.body);
   return fileList;
 };
 
@@ -134,7 +112,7 @@ export const getGroupInfoByName = async (
   try {
     return await client.group.headGroup(groupName, groupOwner);
   } catch (e) {
-    return {};
+    return {} as any;
   }
 };
 
@@ -204,6 +182,7 @@ export const mirrorGroup = async (
     groupName,
     id,
     operator,
+    destChainId: BSC_CHAIN_ID,
   });
 };
 
@@ -217,7 +196,9 @@ export const getCollectionInfoByName = async (bucketName: string) => {
 
 export const searchKey = async (key: string) => {
   try {
-    return await client.sp.listGroup(key, `${DAPP_NAME}_`, {
+    return await client.sp.listGroups({
+      name: key,
+      prefix: `${DAPP_NAME}_`,
       sourceType: 'SOURCE_TYPE_ORIGIN',
       limit: 1000,
       offset: 0,

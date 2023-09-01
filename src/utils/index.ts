@@ -5,11 +5,7 @@ import Identicon from 'identicon.js';
 import sha265 from 'sha256';
 import { toast } from '@totejs/uikit';
 
-import axios, { AxiosResponse } from 'axios';
-import { IRawSPInfo } from './type';
-import { getSpOffChainData } from './off-chain-auth/utils';
-import { getDomain } from './getDomain';
-import { generateGetObjectOptions } from './generateGetObjectOptions';
+import { AxiosResponse } from 'axios';
 import { IReturnOffChainAuthKeyPairAndUpload } from '@bnb-chain/greenfield-js-sdk';
 import { getUtcZeroTimestamp } from './time';
 import { DAPP_NAME } from '../env';
@@ -178,60 +174,6 @@ export const contentTypeToExtension = (contentType = '', fileName?: string) => {
   }
 };
 
-export const downloadWithProgress = async ({
-  bucketName,
-  objectName,
-  primarySp,
-  payloadSize,
-  address,
-}: {
-  bucketName: string;
-  objectName: string;
-  primarySp: IRawSPInfo;
-  payloadSize: number;
-  address: string;
-}) => {
-  try {
-    const domain = getDomain();
-    const { seedString } = await getSpOffChainData({
-      address,
-      spAddress: primarySp.operatorAddress,
-    });
-    const uploadOptions = await generateGetObjectOptions({
-      bucketName,
-      objectName,
-      endpoint: primarySp.endpoint,
-      userAddress: address,
-      domain,
-      seedString,
-    });
-    const { url, headers } = uploadOptions;
-    const result = await axios
-      .get(url, {
-        onDownloadProgress: (progressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded / payloadSize) * 100,
-          );
-          console.log(progress);
-        },
-        headers: {
-          Authorization: headers.get('Authorization'),
-          'X-Gnfd-User-Address': headers.get('X-Gnfd-User-Address'),
-          'X-Gnfd-App-Domain': headers.get('X-Gnfd-App-Domain'),
-        },
-        responseType: 'blob',
-      })
-      .catch((e) => {
-        // toast.close(toastId);
-        throw e;
-      });
-    // toast.close(toastId);
-    return result;
-  } catch (error: any) {
-    throw error;
-  }
-};
-
 export const directlyDownload = (url: string) => {
   if (!url) {
     toast.error({
@@ -334,4 +276,26 @@ export const getUrlParam = (paraName: string) => {
 
 export const roundFun = (value: string | number, n: number) => {
   return Math.ceil(Number(value) * Math.pow(10, n)) / Math.pow(10, n);
+};
+
+export const humpToLine = (name: string) => {
+  return (
+    name.slice(0, 1).toLocaleLowerCase() +
+    name
+      .slice(1)
+      .replace(/([A-Z])/g, '_$1')
+      .toLowerCase()
+  );
+};
+
+export const forEach = (obj: any) => {
+  for (const str in obj) {
+    let item = obj[str];
+    if (item instanceof Object) {
+      item = forEach(item);
+    }
+    delete obj[str];
+    obj[humpToLine(str)] = item;
+  }
+  return obj;
 };

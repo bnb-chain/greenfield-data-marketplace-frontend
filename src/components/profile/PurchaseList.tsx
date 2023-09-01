@@ -12,8 +12,9 @@ import { useUserPurchased } from '../../hooks/useUserPurchased';
 import BN from 'bn.js';
 import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { OwnActionCom } from '../OwnActionCom';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { CollectionLogo } from '../svgIcon/CollectionLogo';
+import { useGlobal } from '../../hooks/useGlobal';
 
 const TotalVol = (props: any) => {
   const { groupId } = props;
@@ -27,21 +28,55 @@ const PurchaseList = () => {
   const pageSize = 10;
   const { list, loading, total } = useUserPurchased(page, pageSize);
   const { address } = useAccount();
+  const navigator = useNavigate();
+  const state = useGlobal();
+  const [p] = useSearchParams();
 
+  const breadInfo = {
+    name: 'My Purchase',
+    path: '/profile',
+  };
   const columns = [
     {
       header: 'Data',
       width: 200,
       cell: (data: any) => {
-        const { name, url, type } = data;
+        const { id, groupName, ownerAddress, url, type, oid, name } = data;
         return (
           <ImgContainer
             alignItems={'center'}
             justifyContent={'flex-start'}
             gap={6}
+            onClick={() => {
+              let from = '';
+              if (breadInfo) {
+                const list = state.globalState.breadList;
+                const item = {
+                  path: (breadInfo as any).path,
+                  name: (breadInfo as any).name,
+                  query: p.toString(),
+                };
+                state.globalDispatch({
+                  type: 'ADD_BREAD',
+                  item,
+                });
+
+                from = encodeURIComponent(JSON.stringify(list.concat([item])));
+              }
+              const _from = from ? `&from=${from}` : '';
+              if (groupName) {
+                navigator(
+                  `/resource?gid=${id}&gn=${groupName}&address=${ownerAddress}&type=collection&tab=dataList${_from}`,
+                );
+              } else {
+                navigator(
+                  `/resource?oid=${oid}&address=${ownerAddress}&type=collection&tab=dataList${_from}`,
+                );
+              }
+            }}
           >
             <ImgCon src={url || defaultImg(name, 40)}></ImgCon>
-            {trimLongStr(name)}
+            {trimLongStr(data.name)}
             {type === 'Collection' && (
               <CollectionLogo
                 style={{ width: '10px', height: '10px' }}
@@ -102,10 +137,7 @@ const PurchaseList = () => {
           <OwnActionCom
             data={data}
             address={address as string}
-            breadInfo={{
-              name: 'My Purchase',
-              path: '/profile',
-            }}
+            breadInfo={breadInfo}
           ></OwnActionCom>
         );
       },
