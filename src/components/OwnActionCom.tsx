@@ -85,7 +85,6 @@ export const OwnActionCom = (obj: IOwnActionCom) => {
         onClick={() => {
           let from = '';
           if (breadInfo) {
-            debugger;
             const list = state.globalState.breadList;
             const item = {
               path: (breadInfo as any).path,
