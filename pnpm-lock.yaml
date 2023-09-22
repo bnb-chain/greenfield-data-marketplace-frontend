@@ -5,8 +5,8 @@ dependencies:
     specifier: ^7.16.0
     version: 7.22.1
   '@bnb-chain/greenfield-js-sdk':
-    specifier: 0.2.4
-    version: 0.2.4
+    specifier: 0.2.5
+    version: 0.2.5
   '@dopex-io/web3-multicall':
     specifier: ^0.1.9
     version: 0.1.9(web3@1.10.0)
@@ -1777,19 +1777,19 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: false
 
-  /@bnb-chain/greenfield-cosmos-types@0.4.0-alpha.22:
-    resolution: {integrity: sha512-j1UQRaw1sHzq+6x+l2dH1zP0bYAYySfJBgGtxgByl5tCWoNxRxuEOZ0JWrmO9w0dZwgzCKaIsGRqFyjmMliP+A==}
+  /@bnb-chain/greenfield-cosmos-types@0.4.0-alpha.23:
+    resolution: {integrity: sha512-VAuk5CxTSbiOa8HvlEY/uf8zoTvgyRvQMwQs0S/7wjoloE0I7hSZXWPUEeFmypB1xZuggDtyCfizS2faL/NKeg==}
     dependencies:
       long: 4.0.0
       protobufjs: 6.11.4
     dev: false
 
-  /@bnb-chain/greenfield-js-sdk@0.2.4:
-    resolution: {integrity: sha512-bP6SpHXxAsvEa+yky6//TaL8q5qkKt7osCh0jSY0XXcxdIcGueYtpncjtRwyn+e/S8wZITS1ruGpF9rNw/NTBw==}
+  /@bnb-chain/greenfield-js-sdk@0.2.5:
+    resolution: {integrity: sha512-nEEcVRpcq9xKnHBIWD5ZJdwRRm8POxExXwKgA7+v2FwNmwKm5GOe+oBKgzd6eYyRcviFnpJ+IxdA7MfFIOjBwA==}
     engines: {npm: please use pnpm, yarn: please use pnpm}
     dependencies:
-      '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.22
-      '@bnb-chain/greenfield-zk-crypto': 0.0.2
+      '@bnb-chain/greenfield-cosmos-types': 0.4.0-alpha.23
+      '@bnb-chain/greenfield-zk-crypto': 0.0.3
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
       '@cosmjs/tendermint-rpc': 0.30.1
@@ -1816,8 +1816,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@bnb-chain/greenfield-zk-crypto@0.0.2:
-    resolution: {integrity: sha512-EGaj4MgVi8GsZt2YMye16cm1mh7UCYDzJuQ24CV9w8FVIPAYSosnFgfMHsU8ieogWyn4M7seoq5/Svi9WFxAHA==}
+  /@bnb-chain/greenfield-zk-crypto@0.0.3:
+    resolution: {integrity: sha512-HwrCp9BN0nGAK4z+wWp4yUUQhw1BrGHA/j39okN0IUZce6BPE++UW3ZrupPFFETdcjAEBZJqG11+etokRZRMIg==}
     dev: false
 
   /@coinbase/wallet-sdk@3.6.6:
