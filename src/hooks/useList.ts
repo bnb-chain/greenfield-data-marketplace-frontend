@@ -45,7 +45,6 @@ export const useList = (props: IList) => {
           members: [address as string],
           extra,
         });
-
         const mirrorGroupTx = await mirrorGroup(
           groupName,
           '0',
@@ -54,17 +53,11 @@ export const useList = (props: IList) => {
 
         let policyTx;
         const { name, bucketName, type } = parseGroupName(groupName);
-
         const statement: PermissionTypes.Statement = {
           effect: PermissionTypes.Effect.EFFECT_ALLOW,
           actions: [PermissionTypes.ActionType.ACTION_GET_OBJECT],
-          resources: [
-            GRNToString(
-              type === 'Data'
-                ? newObjectGRN(bucketName, name)
-                : newObjectGRN(bucketName, '*'),
-            ),
-          ],
+          resources:
+            type === 'Data' ? [] : [GRNToString(newObjectGRN(bucketName, '*'))],
         };
 
         const principal = {
@@ -144,7 +137,6 @@ export const useList = (props: IList) => {
           });
         },
       });
-
       const count = 60;
       const t = new Array(count).fill(1);
       let hasMirror = false;

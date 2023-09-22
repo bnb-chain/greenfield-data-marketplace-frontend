@@ -54,12 +54,12 @@ export const getRandomSp = async () => {
 };
 
 export const multiTx = async (list: any) => {
-  return await client.basic.multiTx(list);
+  return await client.txClient.multiTx(list);
 };
 
 export const getBucketList = async (address: string) => {
   const endpoint = await getRandomSp();
-  const bucketList = await client.bucket.getUserBuckets({
+  const bucketList = await client.bucket.listBuckets({
     address,
     endpoint,
   });
