@@ -34,10 +34,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 // import { useRevoke } from '../../hooks/useRevoke';
 // import { useHasRole } from '../../hooks/useHasRole';
-import LogoGroup from '../../images/logo-group.png';
+import LogoGroupTestnet from '../../images/logo-group.png';
+import LogoGroupMainnet from '../../images/logo-group.png';
 import { BSCLogo } from '../svgIcon/BSCLogo';
-import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
+import { BSC_CHAIN_ID, GF_CHAIN_ID, NETWORK } from '../../env';
 import Search from '../../components/Search';
+import { reportEvent } from '../../utils/ga';
 
 const CustomMenuButton = forwardRef(
   (props: { children: ReactNode }, ref: ForwardedRef<HTMLButtonElement>) => {
@@ -118,7 +120,7 @@ const Header = () => {
           onClick={() => {
             navigate('/');
           }}
-          src={LogoGroup}
+          src={NETWORK === 'Mainnet' ? LogoGroupMainnet : LogoGroupTestnet}
           alt="logo"
         />
         <Search width="380px" height="40px"></Search>
@@ -128,6 +130,7 @@ const Header = () => {
         <>
           <Button
             onClick={() => {
+              reportEvent({ name: 'dm.main.header.list_my_data.click' });
               if (!isConnecting && !isConnected) handleModalOpen();
               navigate('/profile?tab=collections');
             }}
@@ -140,6 +143,7 @@ const Header = () => {
           <Menu placement="bottom-end">
             <MenuButton
               onClick={() => {
+                reportEvent({ name: 'dm.main.header.switch_network.click' });
                 onToggle();
               }}
               as={CustomMenuButton}
@@ -174,6 +178,7 @@ const Header = () => {
           {!isConnected && !isConnecting ? (
             <StyledButton
               onClick={() => {
+                reportEvent({ name: 'dm.main.header.connect_wallet.click' });
                 handleModalOpen();
               }}
             >
@@ -218,6 +223,7 @@ const Header = () => {
                 </Address>
                 <MenuElement
                   onClick={async (e: React.MouseEvent<HTMLElement>) => {
+                    reportEvent({ name: 'dm.account.my_data.my_data.click' });
                     e.preventDefault();
                     navigate('/profile?tab=collections');
                   }}
@@ -227,6 +233,9 @@ const Header = () => {
                 </MenuElement>
                 <MenuElement
                   onClick={async (e: React.MouseEvent<HTMLElement>) => {
+                    reportEvent({
+                      name: 'dm.account.my_purchase.my_purchase.click',
+                    });
                     e.preventDefault();
                     navigate('/profile?tab=purchase');
                   }}
@@ -247,6 +256,9 @@ const Header = () => {
                         )} */}
                 <Disconnect
                   onClick={async () => {
+                    reportEvent({
+                      name: 'dm.account.disconnect.disconnect.click',
+                    });
                     await disconnect();
                   }}
                 >

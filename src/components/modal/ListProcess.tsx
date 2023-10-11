@@ -8,7 +8,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader } from '../Loader';
 import { batchUpdate } from '../../utils';
 import { useNetwork, useSwitchNetwork } from 'wagmi';
-import { BSC_CHAIN_ID, BSC_EXPLORER_URL, GF_EXPLORER_URL } from '../../env';
+import {
+  BSC_CHAIN_ID,
+  BSC_EXPLORER_URL,
+  GF_EXPLORER_URL,
+  NETWORK,
+} from '../../env';
 import { useList, IList } from '../../hooks/useList';
 import { useApprove } from '../../hooks/useApprove';
 import { useHasRole } from '../../hooks/useHasRole';
@@ -168,7 +173,7 @@ export const ListProcess = (props: ListProcessProps) => {
                 switchNetwork?.(BSC_CHAIN_ID);
               }}
             >
-              Switch to BSC Testnet Network
+              Switch to BSC {NETWORK} Network
             </Button>
           )}
         {step == 2 &&
@@ -211,7 +216,7 @@ export const ListProcess = (props: ListProcessProps) => {
                 }
               }}
             >
-              List to BSC Testnet
+              List to BSC {NETWORK}
             </Button>
           )}
         {step == 1 &&

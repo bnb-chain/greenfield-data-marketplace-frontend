@@ -5,6 +5,7 @@ import { Box } from '@totejs/uikit';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import AllList from './All';
 import TrendingList from './Trending';
+import { reportEvent } from '../../utils/ga';
 
 enum Type {
   All = 'all',
@@ -28,6 +29,12 @@ const HomeList = () => {
   const navigator = useNavigate();
   const currentTab = tab ? tab : Type.Trending;
   const handleTabChange = useCallback((tab: any) => {
+    reportEvent({
+      name:
+        tab === 'Trending'
+          ? 'dm.main.body.trending.click'
+          : 'dm.main.body.all.click',
+    });
     navigator(`/?tab=${tab}`);
   }, []);
   return (

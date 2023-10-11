@@ -5,6 +5,7 @@ import { OwnActionCom } from './OwnActionCom';
 import styled from '@emotion/styled';
 import { Button, Flex } from '@totejs/uikit';
 import { useWalletModal } from '../hooks/useWalletModal';
+import { reportEvent } from '../utils/ga';
 
 interface IActionCom {
   data: {
@@ -14,9 +15,10 @@ interface IActionCom {
     type: string;
   };
   address: string;
+  from?: string;
 }
 export const ActionCom = (obj: IActionCom) => {
-  const { data, address } = obj;
+  const { data, address, from } = obj;
   const { id, groupName, ownerAddress, type } = data;
   const { isConnected, isConnecting } = useAccount();
 
@@ -30,6 +32,8 @@ export const ActionCom = (obj: IActionCom) => {
         <Button
           size={'sm'}
           onClick={async () => {
+            if (from === 'home')
+              reportEvent({ name: 'dm.main.list.buy.click' });
             modalData.modalDispatch({
               type: 'OPEN_BUY',
               buyData: data,

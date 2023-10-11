@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
 import NoDataLogo from '../../images/no_data_logo.png';
 import { Button, Flex } from '@totejs/uikit';
-import { DCELLAR_URL } from '../../env';
+import { DCELLAR_URL, NETWORK } from '../../env';
 const CollNoData = () => {
   return (
     <Container alignItems={'center'} justifyContent={'center'}>
       <Content gap={20} flexDirection={'column'} alignItems={'center'}>
         <img src={NoDataLogo} alt="" />
         <Title>
-          You don’t have any data on Greenfield Testnet. Upload your data on
+          You don’t have any data on Greenfield {NETWORK}. Upload your data on
           DCellar first.👏
         </Title>
         <MyButton

@@ -7,6 +7,7 @@ import CollectionList from './CollectionList';
 import PurchaseList from './PurchaseList';
 import OtherListedList from './OtherListedList';
 import { DCELLAR_URL } from '../../env';
+import { reportEvent } from '../../utils/ga';
 
 enum Type {
   Collections = 'collections',
@@ -49,6 +50,10 @@ const ProfileList = (props: IProfileList) => {
 
   const currentTab = tab ? tab : Type.Collections;
   const handleTabChange = useCallback((tab: any) => {
+    if (tab === 'collections')
+      reportEvent({ name: 'dm.profile.my_data.my_data.click' });
+    if (tab === 'purchase')
+      reportEvent({ name: 'dm.profile.my_purchase.my_purchase.click' });
     navigator(`/profile?tab=${tab}`);
   }, []);
 
@@ -65,6 +70,7 @@ const ProfileList = (props: IProfileList) => {
         {self && showButton && (
           <MyButton
             onClick={() => {
+              reportEvent({ name: 'dm.profile.upload.upload.click' });
               window.open(`${DCELLAR_URL}`);
             }}
             size={'sm'}

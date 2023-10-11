@@ -16,6 +16,7 @@ import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useGlobal } from '../../hooks/useGlobal';
 import { CollectionLogo } from '../svgIcon/CollectionLogo';
 import { ActionCom } from '../ActionCom';
+import { reportEvent } from '../../utils/ga';
 
 interface ITotalVol {
   id: string;
@@ -30,7 +31,6 @@ const AllList = () => {
   const navigator = useNavigate();
   const { address } = useAccount();
   const { list, loading, total } = useGetListed(address, page, 10);
-
   const state = useGlobal();
 
   const columns = [
@@ -52,6 +52,7 @@ const AllList = () => {
             justifyContent={'flex-start'}
             gap={6}
             onClick={() => {
+              reportEvent({ name: 'dm.main.list.item_name.click' });
               const item = {
                 path: '/',
                 name: 'Data MarketPlace',
@@ -132,7 +133,13 @@ const AllList = () => {
     {
       header: 'Action',
       cell: (data: any) => {
-        return <ActionCom data={data} address={address as string}></ActionCom>;
+        return (
+          <ActionCom
+            data={data}
+            address={address as string}
+            from="home"
+          ></ActionCom>
+        );
       },
     },
   ];

@@ -35,6 +35,7 @@ import { NoData } from '../components/NoData';
 import { DCELLAR_URL, GF_EXPLORER_URL } from '../env';
 import { useWalletModal } from '../hooks/useWalletModal';
 import { useCollectionItems } from '../hooks/useCollectionItems';
+import { reportEvent } from '../utils/ga';
 
 enum Type {
   Description = 'description',
@@ -86,7 +87,7 @@ const Resource = () => {
     bucketListed,
   } = baseInfo;
   const { salesVolume } = useSalesVolume(groupId);
-
+  console.log(baseInfo);
   const { status } = useStatus(
     bGroupName || gName,
     ownerAddress,
@@ -243,6 +244,7 @@ const Resource = () => {
           }}
           onClick={() => {
             if (isOwner && listed) {
+              reportEvent({ name: 'dm.detail.overview.edit.click' });
               setOpen(true);
             }
           }}
@@ -269,6 +271,9 @@ const Resource = () => {
               onClick={() => {
                 const o = resourceType == '1' ? bucketInfo : objectInfo;
                 const { id } = o;
+                reportEvent({
+                  name: 'dm.detail.overview.view_in_explorer.click',
+                });
                 window.open(
                   `${GF_EXPLORER_URL}${
                     resourceType == '1' ? 'bucket' : 'object'
@@ -321,6 +326,7 @@ const Resource = () => {
               <Button
                 size={'sm'}
                 onClick={async () => {
+                  reportEvent({ name: 'dm.detail.overview.list.click' });
                   const initInfo = {
                     bucket_name: bucketName,
                     object_name: bucketName === name ? '' : name,
@@ -340,6 +346,7 @@ const Resource = () => {
               <Button
                 size={'sm'}
                 onClick={() => {
+                  reportEvent({ name: 'dm.detail.overview.buy.click' });
                   if (!isConnected && !isConnecting) {
                     handleModalOpen();
                   } else {
@@ -357,6 +364,9 @@ const Resource = () => {
               <Button
                 size={'sm'}
                 onClick={() => {
+                  reportEvent({
+                    name: 'dm.detail.overview.view_in_dcellar.click',
+                  });
                   window.open(`${DCELLAR_URL}buckets/${bucketName}`);
                 }}
                 variant="ghost"
@@ -395,6 +405,7 @@ const Resource = () => {
         <EditModal
           isOpen={open}
           handleOpen={() => {
+            reportEvent({ name: 'dm.detail.overview.edit.click' });
             setOpen(false);
           }}
           detail={{

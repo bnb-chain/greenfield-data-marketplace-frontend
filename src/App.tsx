@@ -5,7 +5,7 @@ import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 // import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { ThemeProvider } from '@totejs/uikit';
-import { bscTestnet } from 'wagmi/chains';
+import { bscTestnet, bsc } from 'wagmi/chains';
 import Layout from './components/layout/Index';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
@@ -66,7 +66,7 @@ const gfChain: Chain = {
       http: [env.GF_RPC_URL],
     },
   },
-  name: 'Greenfield Testnet',
+  name: `Greenfield ${env.NETWORK}`,
   nativeCurrency: {
     name: 'tBNB',
     symbol: 'tBNB',
@@ -75,7 +75,7 @@ const gfChain: Chain = {
 };
 
 const { chains, provider } = configureChains(
-  [bscTestnet, gfChain],
+  [env.NETWORK === 'Mainnet' ? bsc : bscTestnet, gfChain],
   [publicProvider()],
 );
 

@@ -598,6 +598,7 @@ module.exports = function (webpackEnv) {
             inject:
               isEnvProduction && !shouldInlineRuntimeChunk ? true : 'body',
             template: paths.appHtml,
+            gTag: process.env.G_TAG,
           },
           isEnvProduction
             ? {

@@ -15,6 +15,7 @@ import { useGlobal } from '../../hooks/useGlobal';
 import { CollectionLogo } from '../svgIcon/CollectionLogo';
 import { useAccount } from 'wagmi';
 import { ActionCom } from '../ActionCom';
+import { reportEvent } from '../../utils/ga';
 
 const TrendingList = () => {
   const navigator = useNavigate();
@@ -51,6 +52,7 @@ const TrendingList = () => {
             justifyContent={'flex-start'}
             gap={6}
             onClick={() => {
+              reportEvent({ name: 'dm.main.list.item_name.click' });
               const item = {
                 path: '/',
                 name: 'Data MarketPlace',
@@ -123,7 +125,13 @@ const TrendingList = () => {
     {
       header: 'Action',
       cell: (data: any) => {
-        return <ActionCom data={data} address={address as string}></ActionCom>;
+        return (
+          <ActionCom
+            data={data}
+            from="home"
+            address={address as string}
+          ></ActionCom>
+        );
       },
     },
   ];

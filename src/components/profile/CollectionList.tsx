@@ -19,6 +19,7 @@ import { BN } from 'bn.js';
 import { useGlobal } from '../../hooks/useGlobal';
 import CollNoData from './CollNoData';
 import { Dispatch, useMemo } from 'react';
+import { reportEvent } from '../../utils/ga';
 
 const PriceCon = (props: { groupId: string }) => {
   const { groupId } = props;
@@ -142,6 +143,7 @@ const CollectionList = (props: ICollectionList) => {
               size={'sm'}
               onClick={async () => {
                 if (!listed) {
+                  reportEvent({ name: 'dm.profile.list.list.click' });
                   await switchNetwork?.(GF_CHAIN_ID);
                   modalData.modalDispatch({
                     type: 'OPEN_LIST',

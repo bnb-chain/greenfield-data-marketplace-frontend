@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import HomeList from '../components/home/Index';
-import { Flex } from '@totejs/uikit';
+import { Box, Flex } from '@totejs/uikit';
 import Bg from '../images/bg.png';
 import GithubIcon from '../components/svgIcon/GithubIcon';
 import { DocIcon, FullTeamIcon, LinkArrowIcon } from '@totejs/icons';
 import DiscordIcon from '../components/svgIcon/DiscordIcon';
 import BSCIcon from '../components/svgIcon/BSCIcon';
+import { reportEvent } from '../utils/ga';
 
 const Home = () => {
   return (
@@ -19,9 +20,14 @@ const Home = () => {
           <SubTitle>
             A Best Practice of BNB Greenfield Cross Chain Programmable Ability.
           </SubTitle>
-          <a
-            href="https://github.com/bnb-chain/greenfield-data-marketplace-frontend"
-            target="_blank"
+          <Box
+            onClick={() => {
+              reportEvent({ name: 'dm.main.banner.build_my_market.click' });
+              window.open(
+                'https://github.com/bnb-chain/greenfield-data-marketplace-frontend',
+                '_blank',
+              );
+            }}
           >
             <GithubCon
               gap={12}
@@ -32,7 +38,7 @@ const Home = () => {
               BUILD MY MARKETPLACE
               <LinkArrowIcon w={18} h={18} className="arrow"></LinkArrowIcon>
             </GithubCon>
-          </a>
+          </Box>
         </Info>
       </BannerInfo>
       <HomeList></HomeList>
@@ -85,44 +91,69 @@ const Home = () => {
           </CardSubTitle>
         </TitleCon>
         <CardCon gap={18}>
-          <a href="https://greenfield.bnbchain.org/en" target="_blank">
+          <Box
+            onClick={() => {
+              reportEvent({ name: 'dm.main.body.gnfd_website.click' });
+              window.open('https://greenfield.bnbchain.org/en', '_blank');
+            }}
+          >
             <CardItem alignItems={'center'} gap={16} flexDirection={'column'}>
               <BSCIcon w={32} h={32} className="icon"></BSCIcon>
               <CardItemTitle className="title">
                 BNB Greenfield<br></br>Website
               </CardItemTitle>
             </CardItem>
-          </a>
-          <a
-            href="https://docs.bnbchain.org/greenfield-docs/docs/guide/home"
-            target="_blank"
+          </Box>
+          <Box
+            onClick={() => {
+              reportEvent({ name: 'dm.main.body.gnfd_doc.click' });
+              window.open(
+                'https://docs.bnbchain.org/greenfield-docs/docs/guide/home',
+                '_blank',
+              );
+            }}
           >
             <CardItem alignItems={'center'} gap={16} flexDirection={'column'}>
               <DocIcon w={32} h={32} className="icon"></DocIcon>
               <CardItemTitle className="title">Documentations</CardItemTitle>
             </CardItem>
-          </a>
-          <a
-            href="https://docs.bnbchain.org/greenfield-docs/docs/guide/home"
-            target="_blank"
+          </Box>
+          <Box
+            onClick={() => {
+              reportEvent({ name: 'dm.main.body.gnfd_github.click' });
+              window.open(
+                'https://docs.bnbchain.org/greenfield-docs/docs/guide/home',
+                '_blank',
+              );
+            }}
           >
             <CardItem alignItems={'center'} gap={16} flexDirection={'column'}>
               <GithubIcon w={26} h={26} className="icon"></GithubIcon>
               <CardItemTitle className="title">Github</CardItemTitle>
             </CardItem>
-          </a>
-          <a href="https://forum.bnbchain.org/" target="_blank">
+          </Box>
+          <Box
+            onClick={() => {
+              reportEvent({ name: 'dm.main.body.gnfd_forum.click' });
+              window.open('https://forum.bnbchain.org/', '_blank');
+            }}
+          >
             <CardItem alignItems={'center'} gap={16} flexDirection={'column'}>
               <FullTeamIcon w={32} h={32} className="icon"></FullTeamIcon>
               <CardItemTitle className="title">Forum</CardItemTitle>
             </CardItem>
-          </a>
-          <a href="https://discord.gg/bnbchain" target="_blank">
+          </Box>
+          <Box
+            onClick={() => {
+              reportEvent({ name: 'dm.main.body.gnfd_discord.click' });
+              window.open('https://discord.gg/bnbchain', '_blank');
+            }}
+          >
             <CardItem alignItems={'center'} gap={16} flexDirection={'column'}>
               <DiscordIcon w={32} h={32} className="icon"></DiscordIcon>
               <CardItemTitle className="title">Discord</CardItemTitle>
             </CardItem>
-          </a>
+          </Box>
         </CardCon>
       </Cards>
     </Container>
