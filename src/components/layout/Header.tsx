@@ -35,7 +35,7 @@ import { useNavigate } from 'react-router-dom';
 // import { useRevoke } from '../../hooks/useRevoke';
 // import { useHasRole } from '../../hooks/useHasRole';
 import LogoGroupTestnet from '../../images/logo-group.png';
-import LogoGroupMainnet from '../../images/logo-group.png';
+import LogoGroupMainnet from '../../images/logo-group-mainnet.png';
 import { BSCLogo } from '../svgIcon/BSCLogo';
 import { BSC_CHAIN_ID, GF_CHAIN_ID, NETWORK } from '../../env';
 import Search from '../../components/Search';
