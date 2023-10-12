@@ -13,7 +13,7 @@ import {
 
 import { useCollectionList } from '../../hooks/useCollectionList';
 import { useModal } from '../../hooks/useModal';
-import { useSalesVolume } from '../../hooks/useSalesVolume';
+// import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useListedStatus } from '../../hooks/useListedStatus';
 import { BN } from 'bn.js';
 import { useGlobal } from '../../hooks/useGlobal';
@@ -30,12 +30,6 @@ const PriceCon = (props: { groupId: string }) => {
     balance = divide10Exp(new BN(price, 10), 18) + ' BNB';
   }
   return <div>{balance}</div>;
-};
-
-const TotalVol = (props: { groupId: string }) => {
-  const { groupId } = props;
-  const { salesVolume } = useSalesVolume(groupId);
-  return <div>{Number(salesVolume) || '-'}</div>;
 };
 
 interface ICollectionList {
@@ -129,8 +123,8 @@ const CollectionList = (props: ICollectionList) => {
       header: 'Total Vol',
       width: 120,
       cell: (data: any) => {
-        const { groupId } = data;
-        return <TotalVol groupId={groupId}></TotalVol>;
+        const { totalVol } = data;
+        return <div>{totalVol || 0}</div>;
       },
     },
     {

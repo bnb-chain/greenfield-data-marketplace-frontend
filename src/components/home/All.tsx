@@ -12,20 +12,11 @@ import {
 import { useGetListed } from '../../hooks/useGetListed';
 import BN from 'bn.js';
 import { useAccount } from 'wagmi';
-import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { useGlobal } from '../../hooks/useGlobal';
 import { CollectionLogo } from '../svgIcon/CollectionLogo';
 import { ActionCom } from '../ActionCom';
 import { reportEvent } from '../../utils/ga';
 
-interface ITotalVol {
-  id: string;
-}
-const TotalVol = (props: ITotalVol) => {
-  const { id } = props;
-  const { salesVolume } = useSalesVolume(id);
-  return <div>{salesVolume}</div>;
-};
 const AllList = () => {
   const { handlePageChange, page } = usePagination();
   const navigator = useNavigate();
@@ -114,8 +105,8 @@ const AllList = () => {
       header: 'Total Vol',
       width: 120,
       cell: (data: any) => {
-        const { id } = data;
-        return <TotalVol id={id}></TotalVol>;
+        const { totalVol } = data;
+        return <div>{totalVol}</div>;
       },
     },
     {

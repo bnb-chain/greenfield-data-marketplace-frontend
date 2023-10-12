@@ -10,18 +10,18 @@ import {
 } from '../../utils';
 import { useUserListed } from '../../hooks/useUserListed';
 import BN from 'bn.js';
-import { useSalesVolume } from '../../hooks/useSalesVolume';
+// import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { CollectionLogo } from '../svgIcon/CollectionLogo';
 import { ActionCom } from '../ActionCom';
 
-interface ITotalVol {
-  id: string;
-}
-const TotalVol = (props: ITotalVol) => {
-  const { id } = props;
-  const { salesVolume } = useSalesVolume(id);
-  return <div>{salesVolume}</div>;
-};
+// interface ITotalVol {
+//   id: string;
+// }
+// const TotalVol = (props: ITotalVol) => {
+//   const { id } = props;
+//   const { salesVolume } = useSalesVolume(id);
+//   return <div>{salesVolume}</div>;
+// };
 
 interface IOtherListedList {
   realAddress: string;
@@ -93,8 +93,8 @@ const OtherListedList = (props: IOtherListedList) => {
       header: 'Total Vol',
       width: 120,
       cell: (data: any) => {
-        const { id } = data;
-        return <TotalVol id={id}></TotalVol>;
+        const { totalVol } = data;
+        return <div>{totalVol}</div>;
       },
     },
     {

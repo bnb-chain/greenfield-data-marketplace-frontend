@@ -10,17 +10,17 @@ import {
 } from '../../utils';
 import { useUserPurchased } from '../../hooks/useUserPurchased';
 import BN from 'bn.js';
-import { useSalesVolume } from '../../hooks/useSalesVolume';
+// import { useSalesVolume } from '../../hooks/useSalesVolume';
 import { OwnActionCom } from '../OwnActionCom';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { CollectionLogo } from '../svgIcon/CollectionLogo';
 import { useGlobal } from '../../hooks/useGlobal';
 
-const TotalVol = (props: any) => {
-  const { groupId } = props;
-  const { salesVolume } = useSalesVolume(groupId);
-  return <div>{Number(salesVolume) || '-'}</div>;
-};
+// const TotalVol = (props: any) => {
+//   const { groupId } = props;
+//   const { salesVolume } = useSalesVolume(groupId);
+//   return <div>{Number(salesVolume) || '-'}</div>;
+// };
 
 const PurchaseList = () => {
   const { handlePageChange, page } = usePagination();
@@ -114,8 +114,8 @@ const PurchaseList = () => {
       header: 'Total Vol',
       width: 120,
       cell: (data: any) => {
-        const { id } = data;
-        return <TotalVol groupId={id}></TotalVol>;
+        const { totalVol } = data;
+        return <div>{totalVol}</div>;
       },
     },
     {

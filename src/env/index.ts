@@ -23,6 +23,7 @@ const {
 
   REACT_APP_DAPP_NAME,
   REACT_APP_NETWORK,
+  REACT_APP_API_DOMAIN,
 } = process.env;
 
 export const GF_CHAIN_ID = Number(REACT_APP_GF_CHAIN_ID);
@@ -60,3 +61,5 @@ export const ERC721_TRANSFER_CONTRACT_ADDRESS =
 export const DAPP_NAME = REACT_APP_DAPP_NAME;
 
 export const NETWORK = REACT_APP_NETWORK;
+
+export const API_DOMAIN = REACT_APP_API_DOMAIN;

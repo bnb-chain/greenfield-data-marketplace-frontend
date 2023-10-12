@@ -87,7 +87,6 @@ const Resource = () => {
     bucketListed,
   } = baseInfo;
   const { salesVolume } = useSalesVolume(groupId);
-  console.log(baseInfo);
   const { status } = useStatus(
     bGroupName || gName,
     ownerAddress,
