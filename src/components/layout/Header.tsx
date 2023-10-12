@@ -289,8 +289,8 @@ const HeaderFlex = styled(Flex)`
 `;
 const LeftCon = styled(Flex)`
   img {
-    width: 268px;
-    height: 48px;
+    width: 224px;
+    height: 40px;
     cursor: pointer;
   }
 `;
