@@ -81,13 +81,15 @@ export const useUserPurchased = (page: number, pageSize = 10) => {
       sort: 'CREATION_DESC',
     })
       .then(async (result: any) => {
-        const { items, total } = result;
-        if (Array.isArray(items)) {
+        const { purchases, total } = result;
+        if (Array.isArray(purchases)) {
           let result: any = [];
-          result = items
-            .map((item: any) => {
-              if (!Object.keys(item).length) return false;
+          result = purchases
+            .map((data: any) => {
+              if (!Object.keys(data).length) return false;
+              const { item } = data;
               const { type, name } = parseGroupName(item.groupName);
+
               return {
                 ...item,
                 type,
