@@ -34,10 +34,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 // import { useRevoke } from '../../hooks/useRevoke';
 // import { useHasRole } from '../../hooks/useHasRole';
-import LogoGroupTestnet from '../../images/logo-group.png';
-import LogoGroupMainnet from '../../images/logo-group.png';
+import LogoGroup from '../../images/logo-group.png';
 import { BSCLogo } from '../svgIcon/BSCLogo';
-import { BSC_CHAIN_ID, GF_CHAIN_ID, NETWORK } from '../../env';
+import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
 import Search from '../../components/Search';
 import { reportEvent } from '../../utils/ga';
 
@@ -120,7 +119,7 @@ const Header = () => {
           onClick={() => {
             navigate('/');
           }}
-          src={NETWORK === 'Mainnet' ? LogoGroupMainnet : LogoGroupTestnet}
+          src={LogoGroup}
           alt="logo"
         />
         <Search width="380px" height="40px"></Search>
@@ -290,8 +289,8 @@ const HeaderFlex = styled(Flex)`
 `;
 const LeftCon = styled(Flex)`
   img {
-    width: 268px;
-    height: 56px;
+    width: 224px;
+    height: 40px;
     cursor: pointer;
   }
 `;
