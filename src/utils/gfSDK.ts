@@ -196,13 +196,16 @@ export const getCollectionInfoByName = async (bucketName: string) => {
 
 export const searchKey = async (key: string) => {
   try {
-    return await client.sp.listGroups({
+    const res = await client.sp.listGroups({
       name: key,
       prefix: `${DAPP_NAME}_`,
       sourceType: 'SOURCE_TYPE_ORIGIN',
       limit: 1000,
       offset: 0,
     });
+    const groups = res?.body?.GfSpGetGroupListResponse?.Groups || [];
+    forEach(groups);
+    return { groups };
   } catch (e) {
     return [];
   }

@@ -7,9 +7,10 @@ import ScrollSelect from './ScrollSelect';
 import { useDebounce } from '../hooks/useDebounce';
 import { searchKey } from '../utils/gfSDK';
 import { parseGroupName } from '../utils';
-import { multiCallFun } from '../base/contract/multiCall';
-import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
+// import { multiCallFun } from '../base/contract/multiCall';
+// import { MarketPlaceContract } from '../base/contract/marketPlaceContract';
 import Web3 from 'web3';
+import { getItemDetail } from '../utils/http';
 
 const Group = (props: any) => {
   const {
@@ -64,18 +65,27 @@ const Search = (props: ISearch) => {
           }
         });
         if (groups.length) {
-          const res = await multiCallFun(
+          const res = await Promise.all(
             groups.map((item: any) => {
               const {
                 group: { id },
               } = item;
-              return MarketPlaceContract(false).methods.prices(id);
+              return getItemDetail(id);
             }),
           );
-          const list: any = res
+          // const res = await multiCallFun(
+          //   groups.map((item: any) => {
+          //     const {
+          //       group: { id },
+          //     } = item;
+          //     return MarketPlaceContract(false).methods.prices(id);
+          //   }),
+          // );
+          const list: any = groups
             .map((item: string, index: number) => {
-              if (item.length > 1) {
-                return groups[index];
+              const { price } = res[index];
+              if (price.length > 1) {
+                return Object.assign(item, { price });
               }
               return false;
             })
