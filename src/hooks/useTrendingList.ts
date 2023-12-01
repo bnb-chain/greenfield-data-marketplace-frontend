@@ -37,7 +37,6 @@ export const useTrendingList = () => {
               } = item;
               const [owner, , , , extra] = attributes;
               const { type, name } = parseGroupName(groupName);
-
               let price;
               let url;
               try {

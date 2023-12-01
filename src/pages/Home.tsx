@@ -7,6 +7,7 @@ import { DocIcon, FullTeamIcon, LinkArrowIcon } from '@totejs/icons';
 import DiscordIcon from '../components/svgIcon/DiscordIcon';
 import BSCIcon from '../components/svgIcon/BSCIcon';
 import { reportEvent } from '../utils/ga';
+import { SECOND_CHAIN_NAME } from '../env';
 
 const Home = () => {
   return (
@@ -63,7 +64,8 @@ const Home = () => {
           <WorkTitle>Fully EVM Compatible</WorkTitle>
           <WorkDesc>
             Data-marketplace has implemented smart contracts using Solidity,
-            which are deployed on the BSC network. Users/developers on any BSC
+            which are deployed on the {SECOND_CHAIN_NAME} network.
+            Users/developers on any {SECOND_CHAIN_NAME}
             don't even need to be aware of Greenfield's existence, and don't
             need to hold any tokens on Greenfield in order to purchase and
             access data.
@@ -72,8 +74,9 @@ const Home = () => {
         <WorkItem flexDirection={'column'} gap={20}>
           <WorkTitle>Ultimate Fast Trading Experience</WorkTitle>
           <WorkDesc>
-            Thanks to the fast blocking time of Greenfield and BSC, users can
-            complete data listing and trading in seconds.
+            Thanks to the fast blocking time of Greenfield and{' '}
+            {SECOND_CHAIN_NAME}, users can complete data listing and trading in
+            seconds.
           </WorkDesc>
         </WorkItem>
       </WorkInfo>

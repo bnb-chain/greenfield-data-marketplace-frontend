@@ -17,6 +17,7 @@ import {
   INITIATE_LIST_FEE,
   LIST_ESTIMATE_FEE_ON_BSC,
   LIST_FEE_ON_GF,
+  SECOND_CHAIN_NAME,
 } from '../../env';
 import { useChainBalance } from '../../hooks/useChainBalance';
 import { useList } from '../../hooks/useList';
@@ -240,19 +241,20 @@ export const ListModal = (props: ListModalProps) => {
             <LineBox h={0.1}></LineBox>
             <Item alignItems={'center'} justifyContent={'space-between'}>
               <ItemSubTittle>
-                Estimate gas fee on BSC{' '}
+                Estimate gas fee on {SECOND_CHAIN_NAME}{' '}
                 <ColoredWarningIcon size="sm" color="#AEB4BC" />
               </ItemSubTittle>
               <BalanceCon flexDirection={'column'} alignItems={'flex-end'}>
                 <Fee>{LIST_ESTIMATE_FEE_ON_BSC} BNB</Fee>
                 {BSC_FEE_SUFF ? (
                   <Balance>
-                    BSC Balance: {roundFun(BscBalanceVal, 8)} BNB{' '}
+                    {SECOND_CHAIN_NAME} Balance: {roundFun(BscBalanceVal, 8)}{' '}
+                    BNB{' '}
                   </Balance>
                 ) : (
                   <BalanceWarn>
                     <ColoredWarningIcon size="sm" color="#ff6058" />{' '}
-                    Insufficient BSC Balance
+                    Insufficient {SECOND_CHAIN_NAME} Balance
                   </BalanceWarn>
                 )}
               </BalanceCon>

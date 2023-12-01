@@ -74,8 +74,27 @@ const gfChain: Chain = {
   },
 };
 
+const otherChain: Chain = {
+  id: env.SECOND_CHAIN_ID,
+  network: `${env.NETWORK}`,
+  rpcUrls: {
+    default: {
+      http: [env.SECOND_RPC_URL],
+    },
+    public: {
+      http: [env.SECOND_RPC_URL],
+    },
+  },
+  name: `${env.SECOND_CHAIN_NAME} ${env.NETWORK}`,
+  nativeCurrency: {
+    name: 'tBNB',
+    symbol: 'tBNB',
+    decimals: 18,
+  },
+};
+
 const { chains, provider } = configureChains(
-  [env.NETWORK === 'Mainnet' ? bsc : bscTestnet, gfChain],
+  [otherChain, gfChain],
   [publicProvider()],
 );
 

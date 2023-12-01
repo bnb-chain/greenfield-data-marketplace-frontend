@@ -13,6 +13,7 @@ import {
   BSC_EXPLORER_URL,
   GF_EXPLORER_URL,
   NETWORK,
+  SECOND_CHAIN_NAME,
 } from '../../env';
 import { useList, IList } from '../../hooks/useList';
 import { useApprove } from '../../hooks/useApprove';
@@ -63,7 +64,11 @@ export const ListProcess = (props: ListProcessProps) => {
     if (stateModal.modalState.initListStatus) {
       setStep(hasRole ? 2 : 1);
       setLoading(false);
-      setTitle(hasRole ? 'Finalize on BSC' : 'Approve on BSC');
+      setTitle(
+        hasRole
+          ? `Finalize on ${SECOND_CHAIN_NAME}`
+          : `Approve on ${SECOND_CHAIN_NAME}`,
+      );
       setStatus(1);
     }
   }, [stateModal.modalState.initListStatus]);
@@ -125,7 +130,7 @@ export const ListProcess = (props: ListProcessProps) => {
             <>
               <ProgressStep>
                 <ProgressName active={step && step >= 2 ? true : false}>
-                  Approve on BSC
+                  Approve on {SECOND_CHAIN_NAME}
                 </ProgressName>
                 {step && step >= 2 ? (
                   <ProgressSuccessIcon width={32} height={32} />
@@ -144,7 +149,7 @@ export const ListProcess = (props: ListProcessProps) => {
               active={step && step >= 3 ? true : false}
               alignItems={'center'}
             >
-              Finalize on BSC
+              Finalize on {SECOND_CHAIN_NAME}
               {status == 2 && bscHash && (
                 <SendIcon
                   cursor={'pointer'}
@@ -173,7 +178,7 @@ export const ListProcess = (props: ListProcessProps) => {
                 switchNetwork?.(BSC_CHAIN_ID);
               }}
             >
-              Switch to BSC {NETWORK} Network
+              Switch to {SECOND_CHAIN_NAME} {NETWORK} Network
             </Button>
           )}
         {step == 2 &&
@@ -216,7 +221,7 @@ export const ListProcess = (props: ListProcessProps) => {
                 }
               }}
             >
-              List to BSC {NETWORK}
+              List to {SECOND_CHAIN_NAME} {NETWORK}
             </Button>
           )}
         {step == 1 &&
@@ -231,7 +236,7 @@ export const ListProcess = (props: ListProcessProps) => {
                 await Approve();
                 setHasRole(true);
                 setLoading(false);
-                setTitle('Finalize on BSC');
+                setTitle(`Finalize on ${SECOND_CHAIN_NAME}`);
                 setStep(2);
               }}
             >

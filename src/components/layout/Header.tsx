@@ -36,7 +36,7 @@ import { useNavigate } from 'react-router-dom';
 // import { useHasRole } from '../../hooks/useHasRole';
 import LogoGroup from '../../images/logo-group.png';
 import { BSCLogo } from '../svgIcon/BSCLogo';
-import { BSC_CHAIN_ID, GF_CHAIN_ID } from '../../env';
+import { BSC_CHAIN_ID, GF_CHAIN_ID, SECOND_CHAIN_NAME } from '../../env';
 import Search from '../../components/Search';
 import { reportEvent } from '../../utils/ga';
 
@@ -148,7 +148,7 @@ const Header = () => {
               as={CustomMenuButton}
             >
               {chain && chain.id === BSC_CHAIN_ID
-                ? 'BNB Smart Chain'
+                ? SECOND_CHAIN_NAME
                 : 'BNB Greenfield'}
             </MenuButton>
             <MenuList w={206}>
@@ -159,7 +159,7 @@ const Header = () => {
                   onClose();
                 }}
               >
-                BNB Smart Chain
+                {SECOND_CHAIN_NAME}
               </MenuItem>
               <MenuItem
                 icon={<BSCLogo />}

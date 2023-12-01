@@ -16,7 +16,7 @@ import { useChainBalance } from '../../../hooks/useChainBalance';
 import { BN } from 'bn.js';
 import { useBuy } from '../../../hooks/useBuy';
 import { useNetwork, useSwitchNetwork } from 'wagmi';
-import { BSC_CHAIN_ID, NETWORK } from '../../../env';
+import { BSC_CHAIN_ID, NETWORK, SECOND_CHAIN_NAME } from '../../../env';
 
 export const BuyModal = (props: any) => {
   const modalData = useModal();
@@ -121,7 +121,9 @@ export const BuyModal = (props: any) => {
             <ItemVal> {TotalPrice} BNB </ItemVal>
           </ItemCon>
           <ItemCon alignItems={'flex-end'} justifyContent={'space-between'}>
-            <ItemTitle>Balance on BSC {NETWORK}</ItemTitle>
+            <ItemTitle>
+              Balance on {SECOND_CHAIN_NAME} {NETWORK}
+            </ItemTitle>
             <ItemVal> {roundFun(BscBalanceVal, 4)} BNB </ItemVal>
           </ItemCon>
         </BuyInfo>
@@ -147,7 +149,7 @@ export const BuyModal = (props: any) => {
               switchNetwork?.(BSC_CHAIN_ID);
             }}
           >
-            Switch to BSC {NETWORK}
+            Switch to {SECOND_CHAIN_NAME} {NETWORK}
           </Button>
         ) : null}
         <Cancel width={'50%'} onClick={handleOpen} variant="ghost">
