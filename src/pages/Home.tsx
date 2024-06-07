@@ -93,19 +93,13 @@ const Home = () => {
               </CardItemTitle>
             </CardItem>
           </a>
-          <a
-            href="https://docs.bnbchain.org/greenfield-docs/docs/guide/home"
-            target="_blank"
-          >
+          <a href="https://docs.bnbchain.org/bnb-greenfield/" target="_blank">
             <CardItem alignItems={'center'} gap={16} flexDirection={'column'}>
               <DocIcon w={32} h={32} className="icon"></DocIcon>
               <CardItemTitle className="title">Documentations</CardItemTitle>
             </CardItem>
           </a>
-          <a
-            href="https://docs.bnbchain.org/greenfield-docs/docs/guide/home"
-            target="_blank"
-          >
+          <a href="https://docs.bnbchain.org/bnb-greenfield/" target="_blank">
             <CardItem alignItems={'center'} gap={16} flexDirection={'column'}>
               <GithubIcon w={26} h={26} className="icon"></GithubIcon>
               <CardItemTitle className="title">Github</CardItemTitle>

@@ -70,10 +70,10 @@ finally, you can see the output resources in the build directory
 | ------------------------------------------------------------------------------------------------------------ |
 | [greenfield-data-marketplace-contracts](https://github.com/bnb-chain/greenfield-data-marketplace-contracts/) |
 | [BNB greenfield official website](https://greenfield.bnbchain.org/en)                                        |
-| [Guide to BNB Greenfield](https://docs.bnbchain.org/greenfield-docs/docs/guide/home)                         |
+| [Guide to BNB Greenfield](https://docs.bnbchain.org/bnb-greenfield/)                                         |
 | [Discord of BNB Greenfield](https://discord.gg/bnbchain)                                                     |
 | [Forum of bnbchain](https://forum.bnbchain.org/)                                                             |
-| [Guide to BNB Greenfield](https://docs.bnbchain.org/greenfield-docs/docs/guide/home)                         |
+| [Guide to BNB Greenfield](https://docs.bnbchain.org/bnb-greenfield/)                                         |
 
 ## Contribution
 
